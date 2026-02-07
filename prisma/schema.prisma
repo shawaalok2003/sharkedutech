@@ -1,0 +1,242 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      String   @default("EMPLOYER") // ADMIN, EMPLOYER
+  createdAt DateTime @default(now())
+  jobs      Job[]
+  applications Application[] // Add this relation
+
+  // Company Profile
+  companyName String?
+  industry    String?
+  size        String?
+  website     String?
+  description String?
+  address     String?
+  
+  // Candidate Profile
+  resumeUrl   String?
+  phone       String?  @unique
+  phoneVerified Boolean @default(false)
+  skills      String? // Comma separated
+  education   String?
+  experience  String?
+  otps        OTP[]
+
+  // Admissions
+  studentProfile       StudentProfile?
+  admissionApplications AdmissionApplication[]
+  admissionDocuments   AdmissionDocument[]
+  admissionQueries     AdmissionQuery[]
+  collegesAdministered College[]
+}
+
+model Job {
+  id          String   @id @default(cuid())
+  title       String
+  type        String
+  location    String
+  salaryMin   Int?
+  salaryMax   Int?
+  description String
+  requirements String
+  questions   String?  // JSON string of selected questions
+  status      String   @default("Active")
+  employerId  String
+  employer    User     @relation(fields: [employerId], references: [id])
+  applications Application[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Application {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  resumeUrl String?
+  coverLetter String?
+  answers     String? // JSON string of answers
+  status    String   @default("New")
+  jobId     String
+  job       Job      @relation(fields: [jobId], references: [id])
+  applicantId String    // Add this field
+  applicant   User      @relation(fields: [applicantId], references: [id]) // Add this relation
+  createdAt DateTime @default(now())
+}
+
+model OTP {
+  id        String   @id @default(cuid())
+  phone     String
+  code      String
+  expiresAt DateTime
+  verified  Boolean  @default(false)
+  attempts  Int      @default(0)
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  
+  @@index([phone, verified])
+}
+
+model College {
+  id          String   @id @default(cuid())
+  name        String
+  location    String
+  description String?
+  website     String?
+  email       String?
+  phone       String?
+  address     String?
+  rating      Float?  @default(0)
+  logoUrl     String?
+  establishedYear Int?
+  accreditation String?
+  affiliation  String?
+  ranking      String?
+  campusArea   String?
+  hostelAvailable Boolean? @default(false)
+  placementRate String?
+  avgPackage   String?
+  topRecruiters String?
+  admissionProcess String?
+  eligibility  String?
+  scholarships String?
+  facilities   String?
+  brochureUrl  String?
+  applicationFee Int?
+  totalSeats   Int?
+  adminId     String?
+  admin       User?   @relation(fields: [adminId], references: [id])
+  courses     Course[]
+  applications AdmissionApplication[]
+  queries     AdmissionQuery[]
+  requirements AdmissionRequirement[]
+  photos      CollegePhoto[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Course {
+  id          String   @id @default(cuid())
+  title       String
+  level       String?
+  duration    String?
+  seats       Int?
+  fee         Int?
+  status      String   @default("Active")
+  description String?
+  code        String?
+  mode        String?
+  eligibility String?
+  admissionCriteria String?
+  intakeMonth String?
+  applicationDeadline String?
+  syllabusUrl String?
+  scholarshipAvailable Boolean? @default(false)
+  placementSupport Boolean? @default(false)
+  feesBreakup String?
+  collegeId   String
+  college     College  @relation(fields: [collegeId], references: [id])
+  applications AdmissionApplication[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model AdmissionApplication {
+  id        String   @id @default(cuid())
+  studentId String
+  student   User     @relation(fields: [studentId], references: [id])
+  collegeId String
+  college   College  @relation(fields: [collegeId], references: [id])
+  courseId  String?
+  course    Course?  @relation(fields: [courseId], references: [id])
+  status    String   @default("Pending")
+  step      Int      @default(1)
+  score     String?
+  remarks   String?
+  intakeYear String?
+  highestQualification String?
+  percentage String?
+  entranceExam String?
+  entranceScore String?
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model StudentProfile {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  phone     String?
+  dob       DateTime?
+  city      String?
+  address   String?
+  bio       String?
+  education String?
+  photoUrl  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AdmissionDocument {
+  id        String   @id @default(cuid())
+  studentId String
+  student   User     @relation(fields: [studentId], references: [id])
+  name      String
+  type      String
+  size      String?
+  url       String
+  status    String   @default("Pending")
+  requirementId String?
+  requirement   AdmissionRequirement? @relation(fields: [requirementId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model AdmissionRequirement {
+  id          String   @id @default(cuid())
+  collegeId   String
+  college     College  @relation(fields: [collegeId], references: [id])
+  name        String
+  description String?
+  required    Boolean  @default(true)
+  documents   AdmissionDocument[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model CollegePhoto {
+  id        String   @id @default(cuid())
+  collegeId String
+  college   College  @relation(fields: [collegeId], references: [id])
+  url       String
+  caption   String?
+  createdAt DateTime @default(now())
+}
+
+model AdmissionQuery {
+  id        String   @id @default(cuid())
+  studentId String
+  student   User     @relation(fields: [studentId], references: [id])
+  collegeId String
+  college   College  @relation(fields: [collegeId], references: [id])
+  subject   String
+  message   String
+  status    String   @default("Unread")
+  reply     String?
+  createdAt DateTime @default(now())
+}

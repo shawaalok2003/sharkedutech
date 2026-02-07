@@ -1,0 +1,261 @@
+.sidebar {
+    width: 280px;
+    height: calc(100vh - 74px);
+    position: fixed;
+    left: 0;
+    top: 74px;
+    background-color: #fff;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    z-index: 40;
+    transition: transform 0.3s ease, width 0.3s ease;
+}
+
+.header {
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.brand {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.closeBtn {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--muted-foreground);
+    cursor: pointer;
+    padding: 0.25rem;
+    line-height: 1;
+}
+
+.closeBtn:hover {
+    color: var(--foreground);
+}
+
+.nav {
+    flex: 1;
+    padding: 1.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    overflow-y: auto;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius);
+    color: var(--muted-foreground);
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.item:hover {
+    background-color: var(--muted);
+    color: var(--foreground);
+}
+
+.active {
+    background-color: rgba(0, 33, 71, 0.08);
+    color: var(--primary);
+    font-weight: 600;
+    border-left: 3px solid var(--primary);
+}
+
+.footer {
+    padding: 1rem;
+    border-top: 1px solid var(--border);
+}
+
+.user {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark, #001530));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.userInfo {
+    flex: 1;
+    min-width: 0;
+}
+
+.userName {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--foreground);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.userRole {
+    font-size: 0.8rem;
+    color: var(--muted-foreground);
+}
+
+/* Mobile Menu Toggle Button */
+.mobileToggle {
+    display: none;
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark, #001530));
+    color: white;
+    border: none;
+    box-shadow: 0 4px 20px rgba(0, 33, 71, 0.3);
+    cursor: pointer;
+    z-index: 50;
+    font-size: 1.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mobileToggle:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 25px rgba(0, 33, 71, 0.4);
+}
+
+.mobileToggle:active {
+    transform: scale(0.95);
+}
+
+/* Overlay for mobile */
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 35;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.overlayVisible {
+    opacity: 1;
+}
+
+/* Tablet Styles */
+@media (max-width: 1024px) {
+    .sidebar {
+        width: 240px;
+    }
+    
+    .header {
+        padding: 0 1rem;
+    }
+    
+    .brand {
+        font-size: 1.1rem;
+    }
+    
+    .nav {
+        padding: 1rem 0.75rem;
+    }
+    
+    .item {
+        padding: 0.65rem 0.875rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 280px;
+        transform: translateX(-100%);
+        top: 0;
+        height: 100vh;
+        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+    }
+    
+    .sidebarOpen {
+        transform: translateX(0);
+    }
+    
+    .header {
+        height: 56px;
+        padding: 0 1rem;
+    }
+    
+    .closeBtn {
+        display: block;
+    }
+    
+    .mobileToggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .overlay {
+        display: block;
+    }
+    
+    .nav {
+        padding: 1rem;
+    }
+    
+    .item {
+        padding: 0.875rem 1rem;
+        font-size: 1rem;
+    }
+    
+    .footer {
+        padding: 0.875rem 1rem;
+    }
+    
+    .avatar {
+        width: 36px;
+        height: 36px;
+        font-size: 0.85rem;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+    .sidebar {
+        width: 100%;
+        max-width: 320px;
+    }
+    
+    .mobileToggle {
+        width: 50px;
+        height: 50px;
+        bottom: 1rem;
+        right: 1rem;
+        font-size: 1.25rem;
+    }
+}

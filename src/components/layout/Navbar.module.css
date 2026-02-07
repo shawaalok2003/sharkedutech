@@ -1,0 +1,255 @@
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background-color: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    transition: all 0.2s ease;
+}
+
+.navContainer {
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    z-index: 52;
+}
+
+.navLinks {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+.link {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--muted-foreground);
+    transition: color 0.15s ease;
+}
+
+.link:hover,
+.linkActive {
+    color: var(--primary);
+}
+
+.actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.userName {
+    fontSize: 0.85rem;
+    fontWeight: 500;
+    marginRight: 0.5rem;
+}
+
+/* Hamburger Menu Button */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 28px;
+    height: 24px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 52;
+}
+
+.hamburgerLine {
+    width: 28px;
+    height: 3px;
+    background-color: var(--primary);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    transform-origin: center;
+}
+
+.hamburgerLineOpen:nth-child(1) {
+    transform: rotate(45deg) translateY(8px);
+}
+
+.hamburgerLineOpen:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburgerLineOpen:nth-child(3) {
+    transform: rotate(-45deg) translateY(-8px);
+}
+
+/* Mobile Menu */
+.mobileMenu {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100%;
+    max-width: 320px;
+    height: 100vh;
+    background-color: white;
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    z-index: 51;
+    overflow-y: auto;
+}
+
+.mobileMenuOpen {
+    transform: translateX(0);
+}
+
+.mobileNav {
+    display: flex;
+    flex-direction: column;
+    padding: 5rem 1.5rem 2rem;
+    gap: 0.5rem;
+}
+
+.mobileLink {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--muted-foreground);
+    padding: 1rem;
+    border-radius: var(--radius);
+    transition: all 0.2s ease;
+}
+
+.mobileLink:hover,
+.mobileLink.linkActive {
+    background-color: rgba(0, 33, 71, 0.08);
+    color: var(--primary);
+}
+
+.mobileActions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 2rem 1.5rem;
+    border-top: 1px solid var(--border);
+}
+
+.mobileUserInfo {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--foreground);
+    text-align: center;
+    padding: 0.5rem;
+}
+
+/* Overlay */
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 49;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.overlayVisible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Tablet Responsive */
+@media (max-width: 1024px) {
+    .navContainer {
+        padding: 0.875rem 1rem;
+    }
+
+    .logo {
+        font-size: 1.35rem;
+    }
+
+    .navLinks {
+        gap: 1.5rem;
+    }
+
+    .link {
+        font-size: 0.9rem;
+    }
+
+    .actions {
+        gap: 0.5rem;
+    }
+
+    .userName {
+        display: none;
+    }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .navContainer {
+        padding: 0.75rem 1rem;
+    }
+
+    .logo {
+        font-size: 1.25rem;
+    }
+
+    .navLinks {
+        display: none;
+    }
+
+    .actions {
+        display: none;
+    }
+
+    .hamburger {
+        display: flex;
+    }
+
+    .mobileMenu {
+        display: block;
+    }
+
+    .overlay {
+        display: block;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+    .logo {
+        font-size: 1.1rem;
+    }
+
+    .mobileMenu {
+        max-width: 280px;
+    }
+
+    .mobileNav {
+        padding: 4.5rem 1rem 1.5rem;
+    }
+
+    .mobileLink {
+        font-size: 1rem;
+        padding: 0.875rem;
+    }
+
+    .mobileActions {
+        padding: 1.5rem 1rem;
+    }
+}
