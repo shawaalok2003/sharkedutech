@@ -3,6 +3,8 @@ import { prisma } from '@/lib/prisma';
 import { generateOTP, getOTPExpiry, hashOTP } from '@/lib/otp';
 import { sendEmailOTP } from '@/lib/email';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: Request) {
     try {
         const { email: rawEmail, role: intendedRole } = await request.json();

@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
     const session = await getServerSession(authOptions);
     const role = session ? (session.user as any).role : null;
@@ -24,6 +26,7 @@ export async function GET() {
         courseCount: college.courses.length
     })));
 }
+
 
 export async function POST(request: Request) {
     const session = await getServerSession(authOptions);

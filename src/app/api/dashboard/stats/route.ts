@@ -3,6 +3,8 @@ import { getServerSession } from "next-auth";
 import { prisma } from '@/lib/prisma';
 import { authOptions } from '../../auth/[...nextauth]/route'; // Re-use connection/config
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
     // 1. Get authenticated user
     const session = await getServerSession(authOptions);

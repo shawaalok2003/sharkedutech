@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { hashOTP, isOTPExpired } from '@/lib/otp';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: Request) {
     try {
         const { email: rawEmail, code: rawCode } = await request.json();

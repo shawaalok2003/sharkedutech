@@ -3,6 +3,8 @@ import { getServerSession } from "next-auth";
 import { prisma } from '@/lib/prisma';
 import { authOptions } from '../auth/[...nextauth]/route';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
     const session = await getServerSession(authOptions);
     if (!session || !(session as any).user) {
@@ -37,6 +39,7 @@ export async function GET() {
         return NextResponse.json({ error: 'Failed to fetch profile' }, { status: 500 });
     }
 }
+
 
 export async function PUT(request: Request) {
     const session = await getServerSession(authOptions);

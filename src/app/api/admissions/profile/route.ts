@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
     const session = await getServerSession(authOptions);
     if (!session) {
@@ -15,6 +17,7 @@ export async function GET() {
 
     return NextResponse.json(profile || {});
 }
+
 
 export async function PUT(request: Request) {
     const session = await getServerSession(authOptions);

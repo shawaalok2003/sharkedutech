@@ -3,6 +3,8 @@ import { prisma } from '@/lib/prisma';
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: Request) {
     const session = await getServerSession(authOptions);
 
@@ -44,6 +46,7 @@ export async function GET(request: Request) {
         return NextResponse.json({ error: 'Failed to fetch applications' }, { status: 500 });
     }
 }
+
 export async function POST(request: Request) {
     const session = await getServerSession(authOptions);
 
