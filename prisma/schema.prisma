@@ -35,7 +35,7 @@ model User {
   skills      String? // Comma separated
   education   String?
   experience  String?
-  otps        OTP[]
+  otps        Otp[]
 
   // Admissions
   studentProfile       StudentProfile?
@@ -78,9 +78,10 @@ model Application {
   createdAt DateTime @default(now())
 }
 
-model OTP {
+model Otp {
   id        String   @id @default(cuid())
-  phone     String
+  email     String?
+  phone     String?
   code      String
   expiresAt DateTime
   verified  Boolean  @default(false)
@@ -89,6 +90,7 @@ model OTP {
   user      User?    @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
   
+  @@index([email, verified])
   @@index([phone, verified])
 }
 

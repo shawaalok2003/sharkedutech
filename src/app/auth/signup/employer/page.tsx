@@ -10,10 +10,10 @@ import { signIn } from "next-auth/react";
 
 type SignupStep = 'form' | 'verify-otp';
 
-export default function SignupPage() {
+export default function EmployerSignupPage() {
     const router = useRouter();
     const [step, setStep] = useState<SignupStep>('form');
-    const [role, setRole] = useState<'CANDIDATE' | 'EMPLOYER' | 'ADMIN'>('CANDIDATE');
+    const role = 'EMPLOYER';
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [otp, setOtp] = useState('');
@@ -66,7 +66,7 @@ export default function SignupPage() {
             const response = await fetch('/api/auth/otp/send', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: formData.email }),
+                body: JSON.stringify({ email: formData.email, role }),
             });
 
             if (!response.ok) {
@@ -93,7 +93,7 @@ export default function SignupPage() {
                 const response = await fetch('/api/auth/otp/send', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: formData.email }),
+                    body: JSON.stringify({ email: formData.email, role }),
                 });
 
                 const result = await response.json();
@@ -149,15 +149,7 @@ export default function SignupPage() {
                             redirect: false,
                         });
 
-                        // Redirect based on role
-                        if (role === 'ADMIN') {
-                            router.push("/admin");
-                        } else if (role === 'EMPLOYER') {
-                            router.push("/jobs/employer");
-                        } else {
-                            // Candidate - redirect to profile/dashboard
-                            router.push("/candidate/dashboard");
-                        }
+                        router.push("/jobs/employer");
                         router.refresh();
                     } else {
                         const errorData = await res.json();
@@ -177,11 +169,11 @@ export default function SignupPage() {
     }
 
     return (
-        <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#F3F4F6', padding: '2rem' }}>
+        <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#F0F9FF', padding: '2rem' }}>
             <Card style={{ width: '100%', maxWidth: '500px' }}>
                 <CardHeader>
-                    <CardTitle style={{ textAlign: 'center', fontSize: '1.5rem', color: 'var(--primary)' }}>Create Candidate Account</CardTitle>
-                    <p style={{ textAlign: 'center', color: 'var(--muted-foreground)', fontSize: '0.875rem' }}>Start your career journey today</p>
+                    <CardTitle style={{ textAlign: 'center', fontSize: '1.5rem', color: '#0369A1' }}>Register as Employer</CardTitle>
+                    <p style={{ textAlign: 'center', color: 'var(--muted-foreground)', fontSize: '0.875rem' }}>Join our professional network to hire top talent</p>
                 </CardHeader>
 
                 {step === 'form' ? (
@@ -190,7 +182,7 @@ export default function SignupPage() {
                             {error && <div style={{ padding: '0.75rem', backgroundColor: '#FEE2E2', color: '#DC2626', borderRadius: 'var(--radius)', fontSize: '0.875rem' }}>{error}</div>}
 
                             <div>
-                                <label htmlFor="name" style={labelStyle}>Full Name</label>
+                                <label htmlFor="name" style={labelStyle}>Contact Person Name</label>
                                 <input
                                     name="name"
                                     id="name"
@@ -203,15 +195,40 @@ export default function SignupPage() {
                             </div>
 
                             <div>
-                                <label htmlFor="email" style={labelStyle}>Email Address</label>
+                                <label htmlFor="email" style={labelStyle}>Work Email Address</label>
                                 <input
                                     name="email"
                                     id="email"
                                     type="email"
                                     required
-                                    placeholder="john@example.com"
+                                    placeholder="hr@company.com"
                                     value={formData.email}
                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                    style={inputStyle}
+                                />
+                            </div>
+
+                            <div>
+                                <label htmlFor="companyName" style={labelStyle}>Company Name</label>
+                                <input
+                                    name="companyName"
+                                    id="companyName"
+                                    required
+                                    placeholder="Acme Corp"
+                                    value={formData.companyName}
+                                    onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
+                                    style={inputStyle}
+                                />
+                            </div>
+
+                            <div>
+                                <label htmlFor="industry" style={labelStyle}>Industry</label>
+                                <input
+                                    name="industry"
+                                    id="industry"
+                                    placeholder="Technology"
+                                    value={formData.industry}
+                                    onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
                                     style={inputStyle}
                                 />
                             </div>
@@ -230,14 +247,13 @@ export default function SignupPage() {
                                 />
                             </div>
 
-                            <Button type="submit" size="lg" disabled={loading} style={{ marginTop: '0.5rem' }}>
-                                {loading ? 'Sending OTP...' : 'Continue & Verify Email'}
+                            <Button type="submit" size="lg" disabled={loading} style={{ marginTop: '0.5rem', backgroundColor: '#0369A1' }}>
+                                {loading ? 'Sending OTP...' : 'Verify & Continue'}
                             </Button>
 
-                            <div style={{ textAlign: 'center', fontSize: '0.875rem', color: 'var(--muted-foreground)', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                                <p>Are you an Employer? <Link href="/auth/signup/employer" style={{ color: 'var(--primary)', fontWeight: 600 }}>Create Employer Account</Link></p>
-                                <p>Already have an account? <Link href="/auth/signin" style={{ color: 'var(--primary)', fontWeight: 600 }}>Log In</Link></p>
-                            </div>
+                            <p style={{ textAlign: 'center', fontSize: '0.875rem', color: 'var(--muted-foreground)' }}>
+                                Not an Employer? <Link href="/auth/signup" style={{ color: 'var(--primary)', fontWeight: 600 }}>Sign up as Candidate</Link>
+                            </p>
                         </form>
                     </CardContent>
                 ) : (
@@ -247,7 +263,7 @@ export default function SignupPage() {
 
                             <div>
                                 <p style={{ textAlign: 'center', fontSize: '0.875rem', color: 'var(--muted-foreground)', marginBottom: '1rem' }}>
-                                    We sent a 6-digit code to <strong>{formData.email}</strong>
+                                    We sent a 6-digit verification code to <strong>{formData.email}</strong>
                                 </p>
                                 <OTPInput
                                     value={otp}
@@ -257,8 +273,8 @@ export default function SignupPage() {
                                 />
                             </div>
 
-                            <Button type="submit" size="lg" disabled={loading || otp.length !== 6} style={{ marginTop: '0.5rem' }}>
-                                {loading ? 'Creating Account...' : 'Verify & Create Account'}
+                            <Button type="submit" size="lg" disabled={loading || otp.length !== 6} style={{ marginTop: '0.5rem', backgroundColor: '#0369A1' }}>
+                                {loading ? 'Creating Account...' : 'Complete Registration'}
                             </Button>
 
                             <div style={{ textAlign: 'center' }}>
@@ -270,7 +286,7 @@ export default function SignupPage() {
                                     <button
                                         type="button"
                                         onClick={handleResendOTP}
-                                        style={{ fontSize: '0.875rem', color: 'var(--primary)', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}
+                                        style={{ fontSize: '0.875rem', color: '#0369A1', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}
                                     >
                                         Resend OTP
                                     </button>

@@ -48,7 +48,7 @@ export function Navbar() {
                 </Link>
 
                 {/* Hamburger Button */}
-                <button 
+                <button
                     className={styles.hamburger}
                     onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                     aria-label="Toggle menu"
@@ -96,12 +96,19 @@ export function Navbar() {
                             </Button>
                         </div>
                     ) : (
-                        <div style={{ display: 'flex', gap: '0.5rem' }}>
-                            <Link href="/auth/signin?type=candidate">
-                                <Button variant="ghost" size="sm">Candidate</Button>
+                        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                            <Link href="/auth/signin">
+                                <Button variant="ghost" size="sm">Login</Button>
                             </Link>
-                            <Link href="/auth/signin?type=employer">
-                                <Button variant="outline" size="sm">Employer</Button>
+                            <Link href="/auth/signup">
+                                <Button variant="primary" size="sm">Candidate Register</Button>
+                            </Link>
+                            <div style={{ width: '1px', height: '20px', backgroundColor: 'var(--border)', margin: '0 0.25rem' }}></div>
+                            <Link href="/admissions/auth/signup">
+                                <Button variant="outline" size="sm" style={{ backgroundColor: '#FFF7ED', borderColor: '#FDBA74', color: '#9A3412' }}>College Register</Button>
+                            </Link>
+                            <Link href="/auth/signup/employer">
+                                <Button variant="outline" size="sm" style={{ backgroundColor: '#F0F9FF', borderColor: '#BAE6FD', color: '#0369A1' }}>Employer Register</Button>
                             </Link>
                         </div>
                     )}
@@ -147,25 +154,29 @@ export function Navbar() {
                             </>
                         ) : (
                             <>
-                                <Link href="/auth/signin?type=candidate" style={{ width: '100%' }}>
-                                    <Button variant="primary" size="lg" style={{ width: '100%' }}>Candidate Login</Button>
-                                </Link>
-                                <Link href="/auth/signin?type=employer" style={{ width: '100%' }}>
-                                    <Button variant="outline" size="lg" style={{ width: '100%' }}>Employer Login</Button>
-                                </Link>
-                                <Link href="/auth/signin?type=admin" style={{ width: '100%' }}>
-                                    <Button variant="outline" size="lg" style={{ width: '100%' }}>Admin Login</Button>
-                                </Link>
-                                <Link href="/admissions/auth/signin" style={{ width: '100%' }}>
-                                    <Button variant="outline" size="lg" style={{ width: '100%' }}>College Admin</Button>
-                                </Link>
+                                <>
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '0.5rem', width: '100%' }}>
+                                        <Link href="/auth/signin">
+                                            <Button variant="ghost" size="lg" style={{ width: '100%' }}>Login</Button>
+                                        </Link>
+                                        <Link href="/auth/signup">
+                                            <Button variant="primary" size="lg" style={{ width: '100%' }}>Candidate Register</Button>
+                                        </Link>
+                                        <Link href="/admissions/auth/signup">
+                                            <Button variant="outline" size="lg" style={{ width: '100%', backgroundColor: '#FFF7ED', borderColor: '#FDBA74', color: '#9A3412' }}>College Register</Button>
+                                        </Link>
+                                        <Link href="/auth/signup/employer">
+                                            <Button variant="outline" size="lg" style={{ width: '100%', backgroundColor: '#F0F9FF', borderColor: '#BAE6FD', color: '#0369A1' }}>Employer Register</Button>
+                                        </Link>
+                                    </div>
+                                </>
                             </>
                         )}
                     </div>
                 </div>
 
                 {/* Mobile Overlay */}
-                <div 
+                <div
                     className={`${styles.overlay} ${isMobileMenuOpen ? styles.overlayVisible : ''}`}
                     onClick={() => setIsMobileMenuOpen(false)}
                 />

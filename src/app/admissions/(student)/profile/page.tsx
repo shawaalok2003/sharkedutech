@@ -41,18 +41,22 @@ export default function ProfilePage() {
         setForm(prev => ({ ...prev, [name]: value }));
     };
 
+    const saveProfile = async (nextForm: typeof form) => {
+        const res = await fetch("/api/admissions/profile", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(nextForm)
+        });
+        if (!res.ok) {
+            alert("Failed to save profile");
+        }
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setSaving(true);
         try {
-            const res = await fetch("/api/admissions/profile", {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(form)
-            });
-            if (!res.ok) {
-                alert("Failed to save profile");
-            }
+            await saveProfile(form);
         } finally {
             setSaving(false);
         }
@@ -69,8 +73,12 @@ export default function ProfilePage() {
                 return;
             }
             const { url } = await uploadRes.json();
-            setForm(prev => ({ ...prev, photoUrl: url }));
+            const nextForm = { ...form, photoUrl: url };
+            setForm(nextForm);
+            setSaving(true);
+            await saveProfile(nextForm);
         } finally {
+            setSaving(false);
             setUploading(false);
         }
     };

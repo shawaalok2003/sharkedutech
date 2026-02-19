@@ -1,6 +1,9 @@
 "use client";
 
 import { Sidebar } from "@/components/dashboard/Sidebar";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const sidebarItems = [
   { label: "Dashboard", href: "/admissions" },
@@ -15,6 +18,27 @@ export default function AdmissionsLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === "loading") return;
+
+    if (session?.user) {
+      const role = (session.user as any).role;
+      if (role === 'EMPLOYER') {
+        router.push('/jobs/employer');
+      } else if (role === 'ADMIN') {
+        router.push('/admin');
+      }
+      // CANDIDATE is allowed here
+    }
+  }, [session, status, router]);
+
+  if (status === "loading") {
+    return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>Loading...</div>;
+  }
+
   return (
     <>
       <style jsx global>{`

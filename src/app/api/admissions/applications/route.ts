@@ -21,6 +21,9 @@ export async function GET(request: Request) {
                 select: { id: true }
             });
             const ids = colleges.map(c => c.id);
+            if (ids.length === 0) {
+                return NextResponse.json([]);
+            }
             where = { collegeId: { in: ids } };
         }
         const applications = await prisma.admissionApplication.findMany({

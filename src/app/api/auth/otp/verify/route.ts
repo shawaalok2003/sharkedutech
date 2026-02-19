@@ -1,31 +1,28 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { verifyOTP, isOTPExpired } from '@/lib/otp';
-import { formatPhoneNumber } from '@/lib/twilio';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '../../[...nextauth]/route';
-
-const MAX_ATTEMPTS = 3;
+import { hashOTP, isOTPExpired } from '@/lib/otp';
 
 export async function POST(request: Request) {
     try {
-        const body = await request.json();
-        const { phone, code } = body;
+        const { email: rawEmail, code: rawCode } = await request.json();
+        const email = rawEmail?.trim().toLowerCase();
+        const code = rawCode?.trim();
 
-        if (!phone || !code) {
+        console.log(`🔍 Attempting to verify OTP for: "${email}" (Raw: "${rawEmail}"), Code: "${code}" (Raw: "${rawCode}")`);
+
+        if (!email || !code) {
             return NextResponse.json(
-                { error: 'Phone number and OTP code are required' },
+                { error: 'Email and verification code are required' },
                 { status: 400 }
             );
         }
 
-        const formattedPhone = formatPhoneNumber(phone);
+        const hashedCode = hashOTP(code);
 
-        // Find the latest unverified OTP for this phone
-        const otpRecord = await prisma.oTP.findFirst({
+        const otpRecord = await prisma.otp.findFirst({
             where: {
-                phone: formattedPhone,
-                verified: false,
+                email,
+                code: hashedCode,
             },
             orderBy: {
                 createdAt: 'desc',
@@ -33,107 +30,65 @@ export async function POST(request: Request) {
         });
 
         if (!otpRecord) {
+            console.log(`❌ No OTP found for "${email}" with matching hash.`);
             return NextResponse.json(
-                { error: 'No OTP found. Please request a new one.' },
-                { status: 404 }
-            );
-        }
-
-        // Check if OTP is expired
-        if (isOTPExpired(otpRecord.expiresAt)) {
-            return NextResponse.json(
-                { error: 'OTP has expired. Please request a new one.' },
+                { error: 'Invalid verification code' },
                 { status: 400 }
             );
         }
 
-        // Check max attempts
-        if (otpRecord.attempts >= MAX_ATTEMPTS) {
-            return NextResponse.json(
-                { error: 'Maximum verification attempts exceeded. Please request a new OTP.' },
-                { status: 400 }
-            );
+        if (otpRecord.verified) {
+            console.log(`⚠️ OTP for "${email}" already verified.`);
+            // If it's already verified, we can still allow them to proceed to Step 3
+            // because this means they might have had a network glitch after verification.
+        } else {
+            if (isOTPExpired(otpRecord.expiresAt)) {
+                return NextResponse.json(
+                    { error: 'Verification code has expired' },
+                    { status: 400 }
+                );
+            }
+
+            // Mark OTP as verified
+            await prisma.otp.update({
+                where: { id: otpRecord.id },
+                data: { verified: true },
+            });
+            console.log(`✅ OTP verified for ${email}`);
         }
 
-        // Verify OTP
-        const isValid = verifyOTP(code, otpRecord.code);
-
-        // Increment attempts
-        await prisma.oTP.update({
-            where: { id: otpRecord.id },
-            data: {
-                attempts: otpRecord.attempts + 1,
-            },
-        });
-
-        if (!isValid) {
-            const remainingAttempts = MAX_ATTEMPTS - (otpRecord.attempts + 1);
-            return NextResponse.json(
-                {
-                    error: 'Invalid OTP code',
-                    remainingAttempts: Math.max(0, remainingAttempts),
-                },
-                { status: 400 }
-            );
-        }
-
-        // Mark OTP as verified
-        await prisma.oTP.update({
-            where: { id: otpRecord.id },
-            data: {
-                verified: true,
-            },
-        });
-
-        // Find or create user
+        // Sync user with database
         let user = await prisma.user.findUnique({
-            where: { phone: formattedPhone },
+            where: { email },
         });
 
         if (!user) {
-            // Create new user with phone number
+            // Create user if they don't exist
+            // If No user exists, we assume they are signing up as CANDIDATE by default 
+            // unless we start passing role here too.
             user = await prisma.user.create({
                 data: {
-                    phone: formattedPhone,
-                    phoneVerified: true,
-                    email: `${formattedPhone.replace('+', '')}@temp.sharkedutech.com`, // Temporary email
-                    password: '', // No password for OTP users
-                    role: 'CANDIDATE', // Default role
+                    email,
+                    password: '', // Passwordless user
+                    role: 'CANDIDATE', // Default role for new OTP users
                 },
             });
-        } else {
-            // Update phone verification status
-            await prisma.user.update({
-                where: { id: user.id },
-                data: {
-                    phoneVerified: true,
-                },
-            });
+            console.log(`✅ Created new user via SMTP OTP: ${email}`);
         }
-
-        // Link OTP to user
-        await prisma.oTP.update({
-            where: { id: otpRecord.id },
-            data: {
-                userId: user.id,
-            },
-        });
 
         return NextResponse.json({
             success: true,
-            message: 'OTP verified successfully',
             user: {
                 id: user.id,
-                phone: user.phone,
                 email: user.email,
                 name: user.name,
                 role: user.role,
             },
         });
     } catch (error) {
-        console.error('OTP verification error:', error);
+        console.error('Verify OTP error:', error);
         return NextResponse.json(
-            { error: 'Failed to verify OTP' },
+            { error: 'Internal server error' },
             { status: 500 }
         );
     }

@@ -15,11 +15,29 @@ export async function POST(request: Request) {
             where: { email },
         });
 
-        if (existingUser) {
-            return NextResponse.json({ error: 'User already exists' }, { status: 400 });
-        }
-
         const hashedPassword = await bcrypt.hash(password, 10);
+
+        if (existingUser) {
+            // If user exists and has a password, they are truly already registered
+            if (existingUser.password) {
+                return NextResponse.json({ error: 'User already exists' }, { status: 400 });
+            }
+
+            // User was created via OTP but hasn't set a password/profile yet
+            const user = await prisma.user.update({
+                where: { email },
+                data: {
+                    name,
+                    password: hashedPassword,
+                    role,
+                    ...(role === 'EMPLOYER' ? {
+                        companyName,
+                        industry
+                    } : {})
+                },
+            });
+            return NextResponse.json({ message: 'User updated successfully', userId: user.id });
+        }
 
         const user = await prisma.user.create({
             data: {

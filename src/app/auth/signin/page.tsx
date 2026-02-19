@@ -6,7 +6,6 @@ import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/Card";
 import OTPInput from "@/components/auth/OTPInput";
-import { sendOTP, verifyOTP } from "@/lib/supabase";
 import { signIn } from "next-auth/react";
 
 type AuthStep = 'method' | 'password' | 'otp-email' | 'otp-verify';
@@ -16,7 +15,16 @@ function SignInContent() {
     const searchParams = useSearchParams();
     const type = searchParams.get('type') || 'candidate';
 
-    const [authStep, setAuthStep] = useState<AuthStep>('method');
+    const isCandidate = type === 'candidate';
+    const isEmployer = type === 'employer';
+    const isAdmin = type === 'admin';
+
+    // Default to password login for Employer/Admin to skip selection
+    const [authStep, setAuthStep] = useState<AuthStep>(() => {
+        if (isEmployer || isAdmin) return 'password';
+        return 'method';
+    });
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [otp, setOtp] = useState("");
@@ -24,8 +32,9 @@ function SignInContent() {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
-    const isCandidate = type === 'candidate';
-    const title = isCandidate ? "Candidate Login" : "Partner & Admin Login";
+    // Dynamic Title
+    const title = isCandidate ? "Candidate Login" : isEmployer ? "Employer Login" : isAdmin ? "Admin Login" : "Login";
+    const showBackButton = isCandidate;
 
     // Step 1: Choose authentication method
     const handleMethodSelect = (method: 'password' | 'otp') => {
@@ -71,32 +80,35 @@ function SignInContent() {
         }
     };
 
-    // Step 3: Send OTP via Supabase
+    // Step 3: Send OTP via SMTP
     const handleSendOTP = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
         setLoading(true);
 
-        const result = await sendOTP(email);
+        try {
+            const role = type === 'candidate' ? 'CANDIDATE' : type === 'employer' ? 'EMPLOYER' : 'ADMIN';
+            const response = await fetch('/api/auth/otp/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, role }),
+            });
 
-        if (!result.success) {
-            const errorMsg = result.error || 'Failed to send OTP';
-            
-            if (errorMsg.includes('rate') || errorMsg.includes('too many')) {
-                setError('Too many requests. Please wait 60 seconds before trying again.');
-                startResendCountdown();
+            const result = await response.json();
+
+            if (!response.ok) {
+                setError(result.error || 'Failed to send OTP');
                 setLoading(false);
                 return;
             }
-            
-            setError(errorMsg);
-            setLoading(false);
-            return;
-        }
 
-        setAuthStep('otp-verify');
-        startResendCountdown();
-        setLoading(false);
+            setAuthStep('otp-verify');
+            startResendCountdown();
+        } catch (err) {
+            setError('An error occurred. Please try again.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     // Step 4: Verify OTP
@@ -105,39 +117,35 @@ function SignInContent() {
         setError(null);
         setLoading(true);
 
-        const result = await verifyOTP(email, otp);
-
-        if (!result.success) {
-            setError(result.error || 'Invalid OTP');
-            setLoading(false);
-            return;
-        }
-
-        // Sync with Prisma database and create NextAuth session
         try {
-            const syncRes = await fetch('/api/auth/supabase-sync', {
+            const response = await fetch('/api/auth/otp/verify', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    email: result.data?.user?.email,
-                    supabaseId: result.data?.user?.id,
-                }),
+                body: JSON.stringify({ email, code: otp }),
             });
 
-            if (!syncRes.ok) {
-                setError('Failed to sync user data');
+            const result = await response.json();
+
+            if (!response.ok) {
+                setError(result.error || 'Invalid OTP');
                 setLoading(false);
                 return;
             }
 
-            const userData = await syncRes.json();
+            const userData = result.user;
 
             // Sign in with NextAuth
-            await signIn("credentials", {
+            const signInResult = await signIn("credentials", {
                 email: userData.email,
                 password: '', // OTP users don't have passwords
                 redirect: false,
             });
+
+            if (signInResult?.error) {
+                setError('Sign in failed');
+                setLoading(false);
+                return;
+            }
 
             // Redirect based on role
             const role = userData.role;
@@ -260,13 +268,15 @@ function SignInContent() {
                                 {loading ? 'Logging in...' : 'Login'}
                             </Button>
 
-                            <button
-                                type="button"
-                                onClick={() => { setAuthStep('method'); setError(null); }}
-                                style={{ fontSize: '0.875rem', color: 'var(--muted-foreground)', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}
-                            >
-                                Back to methods
-                            </button>
+                            {showBackButton && (
+                                <button
+                                    type="button"
+                                    onClick={() => { setAuthStep('method'); setError(null); }}
+                                    style={{ fontSize: '0.875rem', color: 'var(--muted-foreground)', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}
+                                >
+                                    Back to methods
+                                </button>
+                            )}
                         </form>
                     )}
 
@@ -301,13 +311,15 @@ function SignInContent() {
                                 {loading ? 'Sending...' : 'Send OTP'}
                             </Button>
 
-                            <button
-                                type="button"
-                                onClick={() => { setAuthStep('method'); setError(null); }}
-                                style={{ fontSize: '0.875rem', color: 'var(--muted-foreground)', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}
-                            >
-                                Back to methods
-                            </button>
+                            {showBackButton && (
+                                <button
+                                    type="button"
+                                    onClick={() => { setAuthStep('method'); setError(null); }}
+                                    style={{ fontSize: '0.875rem', color: 'var(--muted-foreground)', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}
+                                >
+                                    Back to methods
+                                </button>
+                            )}
                         </form>
                     )}
 

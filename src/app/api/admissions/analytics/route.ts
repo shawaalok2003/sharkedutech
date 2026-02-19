@@ -17,7 +17,16 @@ export async function GET(request: Request) {
             where: { adminId: ((session as any).user as any).id },
             select: { id: true }
         });
-        collegeId = college?.id;
+
+        if (!college) {
+            return NextResponse.json({
+                totalApplications: 0,
+                pending: 0,
+                shortlisted: 0,
+                accepted: 0
+            });
+        }
+        collegeId = college.id;
     }
 
     const totalApplications = await prisma.admissionApplication.count({

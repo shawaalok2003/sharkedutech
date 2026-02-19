@@ -1,6 +1,9 @@
 "use client";
 
 import { Sidebar } from "@/components/dashboard/Sidebar";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const collegeSidebarItems = [
     { label: "Dashboard", href: "/admissions/college" },
@@ -16,6 +19,32 @@ export default function CollegeAdminLayout({
 }: {
     children: React.ReactNode;
 }) {
+    const { data: session, status } = useSession();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (status === "loading") return;
+
+        if (!session) {
+            router.push('/admissions/auth/signin');
+            return;
+        }
+
+        const role = (session.user as any).role;
+        // Only allow COLLEGE or potentially ADMIN to access college portal
+        if (role === 'CANDIDATE') {
+            router.push('/candidate/dashboard');
+        } else if (role === 'EMPLOYER') {
+            router.push('/jobs/employer');
+        } else if (role !== 'COLLEGE' && role !== 'ADMIN') {
+            router.push('/auth/signin');
+        }
+    }, [session, status, router]);
+
+    if (status === "loading") {
+        return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>Loading...</div>;
+    }
+
     return (
         <>
             <style jsx global>{`

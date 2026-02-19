@@ -12,13 +12,20 @@ export const authOptions = {
                 password: { label: "Password", type: "password" },
             },
             async authorize(credentials) {
-                if (!credentials?.email || !credentials?.password) return null;
+                if (!credentials?.email) return null;
 
                 const user = await prisma.user.findUnique({
                     where: { email: credentials.email },
                 });
 
                 if (!user) return null;
+
+                // Handle OTP login (passwordless)
+                if (credentials.password === "" && user.password === "") {
+                    return { id: user.id, email: user.email, name: user.name, role: user.role };
+                }
+
+                if (!credentials.password) return null;
 
                 const isValid = await bcrypt.compare(credentials.password, user.password);
 

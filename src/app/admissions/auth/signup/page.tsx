@@ -1,181 +1,308 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import styles from './signup.module.css';
+import { useState } from "react";
+import { Button } from "@/components/ui/Button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import OTPInput from "@/components/auth/OTPInput";
+import { signIn } from "next-auth/react";
 
-export default function AdmissionsSignUpPage() {
+type SignupStep = 'form' | 'verify-otp';
+
+export default function CollegeSignupPage() {
+  const router = useRouter();
+  const [step, setStep] = useState<SignupStep>('form');
+  const role = 'COLLEGE';
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [otp, setOtp] = useState('');
+  const [resendCountdown, setResendCountdown] = useState(0);
+
+  // Form data
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
-    confirmPassword: '',
     collegeName: '',
-    phone: ''
+    phone: '',
   });
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
+  const inputStyle = {
+    width: '100%',
+    padding: '0.75rem',
+    borderRadius: 'var(--radius)',
+    border: '1px solid var(--border)',
+    fontSize: '1rem',
+    marginTop: '0.5rem',
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const labelStyle = {
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    color: 'var(--foreground)',
+  };
+
+  const startResendCountdown = () => {
+    setResendCountdown(60);
+    const interval = setInterval(() => {
+      setResendCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
+  const handleResendOTP = async () => {
+    if (resendCountdown > 0) return;
+    setOtp("");
     setError('');
-
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
-      return;
-    }
-
-    if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters');
-      return;
-    }
-
     setLoading(true);
 
     try {
-      const response = await fetch('/api/auth/signup', {
+      const response = await fetch('/api/auth/otp/send', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-          role: 'COLLEGE'
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: formData.email, role }),
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        setError(data.error || 'Registration failed');
-        setLoading(false);
-        return;
+        const result = await response.json();
+        setError(result.error || 'Failed to send OTP');
+      } else {
+        startResendCountdown();
       }
-
-      // Redirect to login page
-      router.push('/admissions/auth/signin?registered=true');
-    } catch (error) {
+    } catch (err) {
       setError('An error occurred. Please try again.');
+    } finally {
       setLoading(false);
     }
   };
 
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    // Step 1: Send OTP first
+    if (step === 'form') {
+      try {
+        const response = await fetch('/api/auth/otp/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: formData.email, role }),
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          setError(result.error || 'Failed to send OTP');
+          setLoading(false);
+          return;
+        }
+
+        setStep('verify-otp');
+        startResendCountdown();
+      } catch (err) {
+        setError('An error occurred. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
+
+    // Step 2: Verify OTP then create account
+    if (step === 'verify-otp') {
+      try {
+        const response = await fetch('/api/auth/otp/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: formData.email, code: otp }),
+        });
+
+        const otpResult = await response.json();
+
+        if (!response.ok) {
+          setError(otpResult.error || 'Invalid OTP');
+          setLoading(false);
+          return;
+        }
+
+        // Now create the account
+        try {
+          const res = await fetch('/api/auth/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ...formData, role }),
+          });
+
+          if (res.ok) {
+            // Auto-login user with NextAuth
+            await signIn("credentials", {
+              email: formData.email,
+              password: formData.password,
+              redirect: false,
+            });
+
+            router.push("/admissions/college");
+            router.refresh();
+          } else {
+            const errorData = await res.json();
+            setError(errorData.error || 'Registration failed');
+          }
+        } catch (err) {
+          setError('An error occurred. Please try again.');
+        } finally {
+          setLoading(false);
+        }
+      } catch (err) {
+        setError('Verification failed. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    }
+  }
+
   return (
-    <div className={styles.container}>
-      <div className={styles.signupBox}>
-        <div className={styles.header}>
-          <h1>Register as College Admin</h1>
-          <p>Create your account to manage admissions</p>
-        </div>
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#FFF7ED', padding: '2rem' }}>
+      <Card style={{ width: '100%', maxWidth: '500px' }}>
+        <CardHeader>
+          <CardTitle style={{ textAlign: 'center', fontSize: '1.5rem', color: '#9A3412' }}>Institute Registration</CardTitle>
+          <p style={{ textAlign: 'center', color: 'var(--muted-foreground)', fontSize: '0.875rem' }}>Partner with Sharkedutech to manage admissions</p>
+        </CardHeader>
 
-        <form onSubmit={handleSubmit} className={styles.form}>
-          {error && (
-            <div className={styles.error}>
-              {error}
-            </div>
-          )}
+        {step === 'form' ? (
+          <CardContent>
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              {error && <div style={{ padding: '0.75rem', backgroundColor: '#FEE2E2', color: '#DC2626', borderRadius: 'var(--radius)', fontSize: '0.875rem' }}>{error}</div>}
 
-          <div className={styles.inputGroup}>
-            <label htmlFor="name">Full Name</label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="Enter your full name"
-              required
-            />
-          </div>
+              <div>
+                <label htmlFor="name" style={labelStyle}>Administrator Full Name</label>
+                <input
+                  name="name"
+                  id="name"
+                  required
+                  placeholder="Prof. John Smith"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  style={inputStyle}
+                />
+              </div>
 
-          <div className={styles.inputGroup}>
-            <label htmlFor="email">Email Address</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Enter your email"
-              required
-            />
-          </div>
+              <div>
+                <label htmlFor="email" style={labelStyle}>Official Email Address</label>
+                <input
+                  name="email"
+                  id="email"
+                  type="email"
+                  required
+                  placeholder="admissions@institute.edu"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  style={inputStyle}
+                />
+              </div>
 
-          <div className={styles.inputGroup}>
-            <label htmlFor="collegeName">College Name</label>
-            <input
-              type="text"
-              id="collegeName"
-              name="collegeName"
-              value={formData.collegeName}
-              onChange={handleChange}
-              placeholder="Enter college name"
-              required
-            />
-          </div>
+              <div>
+                <label htmlFor="collegeName" style={labelStyle}>Institute Name</label>
+                <input
+                  name="collegeName"
+                  id="collegeName"
+                  required
+                  placeholder="National Institute of Technology"
+                  value={formData.collegeName}
+                  onChange={(e) => setFormData({ ...formData, collegeName: e.target.value })}
+                  style={inputStyle}
+                />
+              </div>
 
-          <div className={styles.inputGroup}>
-            <label htmlFor="phone">Phone Number</label>
-            <input
-              type="tel"
-              id="phone"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              placeholder="Enter phone number"
-              required
-            />
-          </div>
+              <div>
+                <label htmlFor="phone" style={labelStyle}>Contact Number</label>
+                <input
+                  name="phone"
+                  id="phone"
+                  type="tel"
+                  required
+                  placeholder="+91 XXXXX XXXXX"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  style={inputStyle}
+                />
+              </div>
 
-          <div className={styles.inputGroup}>
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Create a password"
-              required
-            />
-          </div>
+              <div>
+                <label htmlFor="password" style={labelStyle}>Password</label>
+                <input
+                  name="password"
+                  id="password"
+                  type="password"
+                  required
+                  placeholder="••••••••"
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  style={inputStyle}
+                />
+              </div>
 
-          <div className={styles.inputGroup}>
-            <label htmlFor="confirmPassword">Confirm Password</label>
-            <input
-              type="password"
-              id="confirmPassword"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              placeholder="Confirm your password"
-              required
-            />
-          </div>
+              <Button type="submit" size="lg" disabled={loading} style={{ marginTop: '0.5rem', backgroundColor: '#9A3412' }}>
+                {loading ? 'Sending OTP...' : 'Register Institute'}
+              </Button>
 
-          <button 
-            type="submit" 
-            className={styles.submitButton}
-            disabled={loading}
-          >
-            {loading ? 'Creating Account...' : 'Create Account'}
-          </button>
-        </form>
+              <p style={{ textAlign: 'center', fontSize: '0.875rem', color: 'var(--muted-foreground)' }}>
+                Not a College Admin? <Link href="/auth/signup" style={{ color: 'var(--primary)', fontWeight: 600 }}>Student Registration</Link>
+              </p>
+            </form>
+          </CardContent>
+        ) : (
+          <CardContent>
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              {error && <div style={{ padding: '0.75rem', backgroundColor: '#FEE2E2', color: '#DC2626', borderRadius: 'var(--radius)', fontSize: '0.875rem' }}>{error}</div>}
 
-        <div className={styles.footer}>
-          <p>Already have an account? <a href="/admissions/auth/signin">Sign In</a></p>
-        </div>
-      </div>
+              <div>
+                <p style={{ textAlign: 'center', fontSize: '0.875rem', color: 'var(--muted-foreground)', marginBottom: '1rem' }}>
+                  A verification code has been sent to <strong>{formData.email}</strong>
+                </p>
+                <OTPInput
+                  value={otp}
+                  onChange={setOtp}
+                  disabled={loading}
+                  error={error || undefined}
+                />
+              </div>
+
+              <Button type="submit" size="lg" disabled={loading || otp.length !== 6} style={{ marginTop: '0.5rem', backgroundColor: '#9A3412' }}>
+                {loading ? 'Verifying...' : 'Verify & Setup Dashboard'}
+              </Button>
+
+              <div style={{ textAlign: 'center' }}>
+                {resendCountdown > 0 ? (
+                  <p style={{ fontSize: '0.875rem', color: 'var(--muted-foreground)' }}>
+                    Resend OTP in {resendCountdown}s
+                  </p>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleResendOTP}
+                    style={{ fontSize: '0.875rem', color: '#9A3412', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}
+                  >
+                    Resend OTP
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => { setStep('form'); setOtp(""); setError(''); }}
+                  style={{ fontSize: '0.875rem', color: 'var(--muted-foreground)', background: 'none', border: 'none', cursor: 'pointer', marginLeft: '1rem' }}
+                >
+                  Back
+                </button>
+              </div>
+            </form>
+          </CardContent>
+        )}
+      </Card>
     </div>
   );
 }

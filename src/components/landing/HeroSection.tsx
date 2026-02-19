@@ -1,9 +1,13 @@
+"use client";
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import styles from './HeroSection.module.css';
+import { useSession } from "next-auth/react";
 
 export function HeroSection() {
+    const { data: session } = useSession();
     return (
         <section className={styles.hero}>
             <div className={styles.container}>
@@ -16,9 +20,11 @@ export function HeroSection() {
                         Join the elite platform connecting aspiring professionals with top-tier education and premium career opportunities in the global hospitality industry.
                     </p>
                     <div className={styles.actions}>
-                        <Link href="/admissions">
-                            <Button size="lg">Apply for Admission</Button>
-                        </Link>
+                        {(!session || (session?.user as any)?.role === 'CANDIDATE') && (
+                            <Link href="/admissions">
+                                <Button size="lg">Apply for Admission</Button>
+                            </Link>
+                        )}
                         <Link href="/jobs">
                             <Button size="lg" variant="outline">Explore Jobs</Button>
                         </Link>
