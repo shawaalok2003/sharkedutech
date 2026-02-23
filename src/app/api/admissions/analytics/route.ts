@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
@@ -10,6 +9,9 @@ export async function GET(request: Request) {
     if (!session) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    // Dynamic import to prevent build-time evaluation issues
+    const { prisma } = await import("@/lib/prisma");
 
     const { searchParams } = new URL(request.url);
     let collegeId = searchParams.get("collegeId") || undefined;
