@@ -19,11 +19,8 @@ function SignInContent() {
     const isEmployer = type === 'employer';
     const isAdmin = type === 'admin';
 
-    // Default to password login for Employer/Admin to skip selection
-    const [authStep, setAuthStep] = useState<AuthStep>(() => {
-        if (isEmployer || isAdmin) return 'password';
-        return 'method';
-    });
+    // Default to password login as per user request
+    const [authStep, setAuthStep] = useState<AuthStep>('password');
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -195,27 +192,7 @@ function SignInContent() {
                         </div>
                     )}
 
-                    {/* Step 1: Choose Method */}
-                    {authStep === 'method' && (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                            <p style={{ textAlign: 'center', color: 'var(--muted-foreground)', fontSize: '0.875rem' }}>
-                                Choose your login method
-                            </p>
-                            <Button
-                                onClick={() => handleMethodSelect('password')}
-                                style={{ height: '60px', fontSize: '1rem', fontWeight: 600 }}
-                            >
-                                Login with Password
-                            </Button>
-                            <Button
-                                variant="outline"
-                                onClick={() => handleMethodSelect('otp')}
-                                style={{ height: '60px', fontSize: '1rem', fontWeight: 600 }}
-                            >
-                                Login with OTP
-                            </Button>
-                        </div>
-                    )}
+                    {/* Method selection removed as per user request */}
 
                     {/* Step 2: Password Login */}
                     {authStep === 'password' && (
@@ -267,16 +244,6 @@ function SignInContent() {
                             <Button type="submit" className="w-full" disabled={loading || !email || !password}>
                                 {loading ? 'Logging in...' : 'Login'}
                             </Button>
-
-                            {showBackButton && (
-                                <button
-                                    type="button"
-                                    onClick={() => { setAuthStep('method'); setError(null); }}
-                                    style={{ fontSize: '0.875rem', color: 'var(--muted-foreground)', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}
-                                >
-                                    Back to methods
-                                </button>
-                            )}
                         </form>
                     )}
 
@@ -310,16 +277,6 @@ function SignInContent() {
                             <Button type="submit" className="w-full" disabled={loading || !email}>
                                 {loading ? 'Sending...' : 'Send OTP'}
                             </Button>
-
-                            {showBackButton && (
-                                <button
-                                    type="button"
-                                    onClick={() => { setAuthStep('method'); setError(null); }}
-                                    style={{ fontSize: '0.875rem', color: 'var(--muted-foreground)', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}
-                                >
-                                    Back to methods
-                                </button>
-                            )}
                         </form>
                     )}
 

@@ -23,9 +23,9 @@ export function HowItWorks() {
         <section className={styles.section}>
             <div className={styles.container}>
                 <div className={styles.header}>
-                    <h2 className={styles.title}>Your Pathway to Success</h2>
+                    <h2 className={styles.title}>Connecting Talent with Opportunity</h2>
                     <p className={styles.subtitle}>
-                        Sharkedutech streamlines your journey from a student to a hospitality professional in three simple connected steps.
+                        We help you connect with top organizers and luxury brands. Get paid easily and securely while showcase your professional skills.
                     </p>
                 </div>
 

@@ -63,6 +63,9 @@ export function Navbar() {
                     <Link href="/" className={`${styles.link} ${isActive('/')}`}>
                         Home
                     </Link>
+                    <Link href="/about" className={`${styles.link} ${isActive('/about')}`}>
+                        About Us
+                    </Link>
                     <Link href="/admissions" className={`${styles.link} ${isActive('/admissions')}`}>
                         Admissions
                     </Link>
@@ -119,6 +122,9 @@ export function Navbar() {
                     <nav className={styles.mobileNav}>
                         <Link href="/" className={`${styles.mobileLink} ${isActive('/')}`}>
                             Home
+                        </Link>
+                        <Link href="/about" className={`${styles.mobileLink} ${isActive('/about')}`}>
+                            About Us
                         </Link>
                         <Link href="/admissions" className={`${styles.mobileLink} ${isActive('/admissions')}`}>
                             Admissions

@@ -1,0 +1,180 @@
+.main {
+    min-height: 100vh;
+    background-color: #f8fafc;
+}
+
+.hero {
+    background-color: #007bff;
+    padding: 8rem 0 12rem;
+    position: relative;
+    overflow: hidden;
+    color: white;
+    text-align: center;
+}
+
+.hero::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    background: #f8fafc;
+    clip-path: ellipse(60% 100% at 50% 100%);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    position: relative;
+    z-index: 10;
+}
+
+.heroTitle {
+    font-size: 4rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.02em;
+}
+
+.heroSubtitle {
+    font-size: 1.5rem;
+    opacity: 0.9;
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+.section {
+    padding: 6rem 0;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.heading {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #0A192F;
+    margin-bottom: 1rem;
+}
+
+.text {
+    font-size: 1.125rem;
+    line-height: 1.8;
+    color: #475569;
+}
+
+.cardGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-top: 4rem;
+}
+
+.card {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 24px;
+    border: 1px solid rgba(0, 123, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 123, 255, 0.1);
+    border-color: #007bff;
+}
+
+.cardIcon {
+    width: 50px;
+    height: 50px;
+    background: rgba(0, 123, 255, 0.1);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: #007bff;
+}
+
+.cardTitle {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0A192F;
+    margin-bottom: 1rem;
+}
+
+.cardText {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #64748b;
+}
+
+.cta {
+    background-color: #0A192F;
+    padding: 6rem 0;
+    color: white;
+    text-align: center;
+    border-radius: 40px;
+    margin: 4rem 2rem;
+}
+
+.ctaTitle {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 2rem;
+}
+
+.ctaButton {
+    display: inline-block;
+    padding: 1rem 2.5rem;
+    background-color: #007bff;
+    color: white;
+    border-radius: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.ctaButton:hover {
+    background-color: #0056b3;
+}
+
+@media (max-width: 1024px) {
+    .heroTitle {
+        font-size: 3rem;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .heroTitle {
+        font-size: 2.5rem;
+    }
+
+    .heroSubtitle {
+        font-size: 1.25rem;
+    }
+
+    .ctaTitle {
+        font-size: 2rem;
+    }
+}

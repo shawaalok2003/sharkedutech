@@ -37,12 +37,6 @@ export default function JobsPage() {
     const [jobs, setJobs] = useState<Job[]>([]);
     const [loading, setLoading] = useState(true);
 
-    // Application Modal State
-    const [selectedJob, setSelectedJob] = useState<Job | null>(null);
-    const [resumeUrl, setResumeUrl] = useState('');
-    const [applying, setApplying] = useState(false);
-    const [showModal, setShowModal] = useState(false);
-    const [answers, setAnswers] = useState<Record<string, string>>({});
     const [appliedJobIds, setAppliedJobIds] = useState<Set<string>>(new Set());
 
     useEffect(() => {
@@ -71,60 +65,10 @@ export default function JobsPage() {
             }
         }
         fetchJobs();
-
-        // Pre-fill resume if available in session/profile
-        // For simplicity, we assume the user might paste it, or we fetch profile
-        if (session) {
-            fetch('/api/profile').then(res => res.json()).then(data => {
-                if (data.resumeUrl) setResumeUrl(data.resumeUrl);
-            }).catch(err => console.log(err));
-        }
     }, [session]);
 
-    const openApplyModal = (job: Job) => {
-        if (status === "loading") {
-            return;
-        }
-        if (!session) {
-            alert('Please login to apply');
-            router.push('/auth/signin?type=candidate');
-            return;
-        }
-        setSelectedJob(job);
-        setAnswers({});
-        setShowModal(true);
-    };
-
-    const handleApply = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!selectedJob) return;
-        setApplying(true);
-
-        try {
-            const res = await fetch('/api/applications', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    jobId: selectedJob.id,
-                    resumeUrl: resumeUrl,
-                    answers: JSON.stringify(answers)
-                })
-            });
-
-            if (res.ok) {
-                setAppliedJobIds(prev => new Set(prev).add(selectedJob.id));
-                setShowModal(false);
-                router.push(`/applications/success?job=${encodeURIComponent(selectedJob.title)}`);
-                setSelectedJob(null);
-            } else {
-                const data = await res.json();
-                alert(data.error || 'Failed to apply');
-            }
-        } catch (err) {
-            alert('Error applying');
-        } finally {
-            setApplying(false);
-        }
+    const handleApplyRedirect = (jobId: string) => {
+        router.push(`/jobs/apply/${jobId}`);
     };
 
     return (
@@ -693,85 +637,6 @@ export default function JobsPage() {
             `}</style>
 
             <div className={`page ${spaceGrotesk.className}`}>
-                {showModal && selectedJob && (
-                    <div className="modal-backdrop">
-                        <div className="modal-card">
-                            <div className="modal-header">
-                                <h2 className="modal-title">Apply for {selectedJob.title}</h2>
-                                <p className="modal-subtitle">
-                                    Complete your application for {selectedJob.employer?.name || "this company"}
-                                </p>
-                            </div>
-
-                            <form onSubmit={handleApply}>
-                                <div className="modal-section">
-                                    <label className="modal-label">Upload Resume (PDF)</label>
-                                    {resumeUrl ? (
-                                        <div className="job-row" style={{ justifyContent: "space-between" }}>
-                                            <div>
-                                                <div style={{ fontWeight: 700 }}>Resume attached</div>
-                                                <div style={{ color: "#64748b", fontSize: "0.85rem" }}>Ready to submit</div>
-                                            </div>
-                                            <button type="button" className="button-ghost" onClick={() => setResumeUrl("")}>Change</button>
-                                        </div>
-                                    ) : (
-                                        <div className="modal-upload">
-                                            <input
-                                                type="file"
-                                                accept="application/pdf"
-                                                required
-                                                onChange={async (e) => {
-                                                    const file = e.target.files?.[0];
-                                                    if (!file) return;
-                                                    const formData = new FormData();
-                                                    formData.append("file", file);
-                                                    const res = await fetch("/api/upload", { method: "POST", body: formData });
-                                                    if (res.ok) {
-                                                        const data = await res.json();
-                                                        setResumeUrl(data.url);
-                                                    }
-                                                }}
-                                            />
-                                        </div>
-                                    )}
-                                </div>
-
-                                {selectedJob.questions && (() => {
-                                    try {
-                                        const qs = JSON.parse(selectedJob.questions);
-                                        if (Array.isArray(qs) && qs.length > 0) {
-                                            return (
-                                                <div className="modal-section">
-                                                    <div style={{ fontWeight: 800, marginBottom: "1rem" }}>Screening Questions</div>
-                                                    {qs.map((q: string, i: number) => (
-                                                        <div key={i} style={{ marginBottom: "1rem" }}>
-                                                            <label className="modal-label">{i + 1}. {q}</label>
-                                                            <input
-                                                                required
-                                                                value={answers[q] || ""}
-                                                                onChange={e => setAnswers(prev => ({ ...prev, [q]: e.target.value }))}
-                                                                className="modal-input"
-                                                            />
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            );
-                                        }
-                                    } catch (e) {
-                                        return null;
-                                    }
-                                })()}
-
-                                <div className="modal-actions">
-                                    <button type="button" className="button-ghost" onClick={() => setShowModal(false)}>Cancel</button>
-                                    <button type="submit" className="button-primary" disabled={applying}>
-                                        {applying ? "Submitting..." : "Submit Application"}
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                )}
 
                 <section className="hero">
                     <div className="hero-pattern"></div>
@@ -875,7 +740,7 @@ export default function JobsPage() {
                                         {appliedJobIds.has(job.id) ? (
                                             <button className="job-action" disabled>Applied</button>
                                         ) : (
-                                            <button className="job-action" onClick={() => openApplyModal(job)}>
+                                            <button className="job-action" onClick={() => handleApplyRedirect(job.id)}>
                                                 View Details
                                             </button>
                                         )}

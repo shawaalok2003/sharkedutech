@@ -1,0 +1,109 @@
+.carouselSection {
+    padding: 6rem 0;
+    background: #f8fafc;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #0A192F;
+    margin-bottom: 3rem;
+    text-align: center;
+}
+
+.carousel {
+    display: flex;
+    overflow-x: auto;
+    gap: 2rem;
+    padding: 1rem 0;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.carousel::-webkit-scrollbar {
+    display: none;
+}
+
+.jobCard {
+    flex: 0 0 350px;
+    background: white;
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    border: 1px solid #eee;
+}
+
+.jobCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 123, 255, 0.1);
+    border-color: #007bff;
+}
+
+.companyLogo {
+    width: 60px;
+    height: 60px;
+    background: #f1f5f9;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.jobTitle {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0A192F;
+    margin-bottom: 0.5rem;
+}
+
+.companyName {
+    color: #64748b;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+}
+
+.tags {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.tag {
+    padding: 0.25rem 0.75rem;
+    background: #f1f5f9;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #475569;
+}
+
+.applyBtn {
+    width: 100%;
+    padding: 0.75rem;
+    background: #0A192F;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.applyBtn:hover {
+    background: #007bff;
+}
+
+@media (max-width: 768px) {
+    .jobCard {
+        flex: 0 0 300px;
+    }
+}

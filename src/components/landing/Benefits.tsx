@@ -5,9 +5,9 @@ import styles from './Benefits.module.css';
 
 const benefitsData = {
     students: [
-        { icon: "🚀", title: "Single Profile, Many Options", desc: "Create one profile and apply to multiple top-tier hospitality institutes seamlessly." },
-        { icon: "🛡️", title: "Verified Institutes", desc: "We only partner with accredited and recognized colleges ensuring quality education." },
-        { icon: "🤝", title: "Career Support", desc: "Get direct access to our job portal upon graduation with premium employer connections." }
+        { icon: "🎓", title: "100% Placement Assistance", desc: "We provide comprehensive job assistance and placement support to all our students during their tenure." },
+        { icon: "💎", title: "Free Premium Membership", desc: "Get free lifetime premium membership to our job portal, giving you first access to top hospitality roles." },
+        { icon: "🏥", title: "Free Health Insurance", desc: "Your well-being matters. We provide free student health insurance to ensure peace of mind while you study." }
     ],
     colleges: [
         { icon: "👥", title: "Quality Applicants", desc: "Receive applications from pre-screened, serious candidates passionate about hospitality." },

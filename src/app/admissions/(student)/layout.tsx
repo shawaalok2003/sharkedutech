@@ -2,13 +2,13 @@
 
 import { Sidebar } from "@/components/dashboard/Sidebar";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";
 
 const sidebarItems = [
-  { label: "Dashboard", href: "/admissions" },
+  { label: "Dashboard", href: "/admissions/dashboard" },
   { label: "My Profile", href: "/admissions/profile" },
-  { label: "College Search", href: "/admissions/colleges" },
+  { label: "Find Courses", href: "/admissions" },
   { label: "Applications", href: "/admissions/applications" },
   { label: "Documents", href: "/admissions/documents" },
 ];
@@ -20,9 +20,19 @@ export default function AdmissionsLayout({
 }) {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const pathname = usePathname();
+
+  // The main admissions page is public-ish (entry point)
+  const isMainPage = pathname === "/admissions";
 
   useEffect(() => {
     if (status === "loading") return;
+
+    // Redirect to login if accessing protected sub-routes without session
+    if (!session && !isMainPage) {
+      router.push("/auth/signin?callbackUrl=" + encodeURIComponent(pathname));
+      return;
+    }
 
     if (session?.user) {
       const role = (session.user as any).role;
@@ -33,10 +43,10 @@ export default function AdmissionsLayout({
       }
       // CANDIDATE is allowed here
     }
-  }, [session, status, router]);
+  }, [session, status, router, pathname, isMainPage]);
 
   if (status === "loading") {
-    return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>Loading...</div>;
+    return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#ffffff' }}>Loading...</div>;
   }
 
   return (
@@ -45,40 +55,34 @@ export default function AdmissionsLayout({
         .admissions-layout {
           display: flex;
           min-height: 100vh;
-          background-color: var(--background-secondary, #F9FAFB);
+          background-color: #ffffff;
         }
         
         .admissions-main {
           flex: 1;
-          margin-left: 280px;
-          padding: 2rem;
-          transition: margin-left 0.3s ease;
+          margin-left: ${isMainPage ? '0' : '280px'};
+          padding: ${isMainPage ? '0' : '2rem'};
+          transition: all 0.3s ease;
+          width: 100%;
         }
         
         @media (max-width: 1024px) {
           .admissions-main {
-            margin-left: 240px;
-            padding: 1.5rem;
+            margin-left: ${isMainPage ? '0' : '240px'};
+            padding: ${isMainPage ? '0' : '1.5rem'};
           }
         }
         
         @media (max-width: 768px) {
           .admissions-main {
             margin-left: 0;
-            padding: 1rem;
-            padding-bottom: 5rem;
-          }
-        }
-        
-        @media (max-width: 480px) {
-          .admissions-main {
-            padding: 0.75rem;
+            padding: ${isMainPage ? '0' : '1rem'};
             padding-bottom: 5rem;
           }
         }
       `}</style>
       <div className="admissions-layout">
-        <Sidebar items={sidebarItems} title="Admissions Portal" />
+        {!isMainPage && <Sidebar items={sidebarItems} title="Admissions Portal" />}
         <main className="admissions-main">
           {children}
         </main>

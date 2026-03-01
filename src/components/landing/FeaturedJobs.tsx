@@ -3,10 +3,10 @@ import { Button } from '@/components/ui/Button';
 import styles from './FeaturedJobs.module.css';
 
 const jobs = [
-    { role: "Guest Relations Executive", company: "Taj Hotels", location: "New Delhi", type: "Full-time" },
-    { role: "Sous Chef", company: "Marriott International", location: "Bangalore", type: "Full-time" },
-    { role: "Event Coordinator", company: "Hyatt Regency", location: "Mumbai", type: "Contract" },
-    { role: "Front Office Manager", company: "Oberoi Group", location: "Jaipur", type: "Full-time" }
+    { role: "Front Office Executive", company: "Marriott International", location: "Mumbai", type: "Full-time" },
+    { role: "F&B Service Associate", company: "Radisson Blu", location: "New Delhi", type: "Full-time" },
+    { role: "Housekeeping Supervisor", company: "Lemon Tree Hotels", location: "Bangalore", type: "Full-time" },
+    { role: "Guest Relations Associate", company: "Four Points by Sheraton", location: "Jaipur", type: "Full-time" }
 ];
 
 export function FeaturedJobs() {

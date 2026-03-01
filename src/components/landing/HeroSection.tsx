@@ -7,36 +7,66 @@ import styles from './HeroSection.module.css';
 import { useSession } from "next-auth/react";
 
 export function HeroSection() {
-    const { data: session } = useSession();
     return (
         <section className={styles.hero}>
             <div className={styles.container}>
                 <div className={styles.content}>
-                    <span className={styles.badge}>🚀 Launching Careers in Hospitality</span>
                     <h1 className={styles.title}>
-                        Master the Art of <span className={styles.highlight}>Hospitality</span> Management
+                        Its Easy to Find Your <span className={styles.highlight}>Dream Job</span>
                     </h1>
                     <p className={styles.description}>
-                        Join the elite platform connecting aspiring professionals with top-tier education and premium career opportunities in the global hospitality industry.
+                        Type your keyword, then click search to find your perfect job.
                     </p>
-                    <div className={styles.actions}>
-                        {(!session || (session?.user as any)?.role === 'CANDIDATE') && (
-                            <Link href="/admissions">
-                                <Button size="lg">Apply for Admission</Button>
-                            </Link>
-                        )}
-                        <Link href="/jobs">
-                            <Button size="lg" variant="outline">Explore Jobs</Button>
-                        </Link>
+
+                    <div className={styles.searchBox}>
+                        <input
+                            type="text"
+                            className={styles.searchInput}
+                            placeholder="Enter Skills or job title"
+                        />
+                        <select className={styles.searchSelect}>
+                            <option>Select Functional Area</option>
+                            <option>House Keeping</option>
+                            <option>Production</option>
+                            <option>Service</option>
+                            <option>Front Office</option>
+                        </select>
+                        <button className={styles.searchButton}>
+                            🔍
+                        </button>
+                    </div>
+
+                    <div className={styles.statsText}>
+                        Popular Industries:
+                        <br />
+                        <span style={{ fontSize: '1.5rem' }}>5556+ JOBS AVAILABLE</span>
                     </div>
                 </div>
 
                 <div className={styles.imageWrapper}>
+                    <div className={`${styles.bubble} ${styles.bubble1}`}>
+                        <div className={styles.bubbleIcon}>🏢</div>
+                        Job Portal
+                    </div>
+                    <div className={`${styles.bubble} ${styles.bubble2}`}>
+                        <div className={styles.bubbleIcon}>🎓</div>
+                        Admission Portal
+                    </div>
+                    <div className={`${styles.bubble} ${styles.bubble3}`}>
+                        <div className={styles.bubbleIcon}>🌍</div>
+                        Man Power
+                    </div>
+                    <div className={`${styles.bubble} ${styles.bubble4}`}>
+                        <div className={styles.bubbleIcon}>🚀</div>
+                        Training & Placement
+                    </div>
+
                     <Image
-                        src="/images/hero.png"
-                        alt="Hospitality Professionals in a Luxury Hotel Lobby"
-                        fill
-                        className={styles.image}
+                        src="/images/hero-new.png"
+                        alt="Hospitality Education and Jobs"
+                        width={600}
+                        height={600}
+                        className={styles.mainImg}
                         priority
                     />
                 </div>
