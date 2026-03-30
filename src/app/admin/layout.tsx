@@ -4,8 +4,11 @@ import { Sidebar } from "@/components/dashboard/Sidebar";
 
 const adminSidebarItems = [
     { label: "Overview", href: "/admin" },
-    { label: "Manage Jobs", href: "/admin/jobs" },
     { label: "Manage Users", href: "/admin/users" },
+    { label: "Manage Jobs", href: "/admin/jobs" },
+    { label: "Job Applications", href: "/admin/applications" },
+    { label: "Manage Colleges & Courses", href: "/admin/colleges" },
+    { label: "Manage Admissions", href: "/admin/admissions" },
     { label: "Settings", href: "/admin/settings" },
 ];
 

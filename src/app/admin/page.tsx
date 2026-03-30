@@ -5,6 +5,9 @@ export default async function AdminDashboard() {
     const userCount = await prisma.user.count();
     const jobCount = await prisma.job.count();
     const applicationCount = await prisma.application.count();
+    const collegeCount = await prisma.college.count();
+    const courseCount = await prisma.course.count();
+    const admissionCount = await prisma.admissionApplication.count();
 
     return (
         <div>
@@ -32,10 +35,34 @@ export default async function AdminDashboard() {
                 </Card>
                 <Card>
                     <CardHeader>
-                        <CardTitle>Total Applications</CardTitle>
+                        <CardTitle>Job Applications</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--success)' }}>{applicationCount}</div>
+                        <div style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--success, #22c55e)' }}>{applicationCount}</div>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Total Colleges</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--accent, #6366f1)' }}>{collegeCount}</div>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Total Courses</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--warning, #f59e0b)' }}>{courseCount}</div>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Admissions</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--info, #3b82f6)' }}>{admissionCount}</div>
                     </CardContent>
                 </Card>
             </div>

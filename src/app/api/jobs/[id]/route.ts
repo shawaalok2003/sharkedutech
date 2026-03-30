@@ -5,11 +5,12 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(
     request: Request,
-    { params }: { params: { id: string } }
+    context: { params: Promise<{ id: string }> } // or { params: { id: string } } depending on precise types, but Promise is safe. Let's just use generic.
 ) {
     try {
+        const { id } = await context.params;
         const job = await prisma.job.findUnique({
-            where: { id: params.id },
+            where: { id },
             include: {
                 employer: {
                     select: { name: true, email: true }
