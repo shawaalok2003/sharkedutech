@@ -22,6 +22,9 @@ export async function POST(request: Request) {
         if (existingUser) {
             // If user exists and has a password, they are truly already registered
             if (existingUser.password) {
+                if (existingUser.role !== role) {
+                    return NextResponse.json({ error: `This email is already linked to a ${existingUser.role.toLowerCase()} account. You cannot use it for a ${role.toLowerCase()} account.` }, { status: 400 });
+                }
                 return NextResponse.json({ error: 'User already exists' }, { status: 400 });
             }
 

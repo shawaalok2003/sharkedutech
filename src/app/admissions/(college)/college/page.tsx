@@ -3,6 +3,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 type Stats = {
     totalApplications: number;
@@ -20,6 +22,7 @@ type AdmissionApp = {
 };
 
 export default function CollegeAdminPage() {
+    const router = useRouter();
     const [stats, setStats] = useState<Stats>({ totalApplications: 0, pending: 0, shortlisted: 0, accepted: 0 });
     const [apps, setApps] = useState<AdmissionApp[]>([]);
 
@@ -45,10 +48,13 @@ export default function CollegeAdminPage() {
         <div>
             <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
-                    <h1 style={{ fontSize: '1.875rem', fontWeight: 700, color: 'var(--primary)' }}>Institute Dashboard</h1>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <h1 style={{ fontSize: '1.875rem', fontWeight: 700, color: 'var(--primary)' }}>Institute Dashboard</h1>
+                        <Link href="/" style={{ color: 'var(--primary)', fontSize: '0.875rem', textDecoration: 'underline' }}>View Website</Link>
+                    </div>
                     <p style={{ color: 'var(--muted-foreground)' }}>Overview of applications and course performance.</p>
                 </div>
-                <Button>+ Add New Course</Button>
+                <Button onClick={() => router.push('/admissions/college/courses')}>+ Add New Course</Button>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1.5rem', marginBottom: '2rem' }}>

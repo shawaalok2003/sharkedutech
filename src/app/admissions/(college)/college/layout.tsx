@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 const collegeSidebarItems = [
+    { label: "Home", href: "/" },
     { label: "Dashboard", href: "/admissions/college" },
     { label: "Manage Courses", href: "/admissions/college/courses" },
     { label: "Applications", href: "/admissions/college/applications" },

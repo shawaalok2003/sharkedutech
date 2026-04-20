@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import styles from './Footer.module.css';
 
 export function Footer() {
@@ -7,7 +8,9 @@ export function Footer() {
             <div className={styles.container}>
                 <div className={styles.grid}>
                     <div>
-                        <div className={styles.brand}>Sharkedutech</div>
+                        <div className={styles.brand} style={{ marginBottom: '1rem' }}>
+                            <Image src="/images/shark_edu_tech_logo-removebg-preview.png" alt="Sharkedutech Logo" width={150} height={40} style={{ objectFit: 'contain' }} />
+                        </div>
                         <p className={styles.description}>
                             The leading integrated platform for hospitality education and career advancement. Connecting talent with opportunity globally.
                         </p>
@@ -21,10 +24,10 @@ export function Footer() {
                     <div>
                         <h4 className={styles.heading}>Platform</h4>
                         <div className={styles.links}>
-                            <Link href="/admissions" className={styles.link}>Admissions</Link>
+                            <Link href="/admissions" className={styles.link}>Admissions Portal</Link>
                             <Link href="/jobs" className={styles.link}>Job Portal</Link>
-                            <Link href="/colleges" className={styles.link}>For Colleges</Link>
-                            <Link href="/employers" className={styles.link}>For Employers</Link>
+                            <Link href="/admissions/auth/signup" className={styles.link}>List Your College</Link>
+                            <Link href="/auth/signup/employer" className={styles.link}>Post a Job</Link>
                         </div>
                     </div>
 

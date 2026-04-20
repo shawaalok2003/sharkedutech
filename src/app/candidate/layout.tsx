@@ -4,9 +4,12 @@ import { Sidebar } from "@/components/dashboard/Sidebar";
 
 const candidateSidebarItems = [
     { label: "Dashboard", href: "/candidate/dashboard" },
+    { label: "My Profile", href: "/admissions/profile" },
     { label: "Browse Jobs", href: "/jobs" },
-    { label: "My Applications", href: "/candidate/dashboard#applications" },
-    { label: "Profile", href: "/candidate/dashboard#profile" },
+    { label: "Find Courses", href: "/admissions" },
+    { label: "Job Apps", href: "/candidate/applications" },
+    { label: "College Apps", href: "/admissions/applications" },
+    { label: "Documents", href: "/admissions/documents" },
 ];
 
 export default function CandidateLayout({
@@ -53,7 +56,7 @@ export default function CandidateLayout({
                 }
             `}</style>
             <div className="candidate-layout">
-                <Sidebar items={candidateSidebarItems} title="Candidate Portal" />
+                <Sidebar items={candidateSidebarItems} title="Student Portal" />
                 <main className="candidate-main">
                     {children}
                 </main>

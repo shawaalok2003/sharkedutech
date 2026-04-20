@@ -8,10 +8,10 @@ let transporter: nodemailer.Transporter | null = null;
 
 if (emailUser && emailPassword) {
     transporter = nodemailer.createTransport({
-        service: 'gmail', // or 'smtp.gmail.com'
+        service: 'gmail',
         auth: {
             user: emailUser,
-            pass: emailPassword,
+            pass: emailPassword.replace(/\s/g, ''),
         },
     });
 }
@@ -23,7 +23,7 @@ export async function sendEmailOTP(email: string, code: string): Promise<boolean
     }
 
     try {
-        await transporter.sendMail({
+        const result = await transporter.sendMail({
             from: emailFrom,
             to: email,
             subject: 'Your Sharkedutech Verification Code',
@@ -32,41 +32,44 @@ export async function sendEmailOTP(email: string, code: string): Promise<boolean
                 <html>
                 <head>
                     <style>
-                        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-                        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                        .header { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-                        .content { background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }
-                        .otp-box { background: white; border: 2px solid #3b82f6; border-radius: 8px; padding: 20px; text-align: center; margin: 20px 0; }
-                        .otp-code { font-size: 32px; font-weight: bold; letter-spacing: 8px; color: #1e3a8a; }
-                        .footer { text-align: center; margin-top: 20px; font-size: 12px; color: #6b7280; }
+                        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #1e293b; margin: 0; padding: 0; }
+                        .wrapper { background-color: #f8fafc; padding: 40px 20px; }
+                        .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+                        .header { background: #0f172a; padding: 40px; text-align: center; }
+                        .logo-text { color: #fbbf24; font-size: 24px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; }
+                        .content { padding: 40px; }
+                        .otp-box { background: #f1f5f9; border-radius: 12px; padding: 24px; text-align: center; margin: 24px 0; border: 1px dashed #cbd5e1; }
+                        .otp-code { font-size: 36px; font-weight: 800; letter-spacing: 12px; color: #0f172a; }
+                        .footer { text-align: center; padding: 20px; font-size: 12px; color: #64748b; background: #f8fafc; border-top: 1px solid #e2e8f0; }
                     </style>
                 </head>
                 <body>
-                    <div class="container">
-                        <div class="header">
-                            <h1>Sharkedutech</h1>
-                            <p>Verification Code</p>
-                        </div>
-                        <div class="content">
-                            <p>Hello,</p>
-                            <p>Your verification code is:</p>
-                            <div class="otp-box">
-                                <div class="otp-code">${code}</div>
+                    <div class="wrapper">
+                        <div class="container">
+                            <div class="header">
+                                <div class="logo-text">SHARKEDUTECH</div>
                             </div>
-                            <p><strong>This code will expire in 5 minutes.</strong></p>
-                            <p>If you didn't request this code, please ignore this email.</p>
+                            <div class="content">
+                                <h2 style="margin-top: 0; color: #0f172a;">Verify your email</h2>
+                                <p>Hi there,</p>
+                                <p>Thank you for choosing Sharkedutech. Use the following code to complete your verification process:</p>
+                                <div class="otp-box">
+                                    <div class="otp-code">${code}</div>
+                                </div>
+                                <p style="font-weight: 600; color: #ef4444;">This code is valid for 5 minutes.</p>
+                                <p>If you didn't request this, please ignore this email or contact support.</p>
+                            </div>
                             <div class="footer">
                                 <p>© 2026 Sharkedutech. All rights reserved.</p>
-                                <p>This is an automated email, please do not reply.</p>
                             </div>
                         </div>
                     </div>
                 </body>
                 </html>
             `,
-            text: `Your Sharkedutech verification code is: ${code}\n\nThis code will expire in 5 minutes.\n\nIf you didn't request this code, please ignore this email.`,
+            text: `Your Sharkedutech verification code is: ${code}`,
         });
-        console.log(`✅ Email OTP sent to ${email}`);
+        console.log(`✅ Email OTP sent to ${email} (MessageID: ${result.messageId})`);
         return true;
     } catch (error) {
         console.error('❌ Email sending error:', error);

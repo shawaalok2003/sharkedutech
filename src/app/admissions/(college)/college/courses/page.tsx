@@ -3,6 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 type Course = {
     id: string;
@@ -246,8 +247,24 @@ export default function CoursesPage() {
                         <h1 className="page-title">Manage Courses</h1>
                         <p className="page-subtitle">Add or update your institute's course offerings.</p>
                     </div>
-                    <Button onClick={createCourse} disabled={creating || !title}>+ Add New Course</Button>
+                    {colleges.length > 0 && (
+                        <Button onClick={createCourse} disabled={creating || !title}>+ Add New Course</Button>
+                    )}
                 </div>
+
+                {!loading && colleges.length === 0 && (
+                    <Card style={{ border: '2px dashed var(--warning)', backgroundColor: 'rgba(251, 191, 36, 0.05)' }}>
+                        <CardContent style={{ padding: '2rem', textAlign: 'center' }}>
+                            <h2 style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--warning)', marginBottom: '0.5rem' }}>Institutional Profile Missing</h2>
+                            <p style={{ color: 'var(--muted-foreground)', marginBottom: '1.5rem' }}>
+                                You must set up your Institute Profile before you can manage courses.
+                            </p>
+                            <Link href="/admissions/college/profile">
+                                <Button variant="primary">Create Institute Profile</Button>
+                            </Link>
+                        </CardContent>
+                    </Card>
+                )}
 
                 <div className="courses-grid">
                     {loading ? (
@@ -283,43 +300,51 @@ export default function CoursesPage() {
                     ))}
                 </div>
 
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Create Course</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="create-form-grid">
-                            <select value={selectedCollegeId} onChange={(e) => setSelectedCollegeId(e.target.value)} className="form-input">
-                                <option value="">Select College</option>
-                                {colleges.map(college => (
-                                    <option key={college.id} value={college.id}>{college.name}</option>
-                                ))}
-                            </select>
-                            <input placeholder="Course title" value={title} onChange={(e) => setTitle(e.target.value)} className="form-input" />
-                            <input placeholder="Course code" value={code} onChange={(e) => setCode(e.target.value)} className="form-input" />
-                            <input placeholder="Level (UG/PG/Diploma)" value={level} onChange={(e) => setLevel(e.target.value)} className="form-input" />
-                            <input placeholder="Duration" value={duration} onChange={(e) => setDuration(e.target.value)} className="form-input" />
-                            <input type="number" placeholder="Seats" value={seats} onChange={(e) => setSeats(Number(e.target.value))} className="form-input" />
-                            <input type="number" placeholder="Fee" value={fee} onChange={(e) => setFee(Number(e.target.value))} className="form-input" />
-                            <input placeholder="Mode (Full-time/Part-time)" value={mode} onChange={(e) => setMode(e.target.value)} className="form-input" />
-                            <input placeholder="Intake Month" value={intakeMonth} onChange={(e) => setIntakeMonth(e.target.value)} className="form-input" />
-                            <input placeholder="Application Deadline" value={applicationDeadline} onChange={(e) => setApplicationDeadline(e.target.value)} className="form-input" />
-                            <input placeholder="Syllabus URL" value={syllabusUrl} onChange={(e) => setSyllabusUrl(e.target.value)} className="form-input" />
-                            <input placeholder="Eligibility" value={eligibility} onChange={(e) => setEligibility(e.target.value)} className="form-input" />
-                            <input placeholder="Admission Criteria" value={admissionCriteria} onChange={(e) => setAdmissionCriteria(e.target.value)} className="form-input" />
-                            <textarea placeholder="Course description" value={description} onChange={(e) => setDescription(e.target.value)} className={`form-input ${' form-full'}`} />
-                            <textarea placeholder="Fees breakup" value={feesBreakup} onChange={(e) => setFeesBreakup(e.target.value)} className={`form-input ${' form-full'}`} />
-                            <label className="checkbox-label">
-                                <input type="checkbox" checked={scholarshipAvailable} onChange={(e) => setScholarshipAvailable(e.target.checked)} />
-                                Scholarship Available
-                            </label>
-                            <label className="checkbox-label">
-                                <input type="checkbox" checked={placementSupport} onChange={(e) => setPlacementSupport(e.target.checked)} />
-                                Placement Support
-                            </label>
-                        </div>
-                    </CardContent>
-                </Card>
+                {colleges.length > 0 && (
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Create Course</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="create-form-grid">
+                                {colleges.length > 1 ? (
+                                    <select value={selectedCollegeId} onChange={(e) => setSelectedCollegeId(e.target.value)} className="form-input">
+                                        <option value="">Select College</option>
+                                        {colleges.map(college => (
+                                            <option key={college.id} value={college.id}>{college.name}</option>
+                                        ))}
+                                    </select>
+                                ) : (
+                                    <div className="form-input" style={{ backgroundColor: '#F3F4F6', color: '#6B7280', display: 'flex', alignItems: 'center' }}>
+                                        Institution: {colleges[0]?.name}
+                                    </div>
+                                )}
+                                <input placeholder="Course title" value={title} onChange={(e) => setTitle(e.target.value)} className="form-input" />
+                                <input placeholder="Course code" value={code} onChange={(e) => setCode(e.target.value)} className="form-input" />
+                                <input placeholder="Level (UG/PG/Diploma)" value={level} onChange={(e) => setLevel(e.target.value)} className="form-input" />
+                                <input placeholder="Duration" value={duration} onChange={(e) => setDuration(e.target.value)} className="form-input" />
+                                <input type="number" placeholder="Seats" value={seats} onChange={(e) => setSeats(Number(e.target.value))} className="form-input" />
+                                <input type="number" placeholder="Fee" value={fee} onChange={(e) => setFee(Number(e.target.value))} className="form-input" />
+                                <input placeholder="Mode (Full-time/Part-time)" value={mode} onChange={(e) => setMode(e.target.value)} className="form-input" />
+                                <input placeholder="Intake Month" value={intakeMonth} onChange={(e) => setIntakeMonth(e.target.value)} className="form-input" />
+                                <input placeholder="Application Deadline" value={applicationDeadline} onChange={(e) => setApplicationDeadline(e.target.value)} className="form-input" />
+                                <input placeholder="Syllabus URL" value={syllabusUrl} onChange={(e) => setSyllabusUrl(e.target.value)} className="form-input" />
+                                <input placeholder="Eligibility" value={eligibility} onChange={(e) => setEligibility(e.target.value)} className="form-input" />
+                                <input placeholder="Admission Criteria" value={admissionCriteria} onChange={(e) => setAdmissionCriteria(e.target.value)} className="form-input" />
+                                <textarea placeholder="Course description" value={description} onChange={(e) => setDescription(e.target.value)} className={`form-input ${' form-full'}`} />
+                                <textarea placeholder="Fees breakup" value={feesBreakup} onChange={(e) => setFeesBreakup(e.target.value)} className={`form-input ${' form-full'}`} />
+                                <label className="checkbox-label">
+                                    <input type="checkbox" checked={scholarshipAvailable} onChange={(e) => setScholarshipAvailable(e.target.checked)} />
+                                    Scholarship Available
+                                </label>
+                                <label className="checkbox-label">
+                                    <input type="checkbox" checked={placementSupport} onChange={(e) => setPlacementSupport(e.target.checked)} />
+                                    Placement Support
+                                </label>
+                            </div>
+                        </CardContent>
+                    </Card>
+                )}
             </div>
         </>
     );

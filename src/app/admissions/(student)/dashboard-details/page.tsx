@@ -430,7 +430,7 @@ export default function DashboardDetailsPage() {
                                                         </div>
                                                         <button
                                                             className="btn-apply"
-                                                            onClick={() => router.push(`/admissions/apply/${course.id}`)}
+                                                            onClick={() => router.push(`/admissions/colleges/${college.id}#apply`)}
                                                         >
                                                             Apply Now
                                                         </button>

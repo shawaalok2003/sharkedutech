@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/Card";
 import OTPInput from "@/components/auth/OTPInput";
-import { signIn } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
 
 type AuthStep = 'method' | 'password' | 'otp-email' | 'otp-verify';
 
@@ -30,7 +30,7 @@ function SignInContent() {
     const [loading, setLoading] = useState(false);
 
     // Dynamic Title
-    const title = isCandidate ? "Candidate Login" : isEmployer ? "Employer Login" : isAdmin ? "Admin Login" : "Login";
+    const title = isCandidate ? "Candidate Login" : isEmployer ? "Employer Login" : isAdmin ? "Admin & Institution Login" : "Login";
     const showBackButton = isCandidate;
 
     // Step 1: Choose authentication method
@@ -61,14 +61,33 @@ function SignInContent() {
             // Get updated session
             const response = await fetch('/api/auth/session');
             const session = await response.json();
+            const userRole = session?.user?.role;
+
+            // Enforce role-based portal access
+            if (userRole) {
+                const expectedRole = type === 'candidate' ? 'CANDIDATE' : type === 'employer' ? 'EMPLOYER' : type === 'admin' ? 'ADMIN' : null;
+                
+                // Allow both ADMIN and COLLEGE roles to use the Admin portal
+                const isInstitutionalLogin = type === 'admin' && (userRole === 'ADMIN' || userRole === 'COLLEGE');
+                const isCorrectPortal = (expectedRole && userRole === expectedRole) || isInstitutionalLogin;
+
+                if (expectedRole && !isCorrectPortal) {
+                    await signOut({ redirect: false });
+                    setError(`This email is registered as a ${userRole.toLowerCase()}. Please log in from the correct portal.`);
+                    setLoading(false);
+                    return;
+                }
+            }
 
             // Redirect based on role
-            if (session?.user?.role === 'ADMIN') {
+            if (userRole === 'ADMIN') {
                 router.push("/admin");
-            } else if (session?.user?.role === 'EMPLOYER') {
+            } else if (userRole === 'COLLEGE') {
+                router.push("/admissions/college");
+            } else if (userRole === 'EMPLOYER') {
                 router.push("/jobs/employer");
             } else {
-                router.push("/jobs");
+                router.push("/candidate/dashboard");
             }
             router.refresh();
         } catch (err) {
@@ -148,10 +167,12 @@ function SignInContent() {
             const role = userData.role;
             if (role === 'ADMIN') {
                 router.push("/admin");
+            } else if (role === 'COLLEGE') {
+                router.push("/admissions/college");
             } else if (role === 'EMPLOYER') {
                 router.push("/jobs/employer");
             } else {
-                router.push("/jobs");
+                router.push("/candidate/dashboard");
             }
             router.refresh();
         } catch (err) {
@@ -322,11 +343,19 @@ function SignInContent() {
                         </form>
                     )}
                 </CardContent>
-                <CardFooter style={{ display: 'flex', justifyContent: 'center', borderTop: '1px solid var(--border)', padding: '1rem' }}>
-                    <p style={{ fontSize: '0.875rem', color: 'var(--muted-foreground)' }}>
-                        Don't have an account? <Link href="/auth/signup" style={{ color: 'var(--primary)', fontWeight: 600 }}>Sign Up</Link>
-                    </p>
-                </CardFooter>
+                {!isAdmin && (
+                    <CardFooter style={{ display: 'flex', justifyContent: 'center', borderTop: '1px solid var(--border)', padding: '1rem' }}>
+                        <p style={{ fontSize: '0.875rem', color: 'var(--muted-foreground)' }}>
+                            Don't have an account?{' '}
+                            <Link 
+                                href={isEmployer ? "/auth/signup/employer" : "/auth/signup"} 
+                                style={{ color: 'var(--primary)', fontWeight: 600 }}
+                            >
+                                Sign Up
+                            </Link>
+                        </p>
+                    </CardFooter>
+                )}
             </Card>
         </div>
     );

@@ -408,7 +408,7 @@ export default function AdmissionsCourseListingPage() {
                                                 </div>
                                                 <button
                                                     className="job-action"
-                                                    onClick={() => router.push(`/admissions/apply/${course.id}`)}
+                                                    onClick={() => router.push(`/admissions/colleges/${college?.id}#apply`)}
                                                 >
                                                     Apply with One Click
                                                 </button>

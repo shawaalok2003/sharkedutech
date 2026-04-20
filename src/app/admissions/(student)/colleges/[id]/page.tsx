@@ -124,13 +124,40 @@ export default function CollegeDetailPage() {
         }
         .photos-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-          gap: 0.75rem;
+          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+          gap: 1rem;
+        }
+        .photo-card {
+          border-radius: var(--radius);
+          overflow: hidden;
+          border: 1px solid var(--border);
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+          aspect-ratio: 16/9;
+          position: relative;
+        }
+        .photo-card:hover {
+          transform: translateY(-4px);
+          box-shadow: var(--shadow-lg);
         }
         .docs-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-          gap: 0.75rem;
+          grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+          gap: 1rem;
+        }
+        .doc-item {
+          padding: 1.25rem;
+          border-radius: var(--radius);
+          border: 1px solid var(--border);
+          background: white;
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+          position: relative;
+        }
+        .doc-item::before {
+          content: "📄";
+          font-size: 1.25rem;
+          margin-bottom: 0.25rem;
         }
         .courses-grid {
           display: grid;
@@ -195,9 +222,16 @@ export default function CollegeDetailPage() {
       `}</style>
       <div className="detail-container">
         <div className="detail-header">
-          <div>
-            <h1 className="college-title">{college.name}</h1>
-            <p style={{ color: 'var(--muted-foreground)', margin: 0 }}>📍 {college.location} • Est. {college.establishedYear || '—'}</p>
+          <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'center' }}>
+            {college.logoUrl && (
+              <div style={{ width: '80px', height: '80px', borderRadius: '12px', border: '1px solid var(--border)', overflow: 'hidden', flexShrink: 0, background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <img src={college.logoUrl} alt="Logo" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+              </div>
+            )}
+            <div>
+              <h1 className="college-title">{college.name}</h1>
+              <p style={{ color: 'var(--muted-foreground)', margin: 0 }}>📍 {college.location} • Est. {college.establishedYear || '—'}</p>
+            </div>
           </div>
           <Link href="/admissions/colleges">
             <Button variant="outline" size="sm">← Back</Button>
@@ -245,8 +279,8 @@ export default function CollegeDetailPage() {
           <CardContent>
             <div className="photos-grid">
               {college.photos.map((photo: any) => (
-                <div key={photo.id} style={{ borderRadius: 'var(--radius)', overflow: 'hidden', border: '1px solid var(--border)' }}>
-                  <img src={photo.url} alt="Campus" style={{ width: '100%', height: '100px', objectFit: 'cover' }} />
+                <div key={photo.id} className="photo-card">
+                  <img src={photo.url} alt="Campus" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
               ))}
             </div>
@@ -272,15 +306,15 @@ export default function CollegeDetailPage() {
           <CardContent>
             <div className="docs-grid">
               {college.requirements.map((req: any) => (
-                <div key={req.id} style={{ padding: '0.75rem', borderRadius: 'var(--radius)', border: '1px solid var(--border)', background: 'var(--muted)' }}>
+                <div key={req.id} className="doc-item">
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <strong style={{ fontSize: '0.875rem' }}>{req.name}</strong>
-                    <span style={{ fontSize: '0.7rem', padding: '0.2rem 0.5rem', borderRadius: '1rem', background: req.required ? 'var(--success-light)' : 'var(--muted)', color: req.required ? 'var(--success)' : 'var(--muted-foreground)' }}>
+                    <strong style={{ fontSize: '1rem', color: 'var(--primary)' }}>{req.name}</strong>
+                    <span style={{ fontSize: '0.7rem', padding: '0.2rem 0.5rem', borderRadius: '1rem', background: req.required ? 'rgba(5, 150, 105, 0.1)' : 'var(--muted)', color: req.required ? '#059669' : 'var(--muted-foreground)' }}>
                       {req.required ? 'Required' : 'Optional'}
                     </span>
                   </div>
                   {req.description && (
-                    <p style={{ margin: '0.25rem 0 0', fontSize: '0.75rem', color: 'var(--muted-foreground)' }}>{req.description}</p>
+                    <p style={{ margin: '0.5rem 0 0', fontSize: '0.8rem', color: 'var(--muted-foreground)', lineHeight: 1.4 }}>{req.description}</p>
                   )}
                 </div>
               ))}

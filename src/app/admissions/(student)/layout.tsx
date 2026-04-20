@@ -6,10 +6,12 @@ import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";
 
 const sidebarItems = [
-  { label: "Dashboard", href: "/admissions/dashboard" },
+  { label: "Dashboard", href: "/candidate/dashboard" },
   { label: "My Profile", href: "/admissions/profile" },
+  { label: "Browse Jobs", href: "/jobs" },
   { label: "Find Courses", href: "/admissions" },
-  { label: "Applications", href: "/admissions/applications" },
+  { label: "Job Apps", href: "/candidate/applications" },
+  { label: "College Apps", href: "/admissions/applications" },
   { label: "Documents", href: "/admissions/documents" },
 ];
 
@@ -82,7 +84,7 @@ export default function AdmissionsLayout({
         }
       `}</style>
       <div className="admissions-layout">
-        {!isMainPage && <Sidebar items={sidebarItems} title="Admissions Portal" />}
+        {!isMainPage && <Sidebar items={sidebarItems} title="Student Portal" />}
         <main className="admissions-main">
           {children}
         </main>

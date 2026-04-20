@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
+import Image from 'next/image';
 import styles from './Navbar.module.css';
 import { useState, useEffect } from 'react';
 
@@ -20,6 +21,7 @@ export function Navbar() {
         const role = (session.user as any).role; // Type assertion if needed, or rely on d.ts
         if (role === 'ADMIN') return '/admin';
         if (role === 'EMPLOYER') return '/jobs/employer';
+        if (role === 'COLLEGE') return '/admissions/college';
         return '/candidate/dashboard';
     };
 
@@ -43,8 +45,8 @@ export function Navbar() {
     return (
         <header className={styles.header}>
             <div className={styles.navContainer}>
-                <Link href="/" className={styles.logo}>
-                    Sharkedutech
+                <Link href="/" className={styles.logo} style={{ display: 'flex', alignItems: 'center' }}>
+                    <Image src="/images/shark_edu_tech_logo-removebg-preview.png" alt="Sharkedutech Logo" width={180} height={48} style={{ objectFit: 'contain' }} priority />
                 </Link>
 
                 {/* Hamburger Button */}
@@ -72,12 +74,16 @@ export function Navbar() {
                     <Link href="/jobs" className={`${styles.link} ${isActive('/jobs')}`}>
                         Jobs
                     </Link>
-                    <Link href="/colleges" className={`${styles.link} ${isActive('/colleges')}`}>
-                        Colleges
-                    </Link>
-                    <Link href="/employers" className={`${styles.link} ${isActive('/employers')}`}>
-                        Employers
-                    </Link>
+                    {session?.user && (session.user as any).role === 'ADMIN' && (
+                        <>
+                            <Link href="/colleges" className={`${styles.link} ${isActive('/colleges')}`}>
+                                Colleges
+                            </Link>
+                            <Link href="/employers" className={`${styles.link} ${isActive('/employers')}`}>
+                                Employers
+                            </Link>
+                        </>
+                    )}
                 </nav>
 
                 {/* Desktop Actions */}
@@ -104,14 +110,7 @@ export function Navbar() {
                                 <Button variant="ghost" size="sm">Login</Button>
                             </Link>
                             <Link href="/auth/signup">
-                                <Button variant="primary" size="sm">Candidate Register</Button>
-                            </Link>
-                            <div style={{ width: '1px', height: '20px', backgroundColor: 'var(--border)', margin: '0 0.25rem' }}></div>
-                            <Link href="/admissions/auth/signup">
-                                <Button variant="outline" size="sm" style={{ backgroundColor: '#FFF7ED', borderColor: '#FDBA74', color: '#9A3412' }}>College Register</Button>
-                            </Link>
-                            <Link href="/auth/signup/employer">
-                                <Button variant="outline" size="sm" style={{ backgroundColor: '#F0F9FF', borderColor: '#BAE6FD', color: '#0369A1' }}>Employer Register</Button>
+                                <Button variant="primary" size="sm">Register</Button>
                             </Link>
                         </div>
                     )}
@@ -132,12 +131,16 @@ export function Navbar() {
                         <Link href="/jobs" className={`${styles.mobileLink} ${isActive('/jobs')}`}>
                             Jobs
                         </Link>
-                        <Link href="/colleges" className={`${styles.mobileLink} ${isActive('/colleges')}`}>
-                            Colleges
-                        </Link>
-                        <Link href="/employers" className={`${styles.mobileLink} ${isActive('/employers')}`}>
-                            Employers
-                        </Link>
+                        {session?.user && (session.user as any).role === 'ADMIN' && (
+                            <>
+                                <Link href="/colleges" className={`${styles.mobileLink} ${isActive('/colleges')}`}>
+                                    Colleges
+                                </Link>
+                                <Link href="/employers" className={`${styles.mobileLink} ${isActive('/employers')}`}>
+                                    Employers
+                                </Link>
+                            </>
+                        )}
                     </nav>
 
                     <div className={styles.mobileActions}>
@@ -159,24 +162,14 @@ export function Navbar() {
                                 </Button>
                             </>
                         ) : (
-                            <>
-                                <>
-                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '0.5rem', width: '100%' }}>
-                                        <Link href="/auth/signin">
-                                            <Button variant="ghost" size="lg" style={{ width: '100%' }}>Login</Button>
-                                        </Link>
-                                        <Link href="/auth/signup">
-                                            <Button variant="primary" size="lg" style={{ width: '100%' }}>Candidate Register</Button>
-                                        </Link>
-                                        <Link href="/admissions/auth/signup">
-                                            <Button variant="outline" size="lg" style={{ width: '100%', backgroundColor: '#FFF7ED', borderColor: '#FDBA74', color: '#9A3412' }}>College Register</Button>
-                                        </Link>
-                                        <Link href="/auth/signup/employer">
-                                            <Button variant="outline" size="lg" style={{ width: '100%', backgroundColor: '#F0F9FF', borderColor: '#BAE6FD', color: '#0369A1' }}>Employer Register</Button>
-                                        </Link>
-                                    </div>
-                                </>
-                            </>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '0.5rem', width: '100%' }}>
+                                <Link href="/auth/signin">
+                                    <Button variant="ghost" size="lg" style={{ width: '100%' }}>Login</Button>
+                                </Link>
+                                <Link href="/auth/signup">
+                                    <Button variant="primary" size="lg" style={{ width: '100%' }}>Register</Button>
+                                </Link>
+                            </div>
                         )}
                     </div>
                 </div>

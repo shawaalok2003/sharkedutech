@@ -2,9 +2,15 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { useSession } from "next-auth/react";
 
 export default function ProfilePage() {
+    const { data: session } = useSession();
+    const studentName = session?.user?.name || "Student";
+    const initials = studentName.split(" ").map(n => n[0]).join("").toUpperCase().substring(0, 2) || "ST";
+
+    const fileInputRef = useRef<HTMLInputElement>(null);
     const [form, setForm] = useState({
         phone: "",
         dob: "",
@@ -57,6 +63,7 @@ export default function ProfilePage() {
         setSaving(true);
         try {
             await saveProfile(form);
+            alert("Profile updated successfully!");
         } finally {
             setSaving(false);
         }
@@ -77,6 +84,7 @@ export default function ProfilePage() {
             setForm(nextForm);
             setSaving(true);
             await saveProfile(nextForm);
+            alert("Photo uploaded and profile updated!");
         } finally {
             setSaving(false);
             setUploading(false);
@@ -282,18 +290,25 @@ export default function ProfilePage() {
                         <CardContent className="avatar-section">
                             <div className="avatar">
                                 {form.photoUrl ? (
-                                    <img src={form.photoUrl} alt="Student" />
+                                    <img src={form.photoUrl} alt={studentName} />
                                 ) : (
-                                    "ST"
+                                    initials
                                 )}
                             </div>
-                            <h2 className="student-name">Student</h2>
-                            <p className="student-role">Profile</p>
+                            <h2 className="student-name">{studentName}</h2>
+                            <p className="student-role">Student Profile</p>
                             <label className="upload-label">
-                                <Button className="w-full" variant="outline" disabled={uploading}>
+                                <Button 
+                                    className="w-full" 
+                                    variant="outline" 
+                                    disabled={uploading}
+                                    type="button"
+                                    onClick={() => fileInputRef.current?.click()}
+                                >
                                     {uploading ? "Uploading..." : "Upload Photo"}
                                 </Button>
                                 <input
+                                    ref={fileInputRef}
                                     type="file"
                                     accept="image/*"
                                     hidden

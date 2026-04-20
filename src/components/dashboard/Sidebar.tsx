@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 import styles from './Sidebar.module.css';
 
 interface SidebarItem {
@@ -19,6 +20,20 @@ interface SidebarProps {
 export function Sidebar({ items, title = "Sharkedutech" }: SidebarProps) {
     const pathname = usePathname();
     const [isOpen, setIsOpen] = useState(false);
+    const { data: session } = useSession();
+    const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+
+    // Fetch user profile for photo
+    useEffect(() => {
+        if (session?.user && (session.user as any).role === 'CANDIDATE') {
+            fetch('/api/admissions/profile')
+                .then(res => res.json())
+                .then(data => {
+                    if (data.photoUrl) setPhotoUrl(data.photoUrl);
+                })
+                .catch(err => console.error("Sidebar profile fetch error:", err));
+        }
+    }, [session]);
 
     // Close sidebar when route changes on mobile
     useEffect(() => {
@@ -83,10 +98,16 @@ export function Sidebar({ items, title = "Sharkedutech" }: SidebarProps) {
 
                 <div className={styles.footer}>
                     <div className={styles.user}>
-                        <div className={styles.avatar}>JS</div>
+                        <div className={styles.avatar}>
+                            {photoUrl ? (
+                                <img src={photoUrl} alt="User Balance" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+                            ) : (
+                                session?.user?.name ? session.user.name.charAt(0).toUpperCase() : 'U'
+                            )}
+                        </div>
                         <div className={styles.userInfo}>
-                            <div className={styles.userName}>John Student</div>
-                            <div className={styles.userRole}>Applicant</div>
+                            <div className={styles.userName}>{session?.user?.name || 'User'}</div>
+                            <div className={styles.userRole}>{(session?.user as any)?.role || 'Applicant'}</div>
                         </div>
                     </div>
                 </div>

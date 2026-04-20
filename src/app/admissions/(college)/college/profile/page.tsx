@@ -42,6 +42,7 @@ export default function InstituteProfilePage() {
     const [uploadingPhoto, setUploadingPhoto] = useState(false);
     const [uploadingLogo, setUploadingLogo] = useState(false);
     const logoInputRef = useRef<HTMLInputElement>(null);
+    const photoInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         async function loadCollege() {
@@ -552,18 +553,34 @@ export default function InstituteProfilePage() {
                     </CardContent>
                     </Card>
                 </div>
-
-                <div className="extras-grid">
+                
+                {!college?.id ? (
+                    <Card style={{ border: '2px dashed var(--muted)', opacity: 0.7 }}>
+                        <CardContent style={{ padding: '3rem', textAlign: 'center' }}>
+                            <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>🔒</div>
+                            <h3 style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--primary)' }}>Unlock Extra Features</h3>
+                            <p style={{ color: 'var(--muted-foreground)' }}>Please save your <strong>Institute Details</strong> above for the first time to enable Campus Photos and Admission Requirements.</p>
+                        </CardContent>
+                    </Card>
+                ) : (
+                    <div className="extras-grid">
                     <Card>
                         <CardHeader>
                             <CardTitle>Campus Photos</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <label style={{ display: 'inline-block', marginBottom: '1rem' }}>
-                                <Button variant="outline" size="sm" disabled={uploadingPhoto}>
+                            <div style={{ marginBottom: '1rem' }}>
+                                <Button 
+                                    variant="outline" 
+                                    size="sm" 
+                                    disabled={uploadingPhoto}
+                                    type="button"
+                                    onClick={() => photoInputRef.current?.click()}
+                                >
                                     {uploadingPhoto ? "Uploading..." : "Upload Photo"}
                                 </Button>
                                 <input
+                                    ref={photoInputRef}
                                     type="file"
                                     accept="image/*"
                                     hidden
@@ -572,7 +589,7 @@ export default function InstituteProfilePage() {
                                         if (file) uploadPhoto(file);
                                     }}
                                 />
-                            </label>
+                            </div>
                             <div className="photos-grid">
                                 {photos.map((photo) => (
                                     <div key={photo.id} className="photo-item">
@@ -595,7 +612,7 @@ export default function InstituteProfilePage() {
                                     <option value="no">Optional</option>
                                 </select>
                                 <textarea placeholder="Description" value={reqForm.description} onChange={(e) => setReqForm(prev => ({ ...prev, description: e.target.value }))} className="form-input" style={{ gridColumn: 'span 2' }} />
-                                <Button size="sm" onClick={addRequirement} disabled={!reqForm.name.trim()}>Add Requirement</Button>
+                                <Button size="sm" onClick={() => { addRequirement(); setReqForm({ name: '', description: '', required: true }); alert('Requirement added successfully!'); }} disabled={!reqForm.name.trim()}>Add Requirement</Button>
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                                 {requirements.map((req) => (
@@ -615,7 +632,8 @@ export default function InstituteProfilePage() {
                             </div>
                         </CardContent>
                     </Card>
-                </div>
+                    </div>
+                )}
             </div>
         </>
     );
