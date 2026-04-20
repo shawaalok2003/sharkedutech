@@ -63,21 +63,8 @@ function SignInContent() {
             const session = await response.json();
             const userRole = session?.user?.role;
 
-            // Enforce role-based portal access
-            if (userRole) {
-                const expectedRole = type === 'candidate' ? 'CANDIDATE' : type === 'employer' ? 'EMPLOYER' : type === 'admin' ? 'ADMIN' : null;
-                
-                // Allow both ADMIN and COLLEGE roles to use the Admin portal
-                const isInstitutionalLogin = type === 'admin' && (userRole === 'ADMIN' || userRole === 'COLLEGE');
-                const isCorrectPortal = (expectedRole && userRole === expectedRole) || isInstitutionalLogin;
-
-                if (expectedRole && !isCorrectPortal) {
-                    await signOut({ redirect: false });
-                    setError(`This email is registered as a ${userRole.toLowerCase()}. Please log in from the correct portal.`);
-                    setLoading(false);
-                    return;
-                }
-            }
+            // Enforce role-based portal access (Disabled for unified login)
+            // Any user can log in from any portal type, we just redirect them to the right place.
 
             // Redirect based on role
             if (userRole === 'ADMIN') {
