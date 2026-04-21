@@ -23,6 +23,7 @@ export async function GET() {
                 website: true,
                 description: true,
                 address: true,
+                companyLogo: true,
                 email: true,
                 name: true,
                 // Candidate fields
@@ -55,7 +56,7 @@ export async function PUT(request: Request) {
 
         // Destructure safely
         const {
-            companyName, industry, size, website, description, address,
+            companyName, industry, size, website, description, address, companyLogo,
             name, phone, skills, resumeUrl, education, experience
         } = body;
 
@@ -67,6 +68,7 @@ export async function PUT(request: Request) {
         if (website !== undefined) updateData.website = website;
         if (description !== undefined) updateData.description = description;
         if (address !== undefined) updateData.address = address;
+        if (companyLogo !== undefined) updateData.companyLogo = companyLogo;
         if (name !== undefined) updateData.name = name;
 
         // Candidate specific

@@ -106,6 +106,12 @@ export function Navbar() {
                         </div>
                     ) : (
                         <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                            <Link href="/admissions/auth/signin">
+                                <Button variant="outline" size="sm">College Login</Button>
+                            </Link>
+                            <Link href="/auth/signin?type=employer">
+                                <Button variant="outline" size="sm">Employer Login</Button>
+                            </Link>
                             <Link href="/auth/signin">
                                 <Button variant="ghost" size="sm">Login</Button>
                             </Link>
@@ -163,6 +169,12 @@ export function Navbar() {
                             </>
                         ) : (
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '0.5rem', width: '100%' }}>
+                                <Link href="/admissions/auth/signin">
+                                    <Button variant="outline" size="lg" style={{ width: '100%' }}>College Login</Button>
+                                </Link>
+                                <Link href="/auth/signin?type=employer">
+                                    <Button variant="outline" size="lg" style={{ width: '100%' }}>Employer Login</Button>
+                                </Link>
                                 <Link href="/auth/signin">
                                     <Button variant="ghost" size="lg" style={{ width: '100%' }}>Login</Button>
                                 </Link>

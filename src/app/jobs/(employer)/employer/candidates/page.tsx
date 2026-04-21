@@ -46,10 +46,14 @@ export default function CandidatesPage() {
                     setCandidates(data);
                     setFilteredCandidates(data);
 
-                    // Extract unique jobs
+                    // Extract unique jobs safely
                     const uniqueJobs = Array.from(
-                        new Map(data.map((app: Application) => [app.job?.id, app.job])).values()
-                    ).filter(job => job) as { id: string; title: string }[];
+                        new Map(
+                            data
+                                .filter((app: Application) => app.job?.id && app.job?.title)
+                                .map((app: Application) => [app.job!.id, app.job!])
+                        ).values()
+                    ) as { id: string; title: string }[];
                     setJobs(uniqueJobs);
                 }
             } catch (error) {
@@ -525,7 +529,7 @@ export default function CandidatesPage() {
                         >
                             <option value="All">All Jobs</option>
                             {jobs.map(job => (
-                                <option key={job.id} value={job.id}>{job.title}</option>
+                                <option key={job.id || `job-${Math.random()}`} value={job.id}>{job.title}</option>
                             ))}
                         </select>
                     </div>
@@ -554,7 +558,7 @@ export default function CandidatesPage() {
                             {candidates.length === 0 ? 'No applications received yet.' : 'No applications match the selected filters.'}
                         </p>
                     ) : filteredCandidates.map((candidate) => (
-                        <Card key={candidate.id} className="candidate-card">
+                        <Card key={candidate.id || candidate.email} className="candidate-card">
                             <div className="candidate-info">
                                 <div className="candidate-avatar">
                                     {candidate.name.charAt(0).toUpperCase()}

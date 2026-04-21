@@ -2,19 +2,25 @@
 
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export default function CompanyProfilePage() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        phone: '',
         companyName: '',
         industry: '',
         size: '',
         website: '',
         description: '',
-        address: ''
+        address: '',
+        companyLogo: ''
     });
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [uploading, setUploading] = useState(false);
 
     useEffect(() => {
         async function fetchProfile() {
@@ -23,12 +29,16 @@ export default function CompanyProfilePage() {
                 if (res.ok) {
                     const data = await res.json();
                     setFormData({
+                        name: data.name || '',
+                        email: data.email || '',
+                        phone: data.phone || '',
                         companyName: data.companyName || '',
                         industry: data.industry || '',
                         size: data.size || '',
                         website: data.website || '',
                         description: data.description || '',
-                        address: data.address || ''
+                        address: data.address || '',
+                        companyLogo: data.companyLogo || ''
                     });
                 }
             } catch (error) {
@@ -64,6 +74,43 @@ export default function CompanyProfilePage() {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setFormData({ ...formData, [e.target.id]: e.target.value });
+    };
+
+    const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        // Validations
+        if (file.size > 2 * 1024 * 1024) {
+            alert("File size must be less than 2MB");
+            return;
+        }
+
+        setUploading(true);
+        try {
+            const formData = new FormData();
+            formData.append("file", file);
+
+            const res = await fetch("/api/upload", {
+                method: "POST",
+                body: formData,
+            });
+
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.error || "Upload failed");
+            }
+
+            const { url } = await res.json();
+
+            setFormData(prev => ({ ...prev, companyLogo: url }));
+            alert("Logo uploaded successfully! Don't forget to Save Changes.");
+        } catch (error: any) {
+            console.error("Upload error details:", error);
+            alert("Failed to upload logo: " + error.message);
+        } finally {
+            setUploading(false);
+        }
     };
 
     const inputStyle = {
@@ -192,10 +239,22 @@ export default function CompanyProfilePage() {
                     .profile-title {
                         font-size: 1.5rem;
                     }
-                    .logo-circle {
+                    .logo-circle, .logo-img {
                         width: 80px;
                         height: 80px;
                     }
+                }
+                .logo-img {
+                    width: 90px;
+                    height: 90px;
+                    border-radius: 50%;
+                    object-fit: cover;
+                    border: 1px solid var(--border);
+                }
+                .upload-hint {
+                    font-size: 0.75rem;
+                    color: var(--muted-foreground);
+                    margin-top: 0.25rem;
                 }
             `}</style>
             <div className="profile-wrapper">
@@ -211,43 +270,87 @@ export default function CompanyProfilePage() {
                     <CardContent>
                         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                             <div className="logo-section">
-                                <div className="logo-circle">
-                                    {formData.companyName ? formData.companyName.charAt(0).toUpperCase() : 'C'}
+                                <input 
+                                    type="file" 
+                                    ref={fileInputRef} 
+                                    onChange={handleLogoUpload} 
+                                    accept="image/*" 
+                                    style={{ display: 'none' }} 
+                                />
+                                {formData.companyLogo ? (
+                                    <img src={formData.companyLogo} alt="Logo" className="logo-img" />
+                                ) : (
+                                    <div className="logo-circle">
+                                        {formData.companyName ? formData.companyName.charAt(0).toUpperCase() : 'C'}
+                                    </div>
+                                )}
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                    <Button 
+                                        variant="outline" 
+                                        type="button" 
+                                        onClick={() => fileInputRef.current?.click()}
+                                        disabled={uploading}
+                                    >
+                                        {uploading ? 'Uploading...' : 'Upload New Logo'}
+                                    </Button>
+                                    <span className="upload-hint">Recommended: Square image, max 2MB</span>
                                 </div>
-                                <Button variant="outline" type="button" disabled>Upload New Logo (Coming Soon)</Button>
                             </div>
 
-                            <div className="form-grid">
-                                <div className="form-group">
-                                    <label htmlFor="companyName" className="form-label">Company Name</label>
-                                    <input id="companyName" value={formData.companyName} onChange={handleChange} className="form-input" />
+                            <section>
+                                <h3 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--primary)', marginBottom: '1rem', borderBottom: '1px solid var(--border)', paddingBottom: '0.5rem' }}>Account Contact Details</h3>
+                                <div className="form-grid">
+                                    <div className="form-group">
+                                        <label htmlFor="name" className="form-label">Full Name / Contact Person</label>
+                                        <input id="name" value={formData.name} onChange={handleChange} className="form-input" placeholder="e.g. John Doe" />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="email" className="form-label">Work Email</label>
+                                        <input id="email" value={formData.email} readOnly className="form-input" style={{ backgroundColor: '#F9FAFB', cursor: 'not-allowed' }} title="Email cannot be changed" />
+                                    </div>
                                 </div>
-                                <div className="form-group">
-                                    <label htmlFor="industry" className="form-label">Industry</label>
-                                    <input id="industry" value={formData.industry} onChange={handleChange} className="form-input" />
+                                <div className="form-grid" style={{ marginTop: '1rem' }}>
+                                    <div className="form-group">
+                                        <label htmlFor="phone" className="form-label">Contact Number</label>
+                                        <input id="phone" value={formData.phone} onChange={handleChange} className="form-input" placeholder="+91 1234567890" />
+                                    </div>
                                 </div>
-                            </div>
+                            </section>
 
-                            <div className="form-grid">
-                                <div className="form-group">
-                                    <label htmlFor="website" className="form-label">Website</label>
-                                    <input id="website" value={formData.website} onChange={handleChange} className="form-input" />
+                            <section style={{ marginTop: '1rem' }}>
+                                <h3 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--primary)', marginBottom: '1rem', borderBottom: '1px solid var(--border)', paddingBottom: '0.5rem' }}>Company Details</h3>
+                                <div className="form-grid">
+                                    <div className="form-group">
+                                        <label htmlFor="companyName" className="form-label">Company Name</label>
+                                        <input id="companyName" value={formData.companyName} onChange={handleChange} className="form-input" />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="industry" className="form-label">Industry</label>
+                                        <input id="industry" value={formData.industry} onChange={handleChange} className="form-input" placeholder="e.g. Hospitality, Tourism" />
+                                    </div>
                                 </div>
-                                <div className="form-group">
-                                    <label htmlFor="size" className="form-label">Company Size</label>
-                                    <input id="size" value={formData.size} onChange={handleChange} className="form-input" />
+
+                                <div className="form-grid" style={{ marginTop: '1rem' }}>
+                                    <div className="form-group">
+                                        <label htmlFor="website" className="form-label">Website</label>
+                                        <input id="website" value={formData.website} onChange={handleChange} className="form-input" placeholder="https://example.com" />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="size" className="form-label">Company Size</label>
+                                        <input id="size" value={formData.size} onChange={handleChange} className="form-input" placeholder="e.g. 50-100 employees" />
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div className="form-group form-group-full">
-                                <label htmlFor="description" className="form-label">About Company</label>
-                                <textarea id="description" value={formData.description} onChange={handleChange} className="form-input textarea" />
-                            </div>
+                                <div className="form-group form-group-full" style={{ marginTop: '1rem' }}>
+                                    <label htmlFor="description" className="form-label">About Company</label>
+                                    <textarea id="description" value={formData.description} onChange={handleChange} className="form-input textarea" />
+                                </div>
 
-                            <div className="form-group form-group-full">
-                                <label htmlFor="address" className="form-label">Headquarters Address</label>
-                                <input id="address" value={formData.address} onChange={handleChange} className="form-input" />
-                            </div>
+                                <div className="form-group form-group-full" style={{ marginTop: '1rem' }}>
+                                    <label htmlFor="address" className="form-label">Headquarters Address</label>
+                                    <input id="address" value={formData.address} onChange={handleChange} className="form-input" />
+                                </div>
+                            </section>
 
                             <div className="form-actions">
                                 <Button type="submit" disabled={saving}>{saving ? 'Saving...' : 'Save Changes'}</Button>
