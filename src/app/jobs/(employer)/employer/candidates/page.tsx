@@ -527,9 +527,9 @@ export default function CandidatesPage() {
                             onChange={(e) => setSelectedJob(e.target.value)}
                             className="filter-select"
                         >
-                            <option value="All">All Jobs</option>
-                            {jobs.map(job => (
-                                <option key={job.id || `job-${Math.random()}`} value={job.id}>{job.title}</option>
+                            <option key="all-jobs" value="All">All Jobs</option>
+                            {jobs.map((job, index) => (
+                                <option key={job.id || `job-${index}`} value={job.id}>{job.title}</option>
                             ))}
                         </select>
                     </div>
@@ -540,11 +540,11 @@ export default function CandidatesPage() {
                             onChange={(e) => setSelectedStatus(e.target.value)}
                             className="filter-select"
                         >
-                            <option value="All">All Statuses</option>
-                            <option value="Applied">Applied</option>
-                            <option value="Shortlisted">Shortlisted</option>
-                            <option value="Interview">Interview</option>
-                            <option value="Rejected">Rejected</option>
+                            {["All", "Applied", "Shortlisted", "Interview", "Rejected"].map(status => (
+                                <option key={status} value={status}>
+                                    {status === "All" ? "All Statuses" : status}
+                                </option>
+                            ))}
                         </select>
                     </div>
                     <div className="candidate-count">
