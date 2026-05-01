@@ -45,6 +45,7 @@ export function Footer() {
                         <h4 className={styles.heading}>Support</h4>
                         <div className={styles.links}>
                             <Link href="/help" className={styles.link}>Help Center</Link>
+                            <Link href="/refund-policy" className={styles.link}>Refund Policy</Link>
                             <Link href="/terms" className={styles.link}>Terms of Service</Link>
                             <Link href="/privacy" className={styles.link}>Privacy Policy</Link>
                         </div>

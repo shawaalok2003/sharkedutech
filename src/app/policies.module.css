@@ -1,0 +1,61 @@
+.policyContainer {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 6rem 1.5rem;
+    min-height: 100vh;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 4rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.title {
+    font-size: 3rem;
+    color: var(--primary);
+    margin-bottom: 1rem;
+    font-weight: 800;
+}
+
+.lastUpdated {
+    color: var(--muted-foreground);
+    font-size: 0.9rem;
+}
+
+.content {
+    color: var(--foreground);
+    line-height: 1.8;
+}
+
+.content h2 {
+    font-size: 1.5rem;
+    margin: 2.5rem 0 1rem;
+    color: var(--primary);
+    border-left: 4px solid var(--secondary);
+    padding-left: 1rem;
+}
+
+.content p {
+    margin-bottom: 1.5rem;
+}
+
+.content ul {
+    margin-bottom: 1.5rem;
+    padding-left: 1.5rem;
+}
+
+.content li {
+    margin-bottom: 0.75rem;
+}
+
+@media (max-width: 768px) {
+    .policyContainer {
+        padding: 4rem 1rem;
+    }
+    
+    .title {
+        font-size: 2rem;
+    }
+}

@@ -74,6 +74,9 @@ export function Navbar() {
                     <Link href="/jobs" className={`${styles.link} ${isActive('/jobs')}`}>
                         Jobs
                     </Link>
+                    <Link href="/gallery" className={`${styles.link} ${isActive('/gallery')}`}>
+                        Gallery
+                    </Link>
                     {session?.user && (session.user as any).role === 'ADMIN' && (
                         <>
                             <Link href="/colleges" className={`${styles.link} ${isActive('/colleges')}`}>
@@ -106,6 +109,9 @@ export function Navbar() {
                         </div>
                     ) : (
                         <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                            <Link href="/auth/signin?type=admin">
+                                <Button variant="outline" size="sm">Super Admin Login</Button>
+                            </Link>
                             <Link href="/admissions/auth/signin">
                                 <Button variant="outline" size="sm">College Login</Button>
                             </Link>
@@ -136,6 +142,9 @@ export function Navbar() {
                         </Link>
                         <Link href="/jobs" className={`${styles.mobileLink} ${isActive('/jobs')}`}>
                             Jobs
+                        </Link>
+                        <Link href="/gallery" className={`${styles.mobileLink} ${isActive('/gallery')}`}>
+                            Gallery
                         </Link>
                         {session?.user && (session.user as any).role === 'ADMIN' && (
                             <>
@@ -169,6 +178,9 @@ export function Navbar() {
                             </>
                         ) : (
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '0.5rem', width: '100%' }}>
+                                <Link href="/auth/signin?type=admin">
+                                    <Button variant="outline" size="lg" style={{ width: '100%' }}>Super Admin Login</Button>
+                                </Link>
                                 <Link href="/admissions/auth/signin">
                                     <Button variant="outline" size="lg" style={{ width: '100%' }}>College Login</Button>
                                 </Link>
