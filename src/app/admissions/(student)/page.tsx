@@ -316,6 +316,61 @@ export default function AdmissionsCourseListingPage() {
                     .job-right { align-items: flex-start; text-align: left; width: 100%; }
                     .search-divider { display: none; }
                 }
+
+                .benefits-section {
+                    background: #f8fafc;
+                    border-bottom: 1px solid #e2e8f0;
+                }
+                .benefits-header {
+                    text-align: center;
+                    margin-bottom: 3rem;
+                }
+                .benefits-title {
+                    font-size: 2.25rem;
+                    font-weight: 800;
+                    margin-bottom: 1rem;
+                    color: #0f172a;
+                }
+                .benefits-subtitle {
+                    color: #64748b;
+                    font-size: 1.1rem;
+                }
+                .benefits-grid {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 3rem;
+                }
+                .group-title {
+                    font-size: 1.5rem;
+                    font-weight: 700;
+                    margin-bottom: 1.5rem;
+                    color: #0f172a;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.75rem;
+                }
+                .benefits-list {
+                    list-style: none;
+                    padding: 0;
+                }
+                .benefits-list li {
+                    padding-left: 1.5rem;
+                    position: relative;
+                    margin-bottom: 1rem;
+                    color: #475569;
+                    font-weight: 500;
+                    line-height: 1.5;
+                }
+                .benefits-list li::before {
+                    content: "✓";
+                    position: absolute;
+                    left: 0;
+                    color: #10b981;
+                    font-weight: 900;
+                }
+                @media (max-width: 768px) {
+                    .benefits-grid { grid-template-columns: 1fr; gap: 2rem; }
+                }
             `}</style>
 
             <div className={`page ${spaceGrotesk.className}`}>
@@ -360,6 +415,41 @@ export default function AdmissionsCourseListingPage() {
                         </div>
                     </div>
                 </header>
+
+                <section className="benefits-section">
+                    <div className="section">
+                        <div className="benefits-header">
+                            <h2 className="benefits-title">Why Choose Shark Edutech?</h2>
+                            <p className="benefits-subtitle">We don't just provide education; we build world-class hospitality careers.</p>
+                        </div>
+                        
+                        <div className="benefits-grid">
+                            <div className="benefits-group">
+                                <h3 className="group-title">Premium Facilities</h3>
+                                <ul className="benefits-list">
+                                    <li>Well-equipped Training Kitchen & Bakery</li>
+                                    <li>Housekeeping Practice Room</li>
+                                    <li>Grooming & personality development sessions</li>
+                                    <li>Industry visits, workshops & seminars</li>
+                                    <li>Internship & placement support through SHARK lifetime</li>
+                                    <li>Education Loan at 0% interest</li>
+                                    <li>Health insurance across all hospitals in India</li>
+                                </ul>
+                            </div>
+                            <div className="benefits-group">
+                                <h3 className="group-title">Our Achievements</h3>
+                                <ul className="benefits-list">
+                                    <li>Consistent student placements</li>
+                                    <li>100% assured placement support</li>
+                                    <li>Strong industry collaborations across India</li>
+                                    <li>Industrial Training & Apprenticeship programs</li>
+                                    <li>Positive recognition from hospitality partners</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
 
                 <main className="section">
                     {loading ? (

@@ -7,7 +7,9 @@ const adminSidebarItems = [
     { label: "Manage Users", href: "/admin/users" },
     { label: "Manage Jobs", href: "/admin/jobs" },
     { label: "Job Applications", href: "/admin/applications" },
+    { label: "Application Approvals", href: "/admin/approvals" },
     { label: "Manage Colleges & Courses", href: "/admin/colleges" },
+    { label: "College Inquiries", href: "/admin/college-inquiries" },
     { label: "Manage Admissions", href: "/admin/admissions" },
     { label: "Settings", href: "/admin/settings" },
 ];

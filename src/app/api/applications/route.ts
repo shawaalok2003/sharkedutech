@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { sendJobApplicationEmail } from '@/lib/email';
 
 export const dynamic = 'force-dynamic';
 
@@ -82,8 +83,25 @@ export async function POST(request: Request) {
                 email: user?.email || "No Email",
                 resumeUrl: resumeUrl || user?.resumeUrl,
                 answers: answers
+            },
+            include: {
+                job: {
+                    include: {
+                        employer: true
+                    }
+                }
             }
         });
+
+        // Send confirmation email
+        if (user?.email) {
+            await sendJobApplicationEmail(
+                user.email,
+                user.name || "Candidate",
+                application.job.title,
+                application.job.employer.companyName || "Shark Edutech Partner"
+            );
+        }
 
         return NextResponse.json(application);
     } catch (error) {

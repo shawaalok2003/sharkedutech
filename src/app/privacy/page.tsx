@@ -42,7 +42,12 @@ export default function PrivacyPolicy() {
                     <p>We share your data with:</p>
                     <ul>
                         <li><strong>Colleges & Institutions:</strong> Only the specific institutions you apply to will receive your application details and documents.</li>
-                        <li><strong>Employers:</strong> If you use the job portal, your profile may be visible to registered employers.</li>
+                        <li><strong>Employers:</strong> 
+                            <ul>
+                                <li>Employers <strong>cannot</strong> access your personal data or documents without your explicit permission.</li>
+                                <li><strong>CV Sharing:</strong> Your CV will only be shared with multiple employer houses after obtaining your specific concern/agreement. You have the right to opt-in or opt-out of this sharing feature through your dashboard.</li>
+                            </ul>
+                        </li>
                         <li><strong>Service Providers:</strong> We may share information with third-party vendors who perform services for us, such as payment processing or data analysis.</li>
                     </ul>
 

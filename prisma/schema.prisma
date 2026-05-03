@@ -38,6 +38,10 @@ model User {
   experience  String?
   otps        Otp[]
 
+  // Password Reset
+  resetToken        String?   @unique
+  resetTokenExpires DateTime?
+
   // Admissions
   studentProfile       StudentProfile?
   admissionApplications AdmissionApplication[]
@@ -60,6 +64,7 @@ model Job {
   employerId  String
   employer    User     @relation(fields: [employerId], references: [id])
   applications Application[]
+  isTopOpportunity Boolean @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -72,6 +77,7 @@ model Application {
   coverLetter String?
   answers     String? // JSON string of answers
   status    String   @default("New")
+  adminApproved Boolean @default(false)
   jobId     String
   job       Job      @relation(fields: [jobId], references: [id])
   applicantId String    // Add this field
@@ -168,6 +174,7 @@ model AdmissionApplication {
   courseId  String?
   course    Course?  @relation(fields: [courseId], references: [id])
   status    String   @default("Pending")
+  adminApproved Boolean @default(false)
   step      Int      @default(1)
   score     String?
   remarks   String?
@@ -242,4 +249,15 @@ model AdmissionQuery {
   status    String   @default("Unread")
   reply     String?
   createdAt DateTime @default(now())
+}
+
+model CollegePartnerInquiry {
+  id              String   @id @default(cuid())
+  collegeName     String
+  location        String
+  contactPerson   String
+  officialEmail   String
+  status          String   @default("Pending") // Pending, Reviewed, Contacted
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }

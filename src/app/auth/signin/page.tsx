@@ -247,6 +247,14 @@ function SignInContent() {
                                         backgroundColor: loading ? '#F3F4F6' : 'white',
                                     }}
                                 />
+                                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
+                                    <Link 
+                                        href="/auth/forgot-password" 
+                                        style={{ fontSize: '0.875rem', color: 'var(--primary)', fontWeight: 500, textDecoration: 'none' }}
+                                    >
+                                        Forgot Password?
+                                    </Link>
+                                </div>
                             </div>
 
                             <Button type="submit" className="w-full" disabled={loading || !email || !password}>

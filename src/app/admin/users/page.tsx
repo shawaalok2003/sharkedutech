@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { ResetLinkButton } from "@/components/admin/ResetLinkButton";
 
 async function updateUserRole(formData: FormData) {
     "use server";
@@ -18,6 +19,21 @@ async function deleteUser(formData: FormData) {
         console.error("Failed to delete user", e);
     }
     revalidatePath("/admin/users");
+}
+
+async function generateResetLink(formData: FormData) {
+    "use server";
+    const userId = formData.get("userId") as string;
+    const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    const expires = new Date(Date.now() + 3600000); // 1 hour
+
+    await prisma.user.update({
+        where: { id: userId },
+        data: { resetToken: token, resetTokenExpires: expires }
+    });
+
+    revalidatePath("/admin/users");
+    // In a real app, you would email this. For now, we'll show it in the UI or copy it.
 }
 
 export default async function UsersAdminPage() {
@@ -45,6 +61,7 @@ export default async function UsersAdminPage() {
                             <th style={{ padding: "1rem" }}>Email</th>
                             <th style={{ padding: "1rem" }}>Role</th>
                             <th style={{ padding: "1rem" }}>Joined</th>
+                            <th style={{ padding: "1rem" }}>Password Recovery</th>
                             <th style={{ padding: "1rem" }}>Actions</th>
                         </tr>
                     </thead>
@@ -65,6 +82,13 @@ export default async function UsersAdminPage() {
                                     </span>
                                 </td>
                                 <td style={{ padding: "1rem" }}>{user.createdAt.toLocaleDateString()}</td>
+                                <td style={{ padding: "1rem" }}>
+                                    <ResetLinkButton 
+                                        userId={user.id} 
+                                        resetToken={user.resetToken} 
+                                        generateAction={generateResetLink} 
+                                    />
+                                </td>
                                 <td style={{ padding: "1rem" }}>
                                     <div style={{ display: "flex", gap: "0.5rem" }}>
                                         <a href={`/admin/users/${user.id}`} style={{ padding: "0.4rem 0.8rem", backgroundColor: "#e2e8f0", color: "#0f172a", borderRadius: "4px", textDecoration: "none", fontSize: "0.875rem" }}>

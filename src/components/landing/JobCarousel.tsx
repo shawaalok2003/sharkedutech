@@ -2,50 +2,7 @@
 
 import styles from './JobCarousel.module.css';
 
-const jobs = [
-    {
-        id: 1,
-        title: "Front Office Manager",
-        company: "Marriott International",
-        location: "Mumbai",
-        type: "Full-time",
-        logo: "🏨"
-    },
-    {
-        id: 2,
-        title: "Executive Sous Chef",
-        company: "Radisson Blu",
-        location: "New Delhi",
-        type: "Full-time",
-        logo: "👨‍🍳"
-    },
-    {
-        id: 3,
-        title: "Guest Relations Officer",
-        company: "Taj Hotels",
-        location: "Jaipur",
-        type: "Full-time",
-        logo: "✨"
-    },
-    {
-        id: 4,
-        title: "Housekeeping Supervisor",
-        company: "Lemon Tree Hotels",
-        location: "Bangalore",
-        type: "Full-time",
-        logo: "🧹"
-    },
-    {
-        id: 5,
-        title: "F&B Manager",
-        company: "Hyatt Regency",
-        location: "Hyderabad",
-        type: "Full-time",
-        logo: "🍷"
-    }
-];
-
-export function JobCarousel() {
+export function JobCarousel({ jobs = [] }: { jobs?: any[] }) {
     return (
         <section className={styles.carouselSection}>
             <div className={styles.container}>
@@ -53,9 +10,13 @@ export function JobCarousel() {
                 <div className={styles.carousel}>
                     {jobs.map((job) => (
                         <div key={job.id} className={styles.jobCard}>
-                            <div className={styles.companyLogo}>{job.logo}</div>
+                            <div className={styles.companyLogo}>
+                                {job.logo || (job.title?.toLowerCase().includes('chef') ? '👨‍🍳' : 
+                                             job.title?.toLowerCase().includes('front') ? '🏨' : 
+                                             job.title?.toLowerCase().includes('house') ? '🧹' : '💼')}
+                            </div>
                             <h3 className={styles.jobTitle}>{job.title}</h3>
-                            <p className={styles.companyName}>{job.company}</p>
+                            <p className={styles.companyName}>{job.employer?.companyName || job.company || 'Hospitality Partner'}</p>
                             <div className={styles.tags}>
                                 <span className={styles.tag}>📍 {job.location}</span>
                                 <span className={styles.tag}>⏱️ {job.type}</span>

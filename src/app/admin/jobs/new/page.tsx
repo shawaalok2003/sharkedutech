@@ -5,12 +5,22 @@ import Link from "next/link";
 
 async function createJob(formData: FormData) {
     "use server";
+    const postAsAdmin = formData.get("postAsAdmin") === "on";
     const employerEmail = formData.get("employerEmail") as string;
 
-    // Find employer
-    const employer = await prisma.user.findUnique({ where: { email: employerEmail } });
-    if (!employer) {
-        throw new Error("Employer with this email not found. Please create the user first.");
+    let employerId: string;
+
+    if (postAsAdmin) {
+        // Find the Super Admin user
+        const adminUser = await prisma.user.findFirst({ where: { role: 'ADMIN' } });
+        if (!adminUser) throw new Error("Admin user not found. Please create one first.");
+        employerId = adminUser.id;
+    } else {
+        const employer = await prisma.user.findUnique({ where: { email: employerEmail } });
+        if (!employer) {
+            throw new Error("Employer with this email not found. Please create the user first.");
+        }
+        employerId = employer.id;
     }
 
     const title = formData.get("title") as string;
@@ -25,7 +35,7 @@ async function createJob(formData: FormData) {
     await prisma.job.create({
         data: {
             title, type, location, salaryMin, salaryMax, description, requirements, status,
-            employerId: employer.id
+            employerId
         }
     });
 
@@ -50,10 +60,22 @@ export default function NewJobPage() {
                 <form action={createJob} style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
 
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                        <div style={{ gridColumn: "span 2", padding: "1rem", backgroundColor: "#f0f9ff", borderRadius: "8px", border: "1px solid #bae6fd", marginBottom: "0.5rem" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                                <input name="postAsAdmin" type="checkbox" id="postAsAdmin" style={{ width: "1.25rem", height: "1.25rem", cursor: "pointer" }} />
+                                <label htmlFor="postAsAdmin" style={{ fontWeight: 600, cursor: "pointer", color: "#0369a1" }}>
+                                    Post Directly as Shark Edutech (Super Admin)
+                                </label>
+                            </div>
+                            <p style={{ fontSize: "0.875rem", color: "#0c4a6e", marginTop: "0.25rem", marginLeft: "2rem" }}>
+                                If checked, this job will be attributed to the portal directly. No employer login required.
+                            </p>
+                        </div>
+
                         <div style={{ gridColumn: "span 2" }}>
-                            <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Employer User Email</label>
-                            <input name="employerEmail" type="email" required placeholder="user@company.com" style={{ width: "100%", padding: "0.6rem", borderRadius: "4px", border: "1px solid #ccc", backgroundColor: "#f8fafc" }} />
-                            <p style={{ fontSize: "0.8rad", color: "#64748b", marginTop: "0.25rem" }}>Must match an existing employer's registered email.</p>
+                            <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Employer User Email (Optional if posting as Admin)</label>
+                            <input name="employerEmail" type="email" placeholder="user@company.com" style={{ width: "100%", padding: "0.6rem", borderRadius: "4px", border: "1px solid #ccc", backgroundColor: "#f8fafc" }} />
+                            <p style={{ fontSize: "0.875rem", color: "#64748b", marginTop: "0.25rem" }}>Required only if not posting as Admin.</p>
                         </div>
                         <div style={{ gridColumn: "span 2" }}>
                             <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Job Title</label>

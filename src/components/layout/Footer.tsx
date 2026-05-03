@@ -26,8 +26,8 @@ export function Footer() {
                         <div className={styles.links}>
                             <Link href="/admissions" className={styles.link}>Admissions Portal</Link>
                             <Link href="/jobs" className={styles.link}>Job Portal</Link>
-                            <Link href="/admissions/auth/signup" className={styles.link}>List Your College</Link>
-                            <Link href="/auth/signup/employer" className={styles.link}>Post a Job</Link>
+                            <Link href="/list-your-college" className={styles.link}>List Your College</Link>
+                            <Link href="/jobs/employer/post" className={styles.link}>Post a Job</Link>
                         </div>
                     </div>
 
@@ -44,7 +44,7 @@ export function Footer() {
                     <div>
                         <h4 className={styles.heading}>Support</h4>
                         <div className={styles.links}>
-                            <Link href="/help" className={styles.link}>Help Center</Link>
+                            <Link href="/help-center" className={styles.link}>Help Center</Link>
                             <Link href="/refund-policy" className={styles.link}>Refund Policy</Link>
                             <Link href="/terms" className={styles.link}>Terms of Service</Link>
                             <Link href="/privacy" className={styles.link}>Privacy Policy</Link>

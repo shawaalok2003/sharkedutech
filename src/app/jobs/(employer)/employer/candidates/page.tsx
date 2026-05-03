@@ -12,6 +12,7 @@ interface Application {
     createdAt: string;
     resumeUrl?: string;
     answers?: string;
+    adminApproved: boolean;
     job?: {
         title: string;
         id: string;
@@ -410,6 +411,23 @@ export default function CandidatesPage() {
                                 ×
                             </button>
                         </div>
+
+                        {detailModalApp.adminApproved === false && (
+                            <div style={{ 
+                                padding: '1rem', 
+                                background: '#FFF7ED', 
+                                border: '1px solid #FFEDD5', 
+                                borderRadius: '0.5rem', 
+                                marginBottom: '1.5rem',
+                                color: '#9A3412',
+                                fontSize: '0.875rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.5rem'
+                            }}>
+                                ⚠️ <strong>Pending Admin Approval:</strong> Full profile details and resume are hidden until the Super Admin allows access.
+                            </div>
+                        )}
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                             {/* Contact Information */}

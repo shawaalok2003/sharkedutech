@@ -25,12 +25,13 @@ export default function TermsAndConditions() {
                     <h2>2. User Accounts</h2>
                     <p>When you create an account, you must provide information that is accurate, complete, and current at all times. Failure to do so constitutes a breach of the Terms, which may result in immediate termination of your account on our Service.</p>
 
-                    <h2>3. Admission Process</h2>
-                    <p>Sharkedutech facilitates the admission process between students and colleges. However:</p>
+                    <h2>3. Admission & Recruitment Process</h2>
+                    <p>Sharkedutech facilitates the admission and recruitment process between students, colleges, and employers. However:</p>
                     <ul>
-                        <li>Final admission decisions are at the sole discretion of the respective colleges.</li>
-                        <li>Sharkedutech does not guarantee admission to any institution.</li>
-                        <li>All documents submitted must be genuine. Submission of forged documents will lead to immediate cancellation of application and potential legal action.</li>
+                        <li>Final admission and hiring decisions are at the sole discretion of the respective institutions.</li>
+                        <li><strong>Data Privacy:</strong> Student documents and personal data are private. Employers are strictly prohibited from accessing student data without explicit permission.</li>
+                        <li><strong>CV Distribution:</strong> By using the platform, students agree that their CVs will only be shared with multiple potential employers after the student provides explicit consent/agreement.</li>
+                        <li>Sharkedutech does not guarantee admission or employment to any user.</li>
                     </ul>
 
                     <h2>4. Intellectual Property</h2>

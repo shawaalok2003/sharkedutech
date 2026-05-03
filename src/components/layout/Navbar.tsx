@@ -94,10 +94,10 @@ export function Navbar() {
                     {session ? (
                         <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                             <span className={styles.userName}>
-                                Hi, {session.user?.name || 'User'}
+                                {session.user?.name || 'User'}
                             </span>
                             <Link href={getDashboardLink()}>
-                                <Button size="sm">Dashboard</Button>
+                                <Button size="sm" variant="primary">Dashboard</Button>
                             </Link>
                             <Button
                                 variant="ghost"
@@ -108,21 +108,36 @@ export function Navbar() {
                             </Button>
                         </div>
                     ) : (
-                        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                            <Link href="/auth/signin?type=admin">
-                                <Button variant="outline" size="sm">Super Admin Login</Button>
-                            </Link>
-                            <Link href="/admissions/auth/signin">
-                                <Button variant="outline" size="sm">College Login</Button>
-                            </Link>
-                            <Link href="/auth/signin?type=employer">
-                                <Button variant="outline" size="sm">Employer Login</Button>
-                            </Link>
+                        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                            <div className={styles.dropdown}>
+                                <div className={styles.dropdownTrigger}>
+                                    <Button variant="ghost" size="sm">
+                                        Partner Logins ▼
+                                    </Button>
+                                </div>
+                                <div className={styles.dropdownContent}>
+                                    <Link href="/auth/signin?type=admin" className={styles.dropdownItem}>
+                                        🛡️ Super Admin Portal
+                                    </Link>
+                                    <Link href="/admissions/auth/signin" className={styles.dropdownItem}>
+                                        🎓 College Dashboard
+                                    </Link>
+                                    <Link href="/auth/signin?type=employer" className={styles.dropdownItem}>
+                                        💼 Employer Portal
+                                    </Link>
+                                    <div className={styles.dropdownDivider}></div>
+                                    <Link href="/list-your-college" className={styles.dropdownItem}>
+                                        ➕ List Your College
+                                    </Link>
+                                </div>
+                            </div>
+
                             <Link href="/auth/signin">
                                 <Button variant="ghost" size="sm">Login</Button>
                             </Link>
+                            
                             <Link href="/auth/signup">
-                                <Button variant="primary" size="sm">Register</Button>
+                                <Button size="sm" className={styles.registerBtn}>Register</Button>
                             </Link>
                         </div>
                     )}

@@ -91,7 +91,7 @@ export default function AboutPage() {
             <section className={styles.cta}>
                 <div className={styles.container}>
                     <h2 className={styles.ctaTitle}>Elevate your hospitality experience with Shark Edutech</h2>
-                    <p className={styles.heroSubtitle} style={{ marginBottom: '3rem' }}>
+                    <p className={styles.ctaSubtitle}>
                         Where Talent Meets Opportunity! Your dream career or ideal candidate is just a click away.
                     </p>
                     <Link href="/auth/register" className={styles.ctaButton}>

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { sendAdmissionApplicationEmail } from "@/lib/email";
 
 export const dynamic = 'force-dynamic';
 
@@ -31,13 +32,30 @@ export async function GET(request: Request) {
         const applications = await prisma.admissionApplication.findMany({
             where,
             include: {
-                student: { select: { name: true, email: true } },
+                student: { select: { name: true, email: true, phone: true } },
                 course: { select: { title: true } },
                 college: { select: { name: true } }
             },
             orderBy: { createdAt: "desc" }
         });
-        return NextResponse.json(applications);
+
+        // Redact if not admin approved
+        const processed = applications.map(app => {
+            if (role === 'COLLEGE' && !app.adminApproved) {
+                return {
+                    ...app,
+                    student: {
+                        name: app.student.name,
+                        email: 'REDACTED (Pending Admin Approval)',
+                        phone: 'REDACTED'
+                    },
+                    isPendingApproval: true
+                };
+            }
+            return app;
+        });
+
+        return NextResponse.json(processed);
     }
 
     const applications = await prisma.admissionApplication.findMany({
@@ -105,8 +123,23 @@ export async function POST(request: Request) {
             entranceExam: entranceExam || null,
             entranceScore: entranceScore || null,
             notes: notes || null
+        },
+        include: {
+            student: { select: { name: true, email: true } },
+            course: { select: { title: true } },
+            college: { select: { name: true } }
         }
     });
+
+    // Send confirmation email
+    if (application.student.email) {
+        await sendAdmissionApplicationEmail(
+            application.student.email,
+            application.student.name || "Student",
+            application.college.name,
+            application.course?.title || "Hospitality Course"
+        );
+    }
 
     return NextResponse.json(application);
 }

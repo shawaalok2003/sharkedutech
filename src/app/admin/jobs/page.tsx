@@ -20,6 +20,14 @@ async function deleteJob(formData: FormData) {
     revalidatePath("/admin/jobs");
 }
 
+async function toggleTopOpportunity(formData: FormData) {
+    "use server";
+    const jobId = formData.get("jobId") as string;
+    const current = formData.get("current") === "true";
+    await prisma.job.update({ where: { id: jobId }, data: { isTopOpportunity: !current } });
+    revalidatePath("/admin/jobs");
+}
+
 export default async function JobsAdminPage() {
     const jobs = await prisma.job.findMany({
         orderBy: { createdAt: "desc" },
@@ -46,6 +54,7 @@ export default async function JobsAdminPage() {
                             <th style={{ padding: "1rem" }}>Type & Location</th>
                             <th style={{ padding: "1rem" }}>Apps</th>
                             <th style={{ padding: "1rem" }}>Status</th>
+                            <th style={{ padding: "1rem" }}>Top Opportunity</th>
                             <th style={{ padding: "1rem" }}>Actions</th>
                         </tr>
                     </thead>
@@ -71,6 +80,30 @@ export default async function JobsAdminPage() {
                                     }}>
                                         {job.status}
                                     </span>
+                                </td>
+                                <td style={{ padding: "1rem" }}>
+                                    <form action={toggleTopOpportunity}>
+                                        <input type="hidden" name="jobId" value={job.id} />
+                                        <input type="hidden" name="current" value={String(job.isTopOpportunity)} />
+                                        <button
+                                            type="submit"
+                                            style={{
+                                                padding: "0.4rem 0.8rem",
+                                                backgroundColor: job.isTopOpportunity ? "#fef08a" : "#f1f5f9",
+                                                color: job.isTopOpportunity ? "#854d0e" : "#64748b",
+                                                borderRadius: "4px",
+                                                border: "1px solid " + (job.isTopOpportunity ? "#facc15" : "#e2e8f0"),
+                                                cursor: "pointer",
+                                                fontSize: "0.875rem",
+                                                fontWeight: 600,
+                                                display: "flex",
+                                                alignItems: "center",
+                                                gap: "0.25rem"
+                                            }}
+                                        >
+                                            {job.isTopOpportunity ? "⭐ Top" : "☆ Mark Top"}
+                                        </button>
+                                    </form>
                                 </td>
                                 <td style={{ padding: "1rem" }}>
                                     <div style={{ display: "flex", gap: "0.5rem" }}>

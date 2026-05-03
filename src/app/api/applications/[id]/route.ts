@@ -45,13 +45,30 @@ export async function GET(
             return NextResponse.json({ error: 'Application not found' }, { status: 404 });
         }
 
-        // Check authorization: either the applicant or the employer can view
         const userId = ((session as any).user as any).id;
         const isApplicant = application.applicantId === userId;
         const isEmployer = application.job.employerId === userId;
+        const isAdmin = (session.user as any).role === 'ADMIN';
 
-        if (!isApplicant && !isEmployer) {
+        if (!isApplicant && !isEmployer && !isAdmin) {
             return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+        }
+
+        // If employer is viewing and it's not admin approved, redact sensitive info
+        if (isEmployer && !application.adminApproved && !isAdmin) {
+            return NextResponse.json({
+                ...application,
+                applicant: {
+                    ...application.applicant,
+                    phone: 'REDACTED (Pending Admin Approval)',
+                    skills: 'REDACTED (Pending Admin Approval)',
+                    education: 'REDACTED (Pending Admin Approval)',
+                    experience: 'REDACTED (Pending Admin Approval)'
+                },
+                resumeUrl: null,
+                coverLetter: 'REDACTED (Pending Admin Approval)',
+                isPendingApproval: true
+            });
         }
 
         return NextResponse.json(application);
