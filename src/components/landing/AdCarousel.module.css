@@ -1,6 +1,6 @@
 .carouselSection {
-    padding: 6rem 0;
-    background: white;
+    padding: 8rem 0;
+    background: #ffffff;
 }
 
 .container {
@@ -10,79 +10,97 @@
 }
 
 .title {
-    font-size: 2.5rem;
-    font-weight: 800;
-    color: #0A192F;
-    margin-bottom: 3rem;
+    font-size: 3rem;
+    font-weight: 900;
+    color: #002147;
+    margin-bottom: 4rem;
     text-align: center;
+    letter-spacing: -0.04em;
 }
 
 .carousel {
     display: flex;
     overflow-x: auto;
-    gap: 2rem;
+    gap: 2.5rem;
     padding: 2rem 0;
     scrollbar-width: none;
-    /* Firefox */
     -ms-overflow-style: none;
-    /* IE/Edge */
 }
 
 .carousel::-webkit-scrollbar {
     display: none;
-    /* Chrome/Safari */
 }
 
 .adCard {
-    flex: 0 0 80%;
-    min-width: 300px;
-    height: 450px;
+    flex: 0 0 75%;
+    min-width: 320px;
+    height: 500px;
     position: relative;
-    border-radius: 24px;
+    border-radius: 32px;
     overflow: hidden;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
+    box-shadow: 0 20px 50px rgba(0, 33, 71, 0.15);
+    transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+    border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .adCard:hover {
-    transform: translateY(-10px);
+    transform: translateY(-12px) scale(1.01);
+    box-shadow: 0 40px 80px rgba(0, 33, 71, 0.25);
 }
 
 .image {
     object-fit: cover;
     width: 100%;
     height: 100%;
+    transition: transform 0.6s ease;
+}
+
+.adCard:hover .image {
+    transform: scale(1.05);
 }
 
 .overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.4) 40%, transparent 100%);
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    padding: 3rem;
-    color: white;
+    padding: 4rem;
 }
 
 .adTitle {
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
+    font-size: 2.5rem;
+    font-weight: 900;
+    margin-bottom: 1rem;
+    color: #ffffff !important;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
 }
 
 .adDesc {
-    font-size: 1.125rem;
-    opacity: 0.9;
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-weight: 500;
+    line-height: 1.5;
+    max-width: 80%;
 }
 
 @media (max-width: 768px) {
+    .container { padding: 0 1.5rem; }
+    .title { font-size: 2.25rem; margin-bottom: 2rem; }
     .adCard {
-        flex: 0 0 95%;
-        height: 350px;
+        flex: 0 0 92%;
+        height: 380px;
+        padding: 2rem;
     }
-
+    .overlay { padding: 2rem; }
     .adTitle {
-        font-size: 1.5rem;
+        font-size: 1.75rem;
+    }
+    .adDesc {
+        font-size: 1rem;
+        max-width: 100%;
     }
 }

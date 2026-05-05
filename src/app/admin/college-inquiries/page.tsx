@@ -1,5 +1,8 @@
 import { prisma } from '@/lib/prisma';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Card, CardContent } from "@/components/ui/Card";
+import { CollegeInquiryItem } from '@/components/admin/CollegeInquiryItem';
+
+export const dynamic = 'force-dynamic';
 
 export default async function CollegeInquiriesPage() {
     const inquiries = await prisma.collegePartnerInquiry.findMany({
@@ -7,54 +10,29 @@ export default async function CollegeInquiriesPage() {
     });
 
     return (
-        <div style={{ padding: '2rem' }}>
-            <div style={{ marginBottom: '2rem' }}>
-                <h1 style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--primary)' }}>College Partnership Inquiries</h1>
-                <p style={{ color: 'var(--muted-foreground)' }}>Review institutions interested in joining the platform.</p>
+        <div style={{ padding: '3rem', maxWidth: '1200px', margin: '0 auto' }}>
+            <div style={{ marginBottom: '3rem' }}>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '1rem', marginBottom: '0.5rem' }}>
+                    <h1 style={{ fontSize: '2.5rem', fontWeight: 900, color: '#002147', letterSpacing: '-0.04em' }}>College Partnership Inquiries</h1>
+                    <div style={{ padding: '0.4rem 1rem', background: '#0062ff', color: 'white', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 800 }}>
+                        {inquiries.filter(i => i.status === 'Pending').length} NEW
+                    </div>
+                </div>
+                <p style={{ color: '#64748b', fontSize: '1.1rem', fontWeight: 500 }}>Review and manage institutional partnerships for the Shark Edutech platform.</p>
             </div>
 
-            <div style={{ display: 'grid', gap: '1.5rem' }}>
+            <div style={{ display: 'grid', gap: '2rem' }}>
                 {inquiries.length === 0 ? (
-                    <Card>
-                        <CardContent style={{ padding: '3rem', textAlign: 'center', color: 'var(--muted-foreground)' }}>
-                            No inquiries found.
+                    <Card style={{ background: 'rgba(255, 255, 255, 0.5)', backdropFilter: 'blur(10px)', borderStyle: 'dashed' }}>
+                        <CardContent style={{ padding: '5rem', textAlign: 'center', color: '#94a3b8' }}>
+                            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📥</div>
+                            <div style={{ fontSize: '1.25rem', fontWeight: 700 }}>No partnership inquiries yet.</div>
+                            <div style={{ fontSize: '0.9rem' }}>Incoming institutional applications will appear here.</div>
                         </CardContent>
                     </Card>
                 ) : (
                     inquiries.map((inquiry) => (
-                        <Card key={inquiry.id}>
-                            <CardHeader style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <div>
-                                    <CardTitle style={{ fontSize: '1.25rem', color: 'var(--primary)' }}>{inquiry.collegeName}</CardTitle>
-                                    <div style={{ fontSize: '0.9rem', color: 'var(--muted-foreground)' }}>📍 {inquiry.location}</div>
-                                </div>
-                                <div style={{ 
-                                    padding: '0.25rem 0.75rem', 
-                                    borderRadius: '9999px', 
-                                    fontSize: '0.8rem', 
-                                    fontWeight: 600,
-                                    backgroundColor: inquiry.status === 'Pending' ? '#FEF3C7' : '#DCFCE7',
-                                    color: inquiry.status === 'Pending' ? '#92400E' : '#166534'
-                                }}>
-                                    {inquiry.status}
-                                </div>
-                            </CardHeader>
-                            <CardContent>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                                    <div>
-                                        <div style={{ fontWeight: 600, fontSize: '0.85rem' }}>Contact Person</div>
-                                        <div style={{ color: 'var(--foreground)' }}>{inquiry.contactPerson}</div>
-                                    </div>
-                                    <div>
-                                        <div style={{ fontWeight: 600, fontSize: '0.85rem' }}>Official Email</div>
-                                        <div style={{ color: 'var(--foreground)' }}>{inquiry.officialEmail}</div>
-                                    </div>
-                                    <div style={{ gridColumn: 'span 2', fontSize: '0.8rem', color: 'var(--muted-foreground)', marginTop: '0.5rem', borderTop: '1px solid var(--border)', paddingTop: '0.5rem' }}>
-                                        Submitted on: {new Date(inquiry.createdAt).toLocaleString()}
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
+                        <CollegeInquiryItem key={inquiry.id} inquiry={inquiry as any} />
                     ))
                 )}
             </div>

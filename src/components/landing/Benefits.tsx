@@ -28,7 +28,9 @@ export function Benefits() {
         <section className={styles.section}>
             <div className={styles.container}>
                 <div className={styles.header}>
+                    <div className={styles.tagline}>THE SHARK ADVANTAGE</div>
                     <h2 className={styles.title}>Why Choose Sharkedutech?</h2>
+                    <p className={styles.subtitle}>Empowering students, colleges, and employers with a seamless hospitality ecosystem.</p>
                 </div>
 
                 <div className={styles.tabsContainer}>

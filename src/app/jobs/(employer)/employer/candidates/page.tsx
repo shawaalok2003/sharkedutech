@@ -2,7 +2,8 @@
 
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 
 interface Application {
     id: string;
@@ -13,6 +14,7 @@ interface Application {
     resumeUrl?: string;
     answers?: string;
     adminApproved: boolean;
+    jobId: string;
     job?: {
         title: string;
         id: string;
@@ -24,41 +26,49 @@ interface Application {
         skills?: string;
         education?: string;
         experience?: string;
+        studentProfile?: {
+            photoUrl?: string;
+        };
     };
 }
 
-export default function CandidatesPage() {
+function CandidatesContent() {
+    const searchParams = useSearchParams();
+    const jobIdParam = searchParams.get('jobId');
+
     const [candidates, setCandidates] = useState<Application[]>([]);
     const [filteredCandidates, setFilteredCandidates] = useState<Application[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedStatus, setSelectedStatus] = useState<string>("All");
-    const [selectedJob, setSelectedJob] = useState<string>("All");
+    const [selectedJob, setSelectedJob] = useState<string>(jobIdParam || "All");
     const [jobs, setJobs] = useState<{ id: string; title: string }[]>([]);
     const [detailModalApp, setDetailModalApp] = useState<Application | null>(null);
     const [updating, setUpdating] = useState(false);
 
     useEffect(() => {
+        if (jobIdParam) {
+            setSelectedJob(jobIdParam);
+        }
+    }, [jobIdParam]);
+    useEffect(() => {
         async function fetchData() {
             try {
                 // Fetch applications
-                const res = await fetch('/api/applications/employer');
-                if (res.ok) {
-                    const data = await res.json();
+                const appRes = await fetch('/api/applications/employer');
+                if (appRes.ok) {
+                    const data = await appRes.json();
                     setCandidates(data);
                     setFilteredCandidates(data);
+                }
 
-                    // Extract unique jobs safely
-                    const uniqueJobs = Array.from(
-                        new Map(
-                            data
-                                .filter((app: Application) => app.job?.id && app.job?.title)
-                                .map((app: Application) => [app.job!.id, app.job!])
-                        ).values()
-                    ) as { id: string; title: string }[];
-                    setJobs(uniqueJobs);
+                // Fetch all employer jobs for the dropdown
+                const jobsRes = await fetch('/api/jobs/employer');
+                if (jobsRes.ok) {
+                    const jobsData = await jobsRes.json();
+                    setJobs(jobsData.map((j: any) => ({ id: j.id, title: j.title })));
                 }
             } catch (error) {
-                console.error("Failed to fetch candidates", error);
+                console.error("Failed to fetch data", error);
             } finally {
                 setLoading(false);
             }
@@ -73,7 +83,7 @@ export default function CandidatesPage() {
             filtered = filtered.filter(c => c.status === selectedStatus);
         }
         if (selectedJob !== "All") {
-            filtered = filtered.filter(c => c.job?.id === selectedJob);
+            filtered = filtered.filter(c => c.jobId === selectedJob || c.job?.id === selectedJob);
         }
         setFilteredCandidates(filtered);
     }, [selectedStatus, selectedJob, candidates]);
@@ -267,32 +277,63 @@ export default function CandidatesPage() {
                 }
                 .candidates-list {
                     display: grid;
-                    gap: 0.75rem;
+                    gap: 1.5rem;
                 }
                 .candidate-card {
                     display: flex;
                     flex-direction: row;
+                    align-items: stretch;
+                    justify-content: space-between;
+                    background: rgba(255, 255, 255, 0.9);
+                    backdrop-filter: blur(10px);
+                    border: 1px solid rgba(255, 255, 255, 0.5);
+                    border-radius: 24px;
+                    overflow: hidden;
+                    transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+                    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+                    margin-bottom: 0.5rem;
+                }
+                .candidate-card:hover {
+                    transform: translateY(-8px) scale(1.015);
+                    box-shadow: 0 30px 50px -12px rgba(0, 0, 0, 0.15);
+                    border-color: var(--primary);
+                }
+                .status-accent {
+                    width: 10px;
+                    flex-shrink: 0;
+                }
+                .card-content-wrapper {
+                    display: flex;
+                    flex: 1;
+                    padding: 1.75rem 2.5rem;
                     align-items: center;
                     justify-content: space-between;
-                    padding: 1rem;
-                    gap: 1rem;
+                    gap: 2rem;
                 }
                 .candidate-avatar {
-                    width: 44px;
-                    height: 44px;
-                    border-radius: 50%;
-                    background: var(--muted);
+                    width: 72px;
+                    height: 72px;
+                    border-radius: 22px;
+                    background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    font-weight: bold;
-                    font-size: 1.1rem;
-                    color: var(--muted-foreground);
+                    font-weight: 900;
+                    font-size: 1.75rem;
+                    color: var(--primary);
                     flex-shrink: 0;
+                    overflow: hidden;
+                    border: 4px solid white;
+                    box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.1);
+                }
+                .candidate-avatar img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
                 }
                 .candidate-info {
                     display: flex;
-                    gap: 0.75rem;
+                    gap: 1.5rem;
                     align-items: center;
                     flex: 1;
                 }
@@ -300,32 +341,42 @@ export default function CandidatesPage() {
                     flex: 1;
                 }
                 .candidate-name {
-                    font-size: 1rem;
-                    font-weight: 600;
-                    color: var(--foreground);
+                    font-size: 1.25rem;
+                    font-weight: 700;
+                    color: #1e293b;
                     margin: 0;
+                    letter-spacing: -0.02em;
                 }
-                .candidate-job {
-                    font-size: 0.8rem;
-                    color: var(--muted-foreground);
-                    margin: 0.2rem 0 0;
+                .job-pill {
+                    display: inline-flex;
+                    align-items: center;
+                    background: #f0f7ff;
+                    color: var(--primary);
+                    font-size: 0.75rem;
+                    font-weight: 700;
+                    padding: 0.25rem 0.75rem;
+                    border-radius: 8px;
+                    margin-top: 0.5rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
                 }
                 .candidate-meta {
                     display: flex;
                     align-items: center;
-                    gap: 1rem;
-                    flex-wrap: wrap;
+                    gap: 1.5rem;
                 }
                 .candidate-email {
-                    font-size: 0.8rem;
-                    color: var(--muted-foreground);
+                    font-size: 0.875rem;
+                    color: #64748b;
+                    font-weight: 500;
                 }
                 .status-badge {
-                    font-size: 0.7rem;
-                    padding: 0.25rem 0.75rem;
-                    border-radius: 999px;
-                    font-weight: 600;
-                    white-space: nowrap;
+                    font-size: 0.75rem;
+                    padding: 0.4rem 1rem;
+                    border-radius: 10px;
+                    font-weight: 700;
+                    letter-spacing: 0.02em;
+                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
                 }
                 .candidate-date {
                     font-size: 0.75rem;
@@ -576,31 +627,53 @@ export default function CandidatesPage() {
                             {candidates.length === 0 ? 'No applications received yet.' : 'No applications match the selected filters.'}
                         </p>
                     ) : filteredCandidates.map((candidate) => (
-                        <Card key={candidate.id || candidate.email} className="candidate-card">
-                            <div className="candidate-info">
-                                <div className="candidate-avatar">
-                                    {candidate.name.charAt(0).toUpperCase()}
+                        <div key={candidate.id || candidate.email} className="candidate-card">
+                            <div 
+                                className="status-accent" 
+                                style={{ backgroundColor: getStatusStyle(candidate.status).color }}
+                            />
+                            <div className="card-content-wrapper">
+                                <div className="candidate-info">
+                                    <div className="candidate-avatar">
+                                        {candidate.applicant?.studentProfile?.photoUrl ? (
+                                            <img 
+                                                src={candidate.applicant.studentProfile.photoUrl} 
+                                                alt={candidate.name}
+                                                onError={(e) => {
+                                                    (e.target as any).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(candidate.name)}&background=random`;
+                                                }}
+                                            />
+                                        ) : (
+                                            candidate.name.charAt(0).toUpperCase()
+                                        )}
+                                    </div>
+                                    <div className="candidate-details">
+                                        <h3 className="candidate-name">{candidate.name}</h3>
+                                        <div className="job-pill">{candidate.job?.title || 'General Position'}</div>
+                                    </div>
                                 </div>
-                                <div className="candidate-details">
-                                    <h3 className="candidate-name">{candidate.name}</h3>
-                                    <p className="candidate-job">
-                                        Applied for <span style={{ color: 'var(--primary)', fontWeight: 500 }}>{candidate.job?.title}</span>
-                                    </p>
-                                </div>
-                            </div>
 
-                            <div className="candidate-meta">
-                                <div className="candidate-email">{candidate.email}</div>
-                                <span className="status-badge" style={getStatusStyle(candidate.status)}>
-                                    {candidate.status}
-                                </span>
-                                <div className="candidate-date">{new Date(candidate.createdAt).toLocaleDateString()}</div>
-                                <Button variant="outline" size="sm" onClick={() => openDetailModal(candidate)}>View Details</Button>
+                                <div className="candidate-meta">
+                                    <div className="candidate-email">{candidate.email}</div>
+                                    <span className="status-badge" style={getStatusStyle(candidate.status)}>
+                                        {candidate.status}
+                                    </span>
+                                    <div className="candidate-date">{new Date(candidate.createdAt).toLocaleDateString()}</div>
+                                    <Button variant="outline" onClick={() => openDetailModal(candidate)}>View Details</Button>
+                                </div>
                             </div>
-                        </Card>
+                        </div>
                     ))}
                 </div>
             </div>
         </>
+    );
+}
+
+export default function CandidatesPage() {
+    return (
+        <Suspense fallback={<div>Loading candidates...</div>}>
+            <CandidatesContent />
+        </Suspense>
     );
 }

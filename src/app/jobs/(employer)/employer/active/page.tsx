@@ -42,91 +42,135 @@ export default function ActiveJobsPage() {
                 .jobs-container {
                     display: flex;
                     flex-direction: column;
-                    gap: 1.5rem;
+                    gap: 2rem;
                 }
                 .jobs-header {
                     display: flex;
                     justify-content: space-between;
-                    align-items: flex-start;
-                    gap: 1rem;
+                    align-items: center;
+                    gap: 1.5rem;
                     flex-wrap: wrap;
                 }
-                .header-content {
-                    flex: 1;
-                }
                 .page-title {
-                    font-size: 1.75rem;
-                    font-weight: 700;
-                    color: var(--primary);
+                    font-size: 2.25rem;
+                    font-weight: 800;
+                    color: #1e293b;
                     margin: 0;
+                    letter-spacing: -0.02em;
                 }
                 .page-subtitle {
-                    color: var(--muted-foreground);
+                    color: #64748b;
                     margin: 0.5rem 0 0;
-                    font-size: 0.875rem;
+                    font-size: 1rem;
+                    font-weight: 500;
                 }
                 .jobs-list {
                     display: grid;
-                    gap: 1rem;
+                    gap: 1.5rem;
                 }
                 .job-card {
                     display: flex;
                     flex-direction: row;
+                    align-items: stretch;
+                    background: rgba(255, 255, 255, 0.9);
+                    backdrop-filter: blur(10px);
+                    border: 1px solid rgba(255, 255, 255, 0.5);
+                    border-radius: 24px;
+                    overflow: hidden;
+                    transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+                    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+                }
+                .job-card:hover {
+                    transform: translateY(-8px) scale(1.01);
+                    box-shadow: 0 30px 50px -12px rgba(0, 0, 0, 0.12);
+                    border-color: var(--primary);
+                }
+                .status-accent {
+                    width: 10px;
+                    flex-shrink: 0;
+                }
+                .card-content-wrapper {
+                    display: flex;
+                    flex: 1;
+                    padding: 2rem 2.5rem;
                     align-items: center;
                     justify-content: space-between;
-                    padding: 1.25rem;
-                    gap: 1.25rem;
+                    gap: 2.5rem;
                 }
                 .job-info {
                     flex: 1;
                 }
-                .job-title {
-                    font-size: 1.15rem;
-                    font-weight: 600;
-                    color: var(--foreground);
-                    margin: 0;
-                }
-                .job-header {
+                .job-title-row {
                     display: flex;
                     align-items: center;
-                    gap: 0.75rem;
-                    margin-bottom: 0.5rem;
-                    flex-wrap: wrap;
+                    gap: 1rem;
+                    margin-bottom: 0.75rem;
                 }
-                .status-badge {
-                    font-size: 0.7rem;
-                    padding: 0.2rem 0.6rem;
-                    border-radius: 999px;
+                .job-title {
+                    font-size: 1.4rem;
+                    font-weight: 700;
+                    color: #1e293b;
+                    margin: 0;
+                    letter-spacing: -0.01em;
+                }
+                .status-pill {
+                    font-size: 0.65rem;
+                    font-weight: 800;
+                    padding: 0.25rem 0.75rem;
+                    border-radius: 8px;
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
                     background: rgba(0,0,0,0.05);
-                    font-weight: 600;
                 }
                 .job-meta {
                     display: flex;
-                    gap: 1rem;
-                    font-size: 0.8rem;
-                    color: var(--muted-foreground);
+                    gap: 0.75rem;
                     flex-wrap: wrap;
+                }
+                .meta-pill {
+                    background: #f0f7ff;
+                    color: var(--primary);
+                    font-size: 0.75rem;
+                    font-weight: 600;
+                    padding: 0.3rem 0.8rem;
+                    border-radius: 8px;
                 }
                 .job-stats {
                     display: flex;
                     align-items: center;
-                    gap: 1.5rem;
-                    flex-shrink: 0;
+                    gap: 3rem;
                 }
-                .applicant-count {
-                    text-align: center;
+                .stat-group {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    min-width: 80px;
                 }
-                .count-number {
-                    font-size: 1.5rem;
+                .stat-value {
+                    font-size: 2.25rem;
+                    font-weight: 900;
+                    color: var(--primary);
+                    line-height: 1;
+                }
+                .stat-label {
+                    font-size: 0.75rem;
                     font-weight: 700;
-                }
-                .count-label {
-                    font-size: 0.7rem;
-                    color: var(--muted-foreground);
+                    color: #64748b;
+                    text-transform: uppercase;
+                    margin-top: 0.5rem;
+                    letter-spacing: 0.05em;
                 }
                 .job-actions {
                     display: flex;
-                    gap: 0.5rem;
+                    gap: 0.75rem;
+                }
+                .post-btn-wrapper {
+                    box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.2);
+                    border-radius: 12px;
+                    transition: transform 0.3s ease;
+                }
+                .post-btn-wrapper:hover {
+                    transform: translateY(-2px);
                 }
 
                 @media (max-width: 1024px) {
@@ -190,42 +234,49 @@ export default function ActiveJobsPage() {
             <div className="jobs-container">
                 <div className="jobs-header">
                     <div className="header-content">
-                        <h1 className="page-title">Active Jobs</h1>
-                        <p className="page-subtitle">Manage your current job listings.</p>
+                        <h1 className="page-title">Active Vacancies</h1>
+                        <p className="page-subtitle">Strategize and manage your high-priority recruitment campaigns.</p>
                     </div>
-                    <Button onClick={() => router.push('/jobs/employer/post')}>+ Post New Job</Button>
+                    <div className="post-btn-wrapper">
+                        <Button onClick={() => router.push('/jobs/employer/post')} size="lg">+ Post New Job</Button>
+                    </div>
                 </div>
 
                 <div className="jobs-list">
                     {loading ? <p style={{ color: 'var(--muted-foreground)' }}>Loading jobs...</p> : jobs.length === 0 ? <p style={{ color: 'var(--muted-foreground)' }}>No active jobs found.</p> : jobs.map((job) => (
-                        <Card key={job.id} className="job-card">
-                            <div className="job-info">
-                                <div className="job-header">
-                                    <h3 className="job-title">{job.title}</h3>
-                                    <span className="status-badge" style={{ color: getStatusColor(job.status) }}>
-                                        {job.status}
-                                    </span>
+                        <div key={job.id} className="job-card">
+                            <div 
+                                className="status-accent" 
+                                style={{ backgroundColor: getStatusColor(job.status) }}
+                            />
+                            <div className="card-content-wrapper">
+                                <div className="job-info">
+                                    <div className="job-title-row">
+                                        <h3 className="job-title">{job.title}</h3>
+                                        <span className="status-pill" style={{ color: getStatusColor(job.status), background: `${getStatusColor(job.status)}15` }}>
+                                            {job.status}
+                                        </span>
+                                    </div>
+                                    <div className="job-meta">
+                                        {job.companyName && <span className="meta-pill" style={{ background: '#fef3c7', color: '#92400e' }}>🏢 {job.companyName}</span>}
+                                        <span className="meta-pill">{job.location}</span>
+                                        <span className="meta-pill">{job.type}</span>
+                                        <span className="meta-pill" style={{ background: '#f8fafc', color: '#64748b' }}>Posted {new Date(job.createdAt).toLocaleDateString()}</span>
+                                    </div>
                                 </div>
-                                <div className="job-meta">
-                                    <span>{job.location}</span>
-                                    <span>•</span>
-                                    <span>{job.type}</span>
-                                    <span>•</span>
-                                    <span>Posted {new Date(job.createdAt).toLocaleDateString()}</span>
-                                </div>
-                            </div>
 
-                            <div className="job-stats">
-                                <div className="applicant-count">
-                                    <div className="count-number">{job._count?.applications || 0}</div>
-                                    <div className="count-label">Applicants</div>
-                                </div>
-                                <div className="job-actions">
-                                    <Button variant="outline" size="sm">Edit</Button>
-                                    <Button variant="outline" size="sm" onClick={() => router.push('/jobs/employer/candidates')}>View Candidates</Button>
+                                <div className="job-stats">
+                                    <div className="stat-group">
+                                        <div className="stat-value">{job._count?.applications || 0}</div>
+                                        <div className="stat-label">Applicants</div>
+                                    </div>
+                                    <div className="job-actions">
+                                        <Button variant="outline" size="sm" onClick={() => router.push(`/jobs/employer/edit/${job.id}`)}>Edit</Button>
+                                        <Button variant="outline" size="sm" onClick={() => router.push(`/jobs/employer/candidates?jobId=${job.id}`)}>View Candidates</Button>
+                                    </div>
                                 </div>
                             </div>
-                        </Card>
+                        </div>
                     ))}
                 </div>
             </div>

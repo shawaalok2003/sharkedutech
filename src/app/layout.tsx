@@ -16,6 +16,8 @@ import { Navbar } from "@/components/layout/Navbar";
 
 import Providers from "@/components/providers/SessionProvider";
 
+import { Toaster } from 'react-hot-toast';
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -25,6 +27,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={spaceGrotesk.className} suppressHydrationWarning={true}>
         <Providers>
+          <Toaster position="top-center" reverseOrder={false} />
           <Navbar />
           {children}
         </Providers>

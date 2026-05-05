@@ -53,6 +53,7 @@ model User {
 model Job {
   id          String   @id @default(cuid())
   title       String
+  companyName String?
   type        String
   location    String
   salaryMin   Int?

@@ -37,9 +37,10 @@ export function HeroSection() {
                     </div>
 
                     <div className={styles.statsText}>
-                        Popular Industries:
-                        <br />
-                        <span style={{ fontSize: '1.5rem' }}>5556+ JOBS AVAILABLE</span>
+                        <div className={styles.statsLabel}>GLOBAL RECRUITMENT NETWORK</div>
+                        <div className={styles.statsHighlight}>
+                            <span style={{ fontWeight: 900 }}>5556+</span> &nbsp; VACANCIES LIVE
+                        </div>
                     </div>
                 </div>
 

@@ -31,6 +31,7 @@ export default function PostJobPage() {
         const formData = new FormData(e.currentTarget);
         const data = {
             title: formData.get('title'),
+            companyName: formData.get('companyName'),
             type: formData.get('type'),
             location: formData.get('location'),
             salaryMin: formData.get('salary-min'),
@@ -74,9 +75,15 @@ export default function PostJobPage() {
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                        <div>
-                            <label htmlFor="title" style={labelStyle}>Job Title</label>
-                            <input name="title" id="title" required placeholder="e.g. Senior Software Engineer" style={inputStyle} />
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                            <div>
+                                <label htmlFor="title" style={labelStyle}>Job Title</label>
+                                <input name="title" id="title" required placeholder="e.g. Senior Software Engineer" style={inputStyle} />
+                            </div>
+                            <div>
+                                <label htmlFor="companyName" style={labelStyle}>Hiring Company / Client (Optional)</label>
+                                <input name="companyName" id="companyName" placeholder="e.g. Shark Edutech Pvt Ltd" style={inputStyle} />
+                            </div>
                         </div>
 
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>

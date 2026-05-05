@@ -9,6 +9,7 @@ import { Space_Grotesk } from "next/font/google";
 interface Job {
     id: string;
     title: string;
+    companyName?: string;
     type: string;
     location: string;
     salaryMin: number;
@@ -415,8 +416,8 @@ export default function JobsPage() {
                 }
 
                 .logos {
-                    padding: 4.5rem 1.5rem;
-                    opacity: 0.35;
+                    padding: 6rem 1.5rem;
+                    background: #ffffff;
                 }
 
                 .logos-row {
@@ -425,23 +426,36 @@ export default function JobsPage() {
                     display: flex;
                     flex-wrap: wrap;
                     justify-content: center;
-                    gap: 3rem;
-                    font-weight: 900;
-                    font-size: 1.2rem;
-                    font-style: italic;
-                    color: #0f172a;
+                    align-items: center;
+                    gap: 4rem;
+                }
+
+                .logos-row img {
+                    height: 45px;
+                    width: auto;
+                    filter: grayscale(1);
+                    opacity: 0.4;
+                    transition: all 0.4s ease;
+                    object-fit: contain;
+                }
+
+                .logos-row img:hover {
+                    filter: grayscale(0);
+                    opacity: 1;
+                    transform: scale(1.1);
                 }
 
                 .cta {
-                    max-width: 72rem;
-                    margin: 0 auto 6rem;
-                    padding: 3.5rem;
-                    background: #0f172a;
+                    max-width: 78rem;
+                    margin: 0 auto 8rem;
+                    padding: 5rem 3.5rem;
+                    background: linear-gradient(135deg, #001529 0%, #003366 100%);
                     color: #ffffff;
-                    border-radius: 2rem;
+                    border-radius: 3rem;
                     text-align: center;
                     position: relative;
                     overflow: hidden;
+                    box-shadow: 0 40px 100px -20px rgba(0, 21, 41, 0.4);
                 }
 
                 .cta::before {
@@ -459,44 +473,63 @@ export default function JobsPage() {
                 }
 
                 .cta-title {
-                    font-size: 2.6rem;
-                    font-weight: 800;
+                    font-size: 3.5rem;
+                    font-weight: 900;
                     margin-bottom: 1.5rem;
+                    letter-spacing: -0.04em;
+                    line-height: 1.1;
+                    color: #ffffff;
                 }
 
                 .cta-text {
-                    color: #cbd5f5;
-                    max-width: 40rem;
-                    margin: 0 auto 2.5rem;
-                    font-size: 1.1rem;
-                    line-height: 1.7;
+                    color: #e2e8f0;
+                    max-width: 44rem;
+                    margin: 0 auto 3rem;
+                    font-size: 1.25rem;
+                    line-height: 1.6;
+                    font-weight: 500;
                 }
 
                 .cta-actions {
                     display: flex;
                     flex-wrap: wrap;
-                    gap: 1rem;
+                    gap: 1.5rem;
                     justify-content: center;
                 }
 
                 .cta-primary,
                 .cta-secondary {
-                    padding: 0.9rem 2.5rem;
-                    border-radius: 1rem;
-                    font-weight: 700;
+                    padding: 1.125rem 3rem;
+                    border-radius: 1.25rem;
+                    font-weight: 800;
                     border: none;
                     cursor: pointer;
+                    font-size: 1.1rem;
+                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                 }
 
                 .cta-primary {
                     background: #ffffff;
-                    color: #0f172a;
+                    color: #001529;
+                    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+                }
+
+                .cta-primary:hover {
+                    transform: translateY(-4px);
+                    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+                    background: #f8fafc;
                 }
 
                 .cta-secondary {
-                    background: transparent;
+                    background: rgba(255, 255, 255, 0.1);
+                    backdrop-filter: blur(10px);
                     color: #ffffff;
                     border: 1px solid rgba(255, 255, 255, 0.2);
+                }
+
+                .cta-secondary:hover {
+                    background: rgba(255, 255, 255, 0.2);
+                    transform: translateY(-4px);
                 }
 
                 .modal-backdrop {
@@ -728,7 +761,9 @@ export default function JobsPage() {
                                             {i === 1 && <span className="job-badge">Urgent</span>}
                                         </div>
                                         <div className="job-meta" style={{ marginTop: "0.8rem" }}>
-                                            <span>{job.employer?.name || "Company"}</span>
+                                            <span style={{ color: job.companyName ? "var(--primary)" : "inherit", fontWeight: job.companyName ? 800 : 600 }}>
+                                                {job.companyName || job.employer?.name || "Company"}
+                                            </span>
                                             <span>{job.location}</span>
                                             <span>Posted {new Date(job.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
                                         </div>
@@ -757,12 +792,12 @@ export default function JobsPage() {
 
                 <section className="logos">
                     <div className="logos-row">
-                        <span>MARRIOTT</span>
-                        <span>HILTON</span>
-                        <span>FOUR SEASONS</span>
-                        <span>HYATT</span>
-                        <span>ACCOR</span>
-                        <span>SHANGRI-LA</span>
+                        <img src="/HOTEL LOGOS-20260501T173926Z-3-001/HOTEL LOGOS/MARRIOTT.JPG.jpeg" alt="Marriott" />
+                        <img src="/HOTEL LOGOS-20260501T173926Z-3-001/HOTEL LOGOS/HILTON.JPG.jpeg" alt="Hilton" />
+                        <img src="/HOTEL LOGOS-20260501T173926Z-3-001/HOTEL LOGOS/FOUR POINTS BY SHERATON.JPG.jpeg" alt="Four Points" />
+                        <img src="/HOTEL LOGOS-20260501T173926Z-3-001/HOTEL LOGOS/HYATT REGENCY.jpeg" alt="Hyatt" />
+                        <img src="/HOTEL LOGOS-20260501T173926Z-3-001/HOTEL LOGOS/JW MARRIOTT.JPG.jpeg" alt="JW Marriott" />
+                        <img src="/HOTEL LOGOS-20260501T173926Z-3-001/HOTEL LOGOS/RADISSON INDIVIDUALS.JPG.jpeg" alt="Radisson" />
                     </div>
                 </section>
 

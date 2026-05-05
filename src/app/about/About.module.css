@@ -1,11 +1,12 @@
 .main {
     min-height: 100vh;
-    background-color: #f8fafc;
+    background-color: #ffffff;
+    overflow-x: hidden;
 }
 
 .hero {
-    background-color: #007bff;
-    padding: 8rem 0 12rem;
+    background: linear-gradient(135deg, #002147 0%, #0062ff 100%);
+    padding: 10rem 0 14rem;
     position: relative;
     overflow: hidden;
     color: white;
@@ -19,7 +20,7 @@
     left: 0;
     width: 100%;
     height: 100px;
-    background: #f8fafc;
+    background: #ffffff;
     clip-path: ellipse(60% 100% at 50% 100%);
 }
 
@@ -32,10 +33,11 @@
 }
 
 .heroTitle {
-    font-size: 4rem;
-    font-weight: 800;
+    font-size: 5rem;
+    font-weight: 900;
     margin-bottom: 1.5rem;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.04em;
+    text-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
 .heroSubtitle {
@@ -44,6 +46,7 @@
     max-width: 800px;
     margin: 0 auto;
     line-height: 1.6;
+    font-weight: 500;
 }
 
 .section {
@@ -136,17 +139,6 @@
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
-.cta::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(circle at 50% 50%, rgba(0, 123, 255, 0.15) 0%, transparent 70%);
-    pointer-events: none;
-}
-
 .ctaTitle {
     font-size: 3.5rem;
     font-weight: 800;
@@ -191,25 +183,43 @@
 
 @media (max-width: 1024px) {
     .heroTitle {
-        font-size: 3rem;
+        font-size: 3.5rem;
     }
 
     .grid {
         grid-template-columns: 1fr;
-        gap: 2rem;
+        gap: 3rem;
     }
 }
 
 @media (max-width: 768px) {
+    .container {
+        padding: 0 1.5rem;
+    }
+
+    .hero {
+        padding: 8rem 0 10rem;
+    }
+
     .heroTitle {
-        font-size: 2.5rem;
+        font-size: 2.75rem;
     }
 
     .heroSubtitle {
-        font-size: 1.25rem;
+        font-size: 1.15rem;
+    }
+
+    .cta {
+        margin: 4rem 1rem;
+        padding: 5rem 1.5rem;
+        border-radius: 32px;
     }
 
     .ctaTitle {
+        font-size: 2.25rem;
+    }
+    
+    .heading {
         font-size: 2rem;
     }
 }

@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import Link from "next/link";
 
 export default function SettingsPage() {
     const toggleStyle = {
@@ -73,19 +74,14 @@ export default function SettingsPage() {
                         <CardTitle>Account Security</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div style={rowStyle}>
-                            <div>
-                                <h4 style={{ fontWeight: 500 }}>Two-Factor Authentication</h4>
-                                <p style={{ fontSize: '0.875rem', color: 'var(--muted-foreground)' }}>Add an extra layer of security to your account.</p>
-                            </div>
-                            <Button variant="outline" size="sm">Enable</Button>
-                        </div>
                         <div style={{ ...rowStyle, borderBottom: 'none' }}>
                             <div>
                                 <h4 style={{ fontWeight: 500 }}>Change Password</h4>
                                 <p style={{ fontSize: '0.875rem', color: 'var(--muted-foreground)' }}>Update your password regularly.</p>
                             </div>
-                            <Button variant="outline" size="sm">Update</Button>
+                            <Link href="/auth/forgot-password">
+                                <Button variant="outline" size="sm">Update</Button>
+                            </Link>
                         </div>
                     </CardContent>
                 </Card>

@@ -42,11 +42,12 @@ export async function POST(request: Request) {
 
     try {
         const body = await request.json();
-        const { title, type, location, salaryMin, salaryMax, description, requirements } = body;
+        const { title, companyName, type, location, salaryMin, salaryMax, description, requirements } = body;
 
         const job = await prisma.job.create({
             data: {
                 title,
+                companyName,
                 type,
                 location,
                 salaryMin: Number(salaryMin),

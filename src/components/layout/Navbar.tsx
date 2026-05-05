@@ -145,6 +145,13 @@ export function Navbar() {
 
                 {/* Mobile Menu */}
                 <div className={`${styles.mobileMenu} ${isMobileMenuOpen ? styles.mobileMenuOpen : ''}`}>
+                    <button 
+                        className={styles.closeBtn}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        aria-label="Close menu"
+                    >
+                        &times;
+                    </button>
                     <nav className={styles.mobileNav}>
                         <Link href="/" className={`${styles.mobileLink} ${isActive('/')}`}>
                             Home

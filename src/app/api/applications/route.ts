@@ -37,7 +37,18 @@ export async function GET(request: Request) {
             where: whereClause,
             include: {
                 job: {
-                    select: { title: true }
+                    select: { id: true, title: true }
+                },
+                applicant: {
+                    select: {
+                        name: true,
+                        email: true,
+                        studentProfile: {
+                            select: {
+                                photoUrl: true
+                            }
+                        }
+                    }
                 }
             },
             orderBy: { createdAt: 'desc' }
