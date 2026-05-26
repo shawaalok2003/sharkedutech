@@ -8,7 +8,7 @@ export async function PATCH(
     context: { params: Promise<{ id: string }> }
 ) {
     const session = await getServerSession(authOptions as any);
-    if (!session || (session.user as any).role !== 'ADMIN') {
+    if (!session || ((session as any).user as any).role !== 'ADMIN') {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 

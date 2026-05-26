@@ -8,10 +8,12 @@ export const dynamic = 'force-dynamic';
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const type = searchParams.get('type');
+    const category = searchParams.get('category');
 
     // Build query based on status/filters
     const where: any = {};
     if (type) where.type = type;
+    if (category) where.category = category;
 
     try {
         const jobs = await prisma.job.findMany({
@@ -42,13 +44,14 @@ export async function POST(request: Request) {
 
     try {
         const body = await request.json();
-        const { title, companyName, type, location, salaryMin, salaryMax, description, requirements } = body;
+        const { title, companyName, type, category, location, salaryMin, salaryMax, description, requirements } = body;
 
         const job = await prisma.job.create({
             data: {
                 title,
                 companyName,
                 type,
+                category: category || "Front Office",
                 location,
                 salaryMin: Number(salaryMin),
                 salaryMax: Number(salaryMax),

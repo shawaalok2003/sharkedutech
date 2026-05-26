@@ -35,9 +35,10 @@ export default async function CollegesAdminPage() {
                     <thead>
                         <tr style={{ borderBottom: "1px solid #eee", textAlign: "left", backgroundColor: "#f8fafc" }}>
                             <th style={{ padding: "1rem" }}>College Name</th>
+                            <th style={{ padding: "1rem" }}>Email</th>
                             <th style={{ padding: "1rem" }}>Location</th>
                             <th style={{ padding: "1rem" }}>Established</th>
-                            <th style={{ padding: "1rem" }}>Total Courses</th>
+                            <th style={{ padding: "1rem" }}>Courses</th>
                             <th style={{ padding: "1rem" }}>Actions</th>
                         </tr>
                     </thead>
@@ -45,9 +46,33 @@ export default async function CollegesAdminPage() {
                         {colleges.map((college) => (
                             <tr key={college.id} style={{ borderBottom: "1px solid #eee" }}>
                                 <td style={{ padding: "1rem", fontWeight: 500 }}>{college.name}</td>
+                                <td style={{ padding: "1rem" }}>
+                                    <a href={`mailto:${college.email}`} style={{ color: "#2563eb", textDecoration: "none" }}>
+                                        {college.email || "N/A"}
+                                    </a>
+                                </td>
                                 <td style={{ padding: "1rem" }}>{college.location}</td>
                                 <td style={{ padding: "1rem" }}>{college.establishedYear || "N/A"}</td>
-                                <td style={{ padding: "1rem", fontWeight: "bold" }}>{college.courses?.length || 0}</td>
+                                <td style={{ padding: "1rem" }}>
+                                    {college.courses && college.courses.length > 0 ? (
+                                        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.25rem", maxWidth: "250px" }}>
+                                            {college.courses.map((course) => (
+                                                <span key={course.id} style={{
+                                                    padding: "0.15rem 0.4rem",
+                                                    backgroundColor: "#e0f2fe",
+                                                    color: "#0369a1",
+                                                    borderRadius: "4px",
+                                                    fontSize: "0.75rem",
+                                                    fontWeight: 500
+                                                }}>
+                                                    {course.title}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <span style={{ color: "#94a3b8", fontSize: "0.875rem" }}>No courses</span>
+                                    )}
+                                </td>
                                 <td style={{ padding: "1rem" }}>
                                     <div style={{ display: "flex", gap: "0.5rem" }}>
                                         <a href={`/admin/colleges/${college.id}`} style={{ padding: "0.4rem 0.8rem", backgroundColor: "#e2e8f0", color: "#0f172a", borderRadius: "4px", textDecoration: "none", fontSize: "0.875rem" }}>

@@ -30,17 +30,24 @@ export default function EmployerSignupPage() {
 
     const inputStyle = {
         width: '100%',
-        padding: '0.75rem',
-        borderRadius: 'var(--radius)',
-        border: '1px solid var(--border)',
+        padding: '1rem 1.25rem',
+        borderRadius: '16px',
+        border: '1px solid rgba(0, 33, 71, 0.1)',
         fontSize: '1rem',
         marginTop: '0.5rem',
+        background: 'rgba(255, 255, 255, 0.8)',
+        transition: 'all 0.3s ease',
+        fontWeight: 500,
+        color: '#002147',
     };
 
     const labelStyle = {
-        fontSize: '0.875rem',
-        fontWeight: 500,
-        color: 'var(--foreground)',
+        fontSize: '0.85rem',
+        fontWeight: 800,
+        color: '#64748b',
+        textTransform: 'uppercase',
+        letterSpacing: '0.05em',
+        marginLeft: '0.5rem',
     };
 
     const startResendCountdown = () => {
@@ -169,102 +176,216 @@ export default function EmployerSignupPage() {
     }
 
     return (
-        <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#F0F9FF', padding: '2rem' }}>
-            <Card style={{ width: '100%', maxWidth: '500px' }}>
-                <CardHeader>
-                    <CardTitle style={{ textAlign: 'center', fontSize: '1.5rem', color: '#0369A1' }}>Register as Employer</CardTitle>
-                    <p style={{ textAlign: 'center', color: 'var(--muted-foreground)', fontSize: '0.875rem' }}>Join our professional network to hire top talent</p>
-                </CardHeader>
+        <>
+            <style jsx>{`
+                .auth-page {
+                    min-height: 100vh;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    background: radial-gradient(circle at 100% 100%, #001529 0%, #002147 50%, #003366 100%);
+                    padding: 2rem;
+                    position: relative;
+                    overflow: hidden;
+                }
 
-                {step === 'form' ? (
-                    <CardContent>
-                        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                            {error && <div style={{ padding: '0.75rem', backgroundColor: '#FEE2E2', color: '#DC2626', borderRadius: 'var(--radius)', fontSize: '0.875rem' }}>{error}</div>}
+                .auth-page::before {
+                    content: '';
+                    position: absolute;
+                    width: 150%;
+                    height: 150%;
+                    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%230062ff' fill-opacity='0.05' d='M45.7,-77.7C58.3,-71.8,67.1,-57.4,74.5,-42.6C81.9,-27.9,87.9,-12.8,87.4,2.2C86.8,17.2,79.8,32.1,69.9,44.3C60,56.5,47.2,66.1,33,72.4C18.8,78.7,3.1,81.7,-13.4,79.8C-29.9,77.9,-47.1,71.1,-61.2,60.1C-75.3,49,-86.3,33.7,-90.6,17.1C-94.8,0.5,-92.3,-17.4,-84.6,-33.2C-76.8,-49.1,-63.9,-62.8,-49.1,-67.7C-34.3,-72.6,-17.2,-68.8,-0.1,-68.6C16.9,-68.4,33.1,-83.6,45.7,-77.7Z' transform='translate(100 100)' /%3E%3C/svg%3E") no-repeat center;
+                    opacity: 0.3;
+                    animation: rotate 60s linear infinite;
+                    pointer-events: none;
+                }
 
+                @keyframes rotate {
+                    from { transform: rotate(0deg); }
+                    to { transform: rotate(360deg); }
+                }
+
+                .glass-card {
+                    background: rgba(255, 255, 255, 0.95);
+                    backdrop-filter: blur(20px);
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    border-radius: 40px;
+                    width: 100%;
+                    max-width: 500px;
+                    padding: 3.5rem;
+                    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.4);
+                    position: relative;
+                    z-index: 1;
+                    animation: slideUp 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+                }
+
+                @keyframes slideUp {
+                    from { opacity: 0; transform: translateY(30px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+
+                .logo-box {
+                    text-align: center;
+                    margin-bottom: 2.5rem;
+                }
+
+                .title {
+                    font-size: 2.25rem;
+                    font-weight: 900;
+                    color: #002147;
+                    letter-spacing: -0.04em;
+                    margin-bottom: 0.5rem;
+                    text-align: center;
+                }
+
+                .subtitle {
+                    text-align: center;
+                    color: #64748b;
+                    font-size: 1rem;
+                    font-weight: 500;
+                    margin-bottom: 3rem;
+                }
+
+                .form-container {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 1.25rem;
+                }
+
+                .auth-button {
+                    background: linear-gradient(135deg, #002147 0%, #0062ff 100%);
+                    color: white;
+                    padding: 1.25rem;
+                    border-radius: 16px;
+                    font-size: 1.1rem;
+                    font-weight: 800;
+                    border: none;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    box-shadow: 0 10px 20px rgba(0, 98, 255, 0.2);
+                    margin-top: 1rem;
+                }
+
+                .auth-button:hover {
+                    transform: translateY(-3px);
+                    box-shadow: 0 20px 40px rgba(0, 98, 255, 0.3);
+                }
+
+                .auth-button:disabled {
+                    opacity: 0.5;
+                    cursor: not-allowed;
+                    transform: none;
+                }
+
+                .footer-links {
+                    margin-top: 2.5rem;
+                    text-align: center;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.75rem;
+                    font-size: 0.95rem;
+                    color: #64748b;
+                    font-weight: 500;
+                }
+
+                .footer-links a {
+                    color: #0062ff;
+                    font-weight: 800;
+                    text-decoration: none;
+                }
+            `}</style>
+
+            <div className="auth-page">
+                <div className="glass-card">
+                    <div className="logo-box">
+                        <img 
+                            src="/images/shark_edu_tech_logo-removebg-preview.png" 
+                            alt="Shark Edutech" 
+                            style={{ height: '50px', objectFit: 'contain' }}
+                        />
+                    </div>
+
+                    <h1 className="title">
+                        {step === 'form' ? 'Recruiter Portal' : 'Verify Identity'}
+                    </h1>
+                    <p className="subtitle">
+                        {step === 'form' ? 'Join our global hospitality network' : `We've sent a code to ${formData.email}`}
+                    </p>
+
+                    {error && (
+                        <div style={{ padding: '1rem', background: '#fef2f2', color: '#ef4444', borderRadius: '16px', border: '1px solid #fee2e2', fontSize: '0.9rem', fontWeight: 600, marginBottom: '2rem', textAlign: 'center' }}>
+                            ⚠️ {error}
+                        </div>
+                    )}
+
+                    {step === 'form' ? (
+                        <form onSubmit={handleSubmit} className="form-container">
                             <div>
-                                <label htmlFor="name" style={labelStyle}>Contact Person Name</label>
+                                <label style={labelStyle}>Contact Person</label>
                                 <input
-                                    name="name"
-                                    id="name"
                                     required
-                                    placeholder="John Doe"
+                                    placeholder="e.g. Sarah Jenkins"
                                     value={formData.name}
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                     style={inputStyle}
+                                    onFocus={(e) => e.target.style.borderColor = '#0062ff'}
+                                    onBlur={(e) => e.target.style.borderColor = 'rgba(0, 33, 71, 0.1)'}
                                 />
                             </div>
 
                             <div>
-                                <label htmlFor="email" style={labelStyle}>Work Email Address</label>
+                                <label style={labelStyle}>Work Email</label>
                                 <input
-                                    name="email"
-                                    id="email"
                                     type="email"
                                     required
-                                    placeholder="hr@company.com"
+                                    placeholder="hr@marriott.com"
                                     value={formData.email}
                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                     style={inputStyle}
+                                    onFocus={(e) => e.target.style.borderColor = '#0062ff'}
+                                    onBlur={(e) => e.target.style.borderColor = 'rgba(0, 33, 71, 0.1)'}
                                 />
                             </div>
 
                             <div>
-                                <label htmlFor="companyName" style={labelStyle}>Company Name</label>
+                                <label style={labelStyle}>Establishment Name</label>
                                 <input
-                                    name="companyName"
-                                    id="companyName"
                                     required
-                                    placeholder="Acme Corp"
+                                    placeholder="e.g. Ritz-Carlton"
                                     value={formData.companyName}
                                     onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
                                     style={inputStyle}
+                                    onFocus={(e) => e.target.style.borderColor = '#0062ff'}
+                                    onBlur={(e) => e.target.style.borderColor = 'rgba(0, 33, 71, 0.1)'}
                                 />
                             </div>
 
                             <div>
-                                <label htmlFor="industry" style={labelStyle}>Industry</label>
+                                <label style={labelStyle}>Secure Password</label>
                                 <input
-                                    name="industry"
-                                    id="industry"
-                                    placeholder="Technology"
-                                    value={formData.industry}
-                                    onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
-                                    style={inputStyle}
-                                />
-                            </div>
-
-                            <div>
-                                <label htmlFor="password" style={labelStyle}>Password</label>
-                                <input
-                                    name="password"
-                                    id="password"
                                     type="password"
                                     required
                                     placeholder="••••••••"
                                     value={formData.password}
                                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                                     style={inputStyle}
+                                    onFocus={(e) => e.target.style.borderColor = '#0062ff'}
+                                    onBlur={(e) => e.target.style.borderColor = 'rgba(0, 33, 71, 0.1)'}
                                 />
                             </div>
 
-                            <Button type="submit" size="lg" disabled={loading} style={{ marginTop: '0.5rem', backgroundColor: '#0369A1' }}>
-                                {loading ? 'Sending OTP...' : 'Verify & Continue'}
-                            </Button>
+                            <button type="submit" className="auth-button" disabled={loading}>
+                                {loading ? 'Securing Portal...' : 'Verify & Join Network'}
+                            </button>
 
-                            <p style={{ textAlign: 'center', fontSize: '0.875rem', color: 'var(--muted-foreground)' }}>
-                                Not an Employer? <Link href="/auth/signup" style={{ color: 'var(--primary)', fontWeight: 600 }}>Sign up as Candidate</Link>
-                            </p>
+                            <div className="footer-links">
+                                <p>Are you a Candidate? <Link href="/auth/signup">Create Profile</Link></p>
+                                <p>Already registered? <Link href="/auth/signin">Log In</Link></p>
+                            </div>
                         </form>
-                    </CardContent>
-                ) : (
-                    <CardContent>
-                        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                            {error && <div style={{ padding: '0.75rem', backgroundColor: '#FEE2E2', color: '#DC2626', borderRadius: 'var(--radius)', fontSize: '0.875rem' }}>{error}</div>}
-
-                            <div>
-                                <p style={{ textAlign: 'center', fontSize: '0.875rem', color: 'var(--muted-foreground)', marginBottom: '1rem' }}>
-                                    We sent a 6-digit verification code to <strong>{formData.email}</strong>
-                                </p>
+                    ) : (
+                        <form onSubmit={handleSubmit} className="form-container">
+                            <div style={{ marginBottom: '1.5rem' }}>
                                 <OTPInput
                                     value={otp}
                                     onChange={setOtp}
@@ -273,36 +394,34 @@ export default function EmployerSignupPage() {
                                 />
                             </div>
 
-                            <Button type="submit" size="lg" disabled={loading || otp.length !== 6} style={{ marginTop: '0.5rem', backgroundColor: '#0369A1' }}>
-                                {loading ? 'Creating Account...' : 'Complete Registration'}
-                            </Button>
+                            <button type="submit" className="auth-button" disabled={loading || otp.length !== 6}>
+                                {loading ? 'Authenticating...' : 'Complete Registration'}
+                            </button>
 
-                            <div style={{ textAlign: 'center' }}>
+                            <div className="footer-links">
                                 {resendCountdown > 0 ? (
-                                    <p style={{ fontSize: '0.875rem', color: 'var(--muted-foreground)' }}>
-                                        Resend OTP in {resendCountdown}s
-                                    </p>
+                                    <p>Resend code in {resendCountdown}s</p>
                                 ) : (
                                     <button
                                         type="button"
                                         onClick={handleResendOTP}
-                                        style={{ fontSize: '0.875rem', color: '#0369A1', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}
+                                        style={{ color: '#0062ff', fontWeight: 800, background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}
                                     >
-                                        Resend OTP
+                                        Resend Verification Code
                                     </button>
                                 )}
                                 <button
                                     type="button"
                                     onClick={() => { setStep('form'); setOtp(""); setError(''); }}
-                                    style={{ fontSize: '0.875rem', color: 'var(--muted-foreground)', background: 'none', border: 'none', cursor: 'pointer', marginLeft: '1rem' }}
+                                    style={{ color: '#64748b', background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 600 }}
                                 >
-                                    Back
+                                    ← Back to Portal Signup
                                 </button>
                             </div>
                         </form>
-                    </CardContent>
-                )}
-            </Card>
-        </div>
+                    )}
+                </div>
+            </div>
+        </>
     );
 }

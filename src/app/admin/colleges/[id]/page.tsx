@@ -7,6 +7,19 @@ async function updateCollege(formData: FormData) {
     "use server";
     const id = formData.get("id") as string;
 
+    const email = formData.get("email") as string;
+    if (email) {
+        const candidateUser = await prisma.user.findFirst({
+            where: {
+                email: email.trim().toLowerCase(),
+                role: "CANDIDATE"
+            }
+        });
+        if (candidateUser) {
+            redirect(`/admin/colleges/${id}?error=This email is already registered to a Candidate user!`);
+        }
+    }
+
     const data = {
         name: formData.get("name") as string,
         description: formData.get("description") as string,
@@ -48,8 +61,11 @@ async function deleteCourse(formData: FormData) {
     revalidatePath(`/admin/colleges/${collegeId}`);
 }
 
-export default async function EditCollegePage(props: { params: Promise<{  id: string  }> }) {
+export default async function EditCollegePage(props: { params: Promise<{ id: string }>, searchParams?: Promise<{ error?: string }> }) {
     const params = await props.params;
+    const searchParams = await props.searchParams;
+    const error = searchParams?.error;
+
     const college = await prisma.college.findUnique({
         where: { id: params.id },
         include: { courses: true }
@@ -68,6 +84,12 @@ export default async function EditCollegePage(props: { params: Promise<{  id: st
                     Back to Colleges
                 </Link>
             </div>
+
+            {error && (
+                <div style={{ padding: "1rem", marginBottom: "1.5rem", backgroundColor: "#fef2f2", border: "1px solid #fee2e2", borderRadius: "6px", color: "#991b1b", fontWeight: 500, display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                    ⚠️ {error}
+                </div>
+            )}
 
             <div style={{ backgroundColor: "white", padding: "2rem", borderRadius: "8px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)", marginBottom: "2rem" }}>
                 <h2 style={{ fontSize: "1.5rem", fontWeight: 600, marginBottom: "1.5rem", borderBottom: "1px solid #eee", paddingBottom: "0.5rem" }}>College Details</h2>

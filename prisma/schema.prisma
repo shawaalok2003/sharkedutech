@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -55,6 +55,7 @@ model Job {
   title       String
   companyName String?
   type        String
+  category    String   @default("Front Office")
   location    String
   salaryMin   Int?
   salaryMax   Int?

@@ -6,6 +6,19 @@ import Link from "next/link";
 async function createCollege(formData: FormData) {
     "use server";
 
+    const email = formData.get("email") as string;
+    if (email) {
+        const candidateUser = await prisma.user.findFirst({
+            where: {
+                email: email.trim().toLowerCase(),
+                role: "CANDIDATE"
+            }
+        });
+        if (candidateUser) {
+            redirect(`/admin/colleges/new?error=This email is already registered to a Candidate user!`);
+        }
+    }
+
     // Extracted Fields Map
     const data = {
         name: formData.get("name") as string,
@@ -39,7 +52,10 @@ async function createCollege(formData: FormData) {
     redirect(`/admin/colleges/${newCollege.id}`); // redirect to edit page to add courses
 }
 
-export default function NewCollegePage() {
+export default async function NewCollegePage(props: { searchParams: Promise<{ error?: string }> }) {
+    const searchParams = await props.searchParams;
+    const error = searchParams.error;
+
     return (
         <div>
             <div style={{ marginBottom: "2rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -51,6 +67,12 @@ export default function NewCollegePage() {
                     Back to Colleges
                 </Link>
             </div>
+
+            {error && (
+                <div style={{ padding: "1rem", marginBottom: "1.5rem", backgroundColor: "#fef2f2", border: "1px solid #fee2e2", borderRadius: "6px", color: "#991b1b", fontWeight: 500, display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                    ⚠️ {error}
+                </div>
+            )}
 
             <div style={{ backgroundColor: "white", padding: "2rem", borderRadius: "8px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)", marginBottom: "2rem" }}>
                 <form action={createCollege} style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>

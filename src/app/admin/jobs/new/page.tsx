@@ -25,6 +25,9 @@ async function createJob(formData: FormData) {
 
     const title = formData.get("title") as string;
     const type = formData.get("type") as string;
+    const categorySelect = formData.get("category") as string;
+    const customCategory = formData.get("customCategory") as string;
+    const category = (categorySelect === "__custom__" && customCategory?.trim()) ? customCategory.trim() : categorySelect;
     const location = formData.get("location") as string;
     const salaryMin = Number(formData.get("salaryMin")) || null;
     const salaryMax = Number(formData.get("salaryMax")) || null;
@@ -34,7 +37,7 @@ async function createJob(formData: FormData) {
 
     await prisma.job.create({
         data: {
-            title, type, location, salaryMin, salaryMax, description, requirements, status,
+            title, type, category, location, salaryMin, salaryMax, description, requirements, status,
             employerId
         }
     });
@@ -46,6 +49,10 @@ async function createJob(formData: FormData) {
 export default function NewJobPage() {
     return (
         <div>
+            <style>{`
+                .custom-cat-input { display: none; }
+                .cat-wrapper:has(select option[value="__custom__"]:checked) .custom-cat-input { display: block; }
+            `}</style>
             <div style={{ marginBottom: "2rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <div>
                     <h1 style={{ fontSize: "1.875rem", fontWeight: 700, color: "var(--primary)" }}>Create Job Posting</h1>
@@ -88,6 +95,45 @@ export default function NewJobPage() {
                         <div>
                             <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Location</label>
                             <input name="location" placeholder="Remote, New York, etc." required style={{ width: "100%", padding: "0.6rem", borderRadius: "4px", border: "1px solid #ccc" }} />
+                        </div>
+                        <div className="cat-wrapper">
+                            <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Category</label>
+                            <select name="category" defaultValue="Front Office" style={{ width: "100%", padding: "0.6rem", borderRadius: "4px", border: "1px solid #ccc", backgroundColor: "white" }}>
+                                <optgroup label="Operations">
+                                    <option value="Front Office">Front Office</option>
+                                    <option value="Back Office">Back Office</option>
+                                    <option value="Guest Relations">Guest Relations</option>
+                                    <option value="Concierge">Concierge</option>
+                                    <option value="Reservations">Reservations</option>
+                                </optgroup>
+                                <optgroup label="Food & Beverage">
+                                    <option value="F&B Service">F&B Service</option>
+                                    <option value="Food Production">Food Production (Kitchen)</option>
+                                    <option value="Banquet & Events">Banquet &amp; Events</option>
+                                    <option value="Bar & Mixology">Bar &amp; Mixology</option>
+                                    <option value="Pastry & Bakery">Pastry &amp; Bakery</option>
+                                    <option value="Stewarding">Stewarding</option>
+                                </optgroup>
+                                <optgroup label="Rooms Division">
+                                    <option value="Housekeeping">Housekeeping</option>
+                                    <option value="Laundry">Laundry</option>
+                                    <option value="Engineering & Maintenance">Engineering &amp; Maintenance</option>
+                                </optgroup>
+                                <optgroup label="Wellness & Recreation">
+                                    <option value="Spa & Wellness">Spa &amp; Wellness</option>
+                                    <option value="Recreation & Activities">Recreation &amp; Activities</option>
+                                </optgroup>
+                                <optgroup label="Support Functions">
+                                    <option value="Sales & Marketing">Sales &amp; Marketing</option>
+                                    <option value="HR & Admin">HR &amp; Admin</option>
+                                    <option value="Accounts & Finance">Accounts &amp; Finance</option>
+                                    <option value="Purchasing & Stores">Purchasing &amp; Stores</option>
+                                    <option value="Security">Security</option>
+                                    <option value="IT & Systems">IT &amp; Systems</option>
+                                </optgroup>
+                                <option value="__custom__">✏️ Other (Custom)</option>
+                            </select>
+                            <input name="customCategory" className="custom-cat-input" placeholder="Enter your custom category..." style={{ width: "100%", padding: "0.6rem", borderRadius: "4px", border: "1px solid #ccc", marginTop: "0.5rem" }} />
                         </div>
                         <div>
                             <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Min Salary</label>

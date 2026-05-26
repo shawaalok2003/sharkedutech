@@ -11,6 +11,7 @@ interface Job {
     title: string;
     companyName?: string;
     type: string;
+    category: string;
     location: string;
     salaryMin: number;
     salaryMax: number;
@@ -39,6 +40,42 @@ export default function JobsPage() {
     const [loading, setLoading] = useState(true);
 
     const [appliedJobIds, setAppliedJobIds] = useState<Set<string>>(new Set());
+
+    // Search and filter state variables
+    const [searchTerm, setSearchTerm] = useState("");
+    const [searchLocation, setSearchLocation] = useState("");
+    const [selectedCategory, setSelectedCategory] = useState("");
+    const [filterRemote, setFilterRemote] = useState(false);
+    const [filterUrgent, setFilterUrgent] = useState(false);
+
+    const categoryMapping: Record<string, string> = {
+        "Front Office": "Front Office",
+        "Culinary": "Food Production",
+        "Housekeeping": "Housekeeping",
+        "Management": "Back Office"
+    };
+
+    const filteredJobs = jobs.filter(job => {
+        const matchesSearch = searchTerm === "" || 
+            job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            job.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (job.companyName && job.companyName.toLowerCase().includes(searchTerm.toLowerCase())) ||
+            (job.employer?.name && job.employer.name.toLowerCase().includes(searchTerm.toLowerCase()));
+
+        const matchesLocation = searchLocation === "" || 
+            job.location.toLowerCase().includes(searchLocation.toLowerCase());
+
+        const matchesCategory = selectedCategory === "" || 
+            job.category === selectedCategory;
+
+        const matchesRemote = !filterRemote || job.location.toLowerCase().includes("remote");
+        
+        const matchesUrgent = !filterUrgent || 
+            job.title.toLowerCase().includes("urgent") || 
+            job.description.toLowerCase().includes("urgent");
+
+        return matchesSearch && matchesLocation && matchesCategory && matchesRemote && matchesUrgent;
+    });
 
     useEffect(() => {
         async function fetchJobs() {
@@ -312,11 +349,35 @@ export default function JobsPage() {
                     font-weight: 700;
                     font-size: 0.85rem;
                     cursor: pointer;
-                    transition: background 0.2s ease;
+                    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
                 }
 
                 .filter-button:hover {
                     background: #f1f5f9;
+                }
+
+                .filter-button.active {
+                    background: #0f172a;
+                    color: #ffffff;
+                    border-color: #0f172a;
+                }
+
+                .filter-badge-active {
+                    display: inline-flex;
+                    align-items: center;
+                    padding: 0.4rem 0.8rem;
+                    border-radius: 9999px;
+                    background: #f1f5f9;
+                    border: 1px solid #cbd5e1;
+                    font-size: 0.8rem;
+                    font-weight: 500;
+                    color: #0f172a;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                }
+
+                .filter-badge-active:hover {
+                    background: #cbd5e1;
                 }
 
                 .job-list {
@@ -639,6 +700,20 @@ export default function JobsPage() {
                         display: none;
                     }
 
+                    .search-row {
+                        flex-direction: column;
+                        align-items: stretch;
+                        gap: 0;
+                    }
+
+                    .search-field {
+                        border-bottom: 1px solid #e2e8f0;
+                    }
+
+                    .search-field:last-of-type {
+                        border-bottom: none;
+                    }
+
                     .section-header {
                         flex-direction: column;
                         align-items: flex-start;
@@ -689,22 +764,87 @@ export default function JobsPage() {
                             <div className="search-row">
                                 <div className="search-field">
                                     <span style={{ color: "#94a3b8" }}>Search</span>
-                                    <input placeholder="Role (e.g. Sommelier, Estate Manager)" />
+                                    <input 
+                                        placeholder="Role (e.g. Sommelier, Estate Manager)" 
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                    />
                                 </div>
                                 <div className="search-divider"></div>
                                 <div className="search-field">
                                     <span style={{ color: "#94a3b8" }}>Location</span>
-                                    <input placeholder="Location (e.g. Maldives, Paris)" />
+                                    <input 
+                                        placeholder="Location (e.g. Maldives, Paris)" 
+                                        value={searchLocation}
+                                        onChange={(e) => setSearchLocation(e.target.value)}
+                                    />
                                 </div>
-                                <button className="search-button">Search Roles</button>
+                                <div className="search-divider"></div>
+                                <div className="search-field" style={{ minWidth: "200px" }}>
+                                    <span style={{ color: "#94a3b8" }}>Category</span>
+                                    <select 
+                                        value={selectedCategory} 
+                                        onChange={(e) => setSelectedCategory(e.target.value)}
+                                        style={{
+                                            width: "100%",
+                                            border: "none",
+                                            outline: "none",
+                                            fontSize: "1rem",
+                                            fontFamily: "inherit",
+                                            color: "#0f172a",
+                                            backgroundColor: "transparent",
+                                            cursor: "pointer"
+                                        }}
+                                    >
+                                        <option value="">All Categories</option>
+                                        <optgroup label="Operations">
+                                            <option value="Front Office">Front Office</option>
+                                            <option value="Back Office">Back Office</option>
+                                            <option value="Guest Relations">Guest Relations</option>
+                                            <option value="Concierge">Concierge</option>
+                                            <option value="Reservations">Reservations</option>
+                                        </optgroup>
+                                        <optgroup label="Food & Beverage">
+                                            <option value="F&B Service">F&B Service</option>
+                                            <option value="Food Production">Food Production</option>
+                                            <option value="Banquet & Events">Banquet & Events</option>
+                                            <option value="Bar & Mixology">Bar & Mixology</option>
+                                            <option value="Pastry & Bakery">Pastry & Bakery</option>
+                                            <option value="Stewarding">Stewarding</option>
+                                        </optgroup>
+                                        <optgroup label="Rooms Division">
+                                            <option value="Housekeeping">Housekeeping</option>
+                                            <option value="Laundry">Laundry</option>
+                                            <option value="Engineering & Maintenance">Engineering & Maintenance</option>
+                                        </optgroup>
+                                        <optgroup label="Wellness & Recreation">
+                                            <option value="Spa & Wellness">Spa & Wellness</option>
+                                            <option value="Recreation & Activities">Recreation & Activities</option>
+                                        </optgroup>
+                                        <optgroup label="Support Functions">
+                                            <option value="Sales & Marketing">Sales & Marketing</option>
+                                            <option value="HR & Admin">HR & Admin</option>
+                                            <option value="Accounts & Finance">Accounts & Finance</option>
+                                            <option value="Purchasing & Stores">Purchasing & Stores</option>
+                                            <option value="Security">Security</option>
+                                            <option value="IT & Systems">IT & Systems</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+                                <button className="search-button" onClick={() => {
+                                    const featuredSection = document.querySelector('.featured');
+                                    if (featuredSection) {
+                                        featuredSection.scrollIntoView({ behavior: 'smooth' });
+                                    }
+                                }}>Search Roles</button>
                             </div>
                         </div>
                         <div className="trending">
                             <span style={{ textTransform: "uppercase", letterSpacing: "0.2em", fontSize: "0.6rem", fontWeight: 800 }}>Trending:</span>
-                            <a href="#">Head Chef</a>
-                            <a href="#">General Manager</a>
-                            <a href="#">Guest Relations</a>
-                            <a href="#">Yacht Crew</a>
+                            <a href="#" onClick={(e) => { e.preventDefault(); setSearchTerm("Head Chef"); }}>Head Chef</a>
+                            <a href="#" onClick={(e) => { e.preventDefault(); setSearchTerm("General Manager"); }}>General Manager</a>
+                            <a href="#" onClick={(e) => { e.preventDefault(); setSearchTerm("Guest Relations"); }}>Guest Relations</a>
+                            <a href="#" onClick={(e) => { e.preventDefault(); setSearchTerm("Yacht Crew"); }}>Yacht Crew</a>
                         </div>
                     </div>
                 </section>
@@ -715,11 +855,23 @@ export default function JobsPage() {
                             <span className="section-kicker">Curation</span>
                             <h2 className="section-title">Elite Sectors</h2>
                         </div>
-                        <a className="section-action" href="#">Explore All</a>
+                        <a className="section-action" href="#" onClick={(e) => { e.preventDefault(); setSelectedCategory(""); }}>Explore All</a>
                     </div>
                     <div className="sector-grid">
                         {categories.map((cat, i) => (
-                            <div key={i} className="card-lift">
+                            <div 
+                                key={i} 
+                                className="card-lift" 
+                                style={{ cursor: "pointer", border: selectedCategory === (categoryMapping[cat.name] || cat.name) ? "1.5px solid #0f172a" : "1px solid #e2e8f0" }}
+                                onClick={() => {
+                                    const mapped = categoryMapping[cat.name] || cat.name;
+                                    setSelectedCategory(mapped);
+                                    const featuredSection = document.querySelector('.featured');
+                                    if (featuredSection) {
+                                        featuredSection.scrollIntoView({ behavior: 'smooth' });
+                                    }
+                                }}
+                            >
                                 <div className="sector-icon">{cat.icon}</div>
                                 <h3 style={{ fontSize: "1.2rem", fontWeight: 800, marginBottom: "0.6rem" }}>{cat.name}</h3>
                                 <p style={{ color: "#64748b", fontSize: "0.9rem", lineHeight: 1.6 }}>
@@ -739,22 +891,106 @@ export default function JobsPage() {
                             </p>
                         </div>
                         <div className="filter-row">
-                            <button className="filter-button">Remote Roles</button>
-                            <button className="filter-button">Urgent Hire</button>
+                            <button 
+                                className={`filter-button ${filterRemote ? "active" : ""}`}
+                                onClick={() => setFilterRemote(!filterRemote)}
+                            >
+                                Remote Roles
+                            </button>
+                            <button 
+                                className={`filter-button ${filterUrgent ? "active" : ""}`}
+                                onClick={() => setFilterUrgent(!filterUrgent)}
+                            >
+                                Urgent Hire
+                            </button>
                         </div>
                     </div>
+
+                    {(searchTerm || searchLocation || selectedCategory || filterRemote || filterUrgent) && (
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginBottom: "2rem", alignItems: "center" }}>
+                            <span style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 600, marginRight: "0.5rem" }}>Active Filters:</span>
+                            {searchTerm && (
+                                <span className="filter-badge-active" onClick={() => setSearchTerm("")}>
+                                    Search: "{searchTerm}" <span style={{ marginLeft: "0.5rem", fontWeight: "bold" }}>×</span>
+                                </span>
+                            )}
+                            {searchLocation && (
+                                <span className="filter-badge-active" onClick={() => setSearchLocation("")}>
+                                    Location: "{searchLocation}" <span style={{ marginLeft: "0.5rem", fontWeight: "bold" }}>×</span>
+                                </span>
+                            )}
+                            {selectedCategory && (
+                                <span className="filter-badge-active" onClick={() => setSelectedCategory("")}>
+                                    Category: {selectedCategory} <span style={{ marginLeft: "0.5rem", fontWeight: "bold" }}>×</span>
+                                </span>
+                            )}
+                            {filterRemote && (
+                                <span className="filter-badge-active" onClick={() => setFilterRemote(false)}>
+                                    Remote <span style={{ marginLeft: "0.5rem", fontWeight: "bold" }}>×</span>
+                                </span>
+                            )}
+                            {filterUrgent && (
+                                <span className="filter-badge-active" onClick={() => setFilterUrgent(false)}>
+                                    Urgent <span style={{ marginLeft: "0.5rem", fontWeight: "bold" }}>×</span>
+                                </span>
+                            )}
+                            <button 
+                                onClick={() => {
+                                    setSearchTerm("");
+                                    setSearchLocation("");
+                                    setSelectedCategory("");
+                                    setFilterRemote(false);
+                                    setFilterUrgent(false);
+                                }}
+                                style={{
+                                    background: "none",
+                                    border: "none",
+                                    color: "#64748b",
+                                    fontSize: "0.85rem",
+                                    cursor: "pointer",
+                                    textDecoration: "underline",
+                                    fontWeight: 600,
+                                    marginLeft: "0.5rem"
+                                }}
+                            >
+                                Clear All
+                            </button>
+                        </div>
+                    )}
 
                     <div className="job-list">
                         {loading ? (
                             <div className="job-card">Loading featured roles...</div>
-                        ) : jobs.length === 0 ? (
-                            <div className="job-card">No jobs found. Check back soon.</div>
-                        ) : jobs.map((job, i) => (
+                        ) : filteredJobs.length === 0 ? (
+                            <div className="job-card" style={{ padding: "3rem", textAlign: "center", color: "#64748b" }}>
+                                <div style={{ fontSize: "2rem", marginBottom: "1rem" }}>🔍</div>
+                                <h3 style={{ fontSize: "1.2rem", fontWeight: 700, color: "#0f172a", marginBottom: "0.5rem" }}>No matching jobs found</h3>
+                                <p style={{ fontSize: "0.95rem" }}>We couldn't find any opportunities matching your active filters. Try broadening your criteria or resetting filters.</p>
+                                <button 
+                                    className="filter-button" 
+                                    style={{ marginTop: "1.5rem" }}
+                                    onClick={() => {
+                                        setSearchTerm("");
+                                        setSearchLocation("");
+                                        setSelectedCategory("");
+                                        setFilterRemote(false);
+                                        setFilterUrgent(false);
+                                    }}
+                                >
+                                    Reset All Filters
+                                </button>
+                            </div>
+                        ) : filteredJobs.map((job, i) => (
                             <div key={job.id} className="job-card card-lift">
                                 <div className="job-row">
                                     <div className="job-logo">{job.employer?.name?.charAt(0) || "L"}</div>
                                     <div style={{ flex: 1 }}>
-                                        <div className="job-title">{job.title}</div>
+                                        <div style={{ display: "flex", alignItems: "center", gap: "0.8rem", flexWrap: "wrap" }}>
+                                            <div className="job-title">{job.title}</div>
+                                            <span style={{ fontSize: "0.75rem", padding: "0.2rem 0.6rem", borderRadius: "9999px", background: "#f1f5f9", border: "1px solid #cbd5e1", fontWeight: 600 }}>
+                                                {job.category}
+                                            </span>
+                                        </div>
                                         <div className="job-tags">
                                             <span className="job-badge">{job.type}</span>
                                             {i === 0 && <span className="job-badge">Top Brand</span>}
@@ -786,7 +1022,19 @@ export default function JobsPage() {
                     </div>
 
                     <div style={{ marginTop: "3rem", textAlign: "center" }}>
-                        <button className="filter-button" style={{ padding: "1rem 2.5rem" }}>View All Opportunities</button>
+                        <button 
+                            className="filter-button" 
+                            style={{ padding: "1rem 2.5rem" }}
+                            onClick={() => {
+                                setSearchTerm("");
+                                setSearchLocation("");
+                                setSelectedCategory("");
+                                setFilterRemote(false);
+                                setFilterUrgent(false);
+                            }}
+                        >
+                            View All Opportunities
+                        </button>
                     </div>
                 </section>
 

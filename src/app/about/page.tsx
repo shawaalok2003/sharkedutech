@@ -94,7 +94,7 @@ export default function AboutPage() {
                     <p className={styles.ctaSubtitle}>
                         Where Talent Meets Opportunity! Your dream career or ideal candidate is just a click away.
                     </p>
-                    <Link href="/auth/register" className={styles.ctaButton}>
+                    <Link href="/auth/signup" className={styles.ctaButton}>
                         Join Shark Edutech Today
                     </Link>
                 </div>

@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 export default function PostJobPage() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
+    const [categoryValue, setCategoryValue] = useState("Front Office");
 
     const inputStyle = {
         width: '100%',
@@ -29,10 +30,15 @@ export default function PostJobPage() {
         setLoading(true);
 
         const formData = new FormData(e.currentTarget);
+        const categorySelect = formData.get('category') as string;
+        const customCategory = formData.get('customCategory') as string;
+        const resolvedCategory = (categorySelect === '__custom__' && customCategory?.trim()) ? customCategory.trim() : categorySelect;
+
         const data = {
             title: formData.get('title'),
             companyName: formData.get('companyName'),
             type: formData.get('type'),
+            category: resolvedCategory,
             location: formData.get('location'),
             salaryMin: formData.get('salary-min'),
             salaryMax: formData.get('salary-max'),
@@ -97,6 +103,50 @@ export default function PostJobPage() {
                                     <option value="Internship">Internship</option>
                                 </select>
                             </div>
+                            <div>
+                                <label htmlFor="category" style={labelStyle}>Job Category</label>
+                                <select name="category" id="category" required value={categoryValue} onChange={(e) => setCategoryValue(e.target.value)} style={{ ...inputStyle, backgroundColor: 'white' }}>
+                                    <optgroup label="Operations">
+                                        <option value="Front Office">Front Office</option>
+                                        <option value="Back Office">Back Office</option>
+                                        <option value="Guest Relations">Guest Relations</option>
+                                        <option value="Concierge">Concierge</option>
+                                        <option value="Reservations">Reservations</option>
+                                    </optgroup>
+                                    <optgroup label="Food & Beverage">
+                                        <option value="F&B Service">F&B Service</option>
+                                        <option value="Food Production">Food Production (Kitchen)</option>
+                                        <option value="Banquet & Events">Banquet &amp; Events</option>
+                                        <option value="Bar & Mixology">Bar &amp; Mixology</option>
+                                        <option value="Pastry & Bakery">Pastry &amp; Bakery</option>
+                                        <option value="Stewarding">Stewarding</option>
+                                    </optgroup>
+                                    <optgroup label="Rooms Division">
+                                        <option value="Housekeeping">Housekeeping</option>
+                                        <option value="Laundry">Laundry</option>
+                                        <option value="Engineering & Maintenance">Engineering &amp; Maintenance</option>
+                                    </optgroup>
+                                    <optgroup label="Wellness & Recreation">
+                                        <option value="Spa & Wellness">Spa &amp; Wellness</option>
+                                        <option value="Recreation & Activities">Recreation &amp; Activities</option>
+                                    </optgroup>
+                                    <optgroup label="Support Functions">
+                                        <option value="Sales & Marketing">Sales &amp; Marketing</option>
+                                        <option value="HR & Admin">HR &amp; Admin</option>
+                                        <option value="Accounts & Finance">Accounts &amp; Finance</option>
+                                        <option value="Purchasing & Stores">Purchasing &amp; Stores</option>
+                                        <option value="Security">Security</option>
+                                        <option value="IT & Systems">IT &amp; Systems</option>
+                                    </optgroup>
+                                    <option value="__custom__">✏️ Other (Custom)</option>
+                                </select>
+                                {categoryValue === '__custom__' && (
+                                    <input name="customCategory" placeholder="Enter your custom category..." required style={{ ...inputStyle, marginTop: '0.5rem' }} />
+                                )}
+                            </div>
+                        </div>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
                             <div>
                                 <label htmlFor="location" style={labelStyle}>Location</label>
                                 <input name="location" id="location" required placeholder="e.g. Remote / New York" style={inputStyle} />

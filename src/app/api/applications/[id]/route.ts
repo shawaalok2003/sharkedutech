@@ -48,7 +48,7 @@ export async function GET(
         const userId = ((session as any).user as any).id;
         const isApplicant = application.applicantId === userId;
         const isEmployer = application.job.employerId === userId;
-        const isAdmin = (session.user as any).role === 'ADMIN';
+        const isAdmin = ((session as any).user as any).role === 'ADMIN';
 
         if (!isApplicant && !isEmployer && !isAdmin) {
             return NextResponse.json({ error: 'Forbidden' }, { status: 403 });

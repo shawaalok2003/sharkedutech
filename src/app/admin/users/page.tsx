@@ -14,7 +14,67 @@ async function deleteUser(formData: FormData) {
     "use server";
     const userId = formData.get("userId") as string;
     try {
-        await prisma.user.delete({ where: { id: userId } });
+        await prisma.$transaction(async (tx) => {
+            // 1. Delete StudentProfile
+            await tx.studentProfile.deleteMany({ where: { userId } });
+            
+            // 2. Delete OTPs
+            await tx.otp.deleteMany({ where: { userId } });
+
+            // 3. Delete Job Applications submitted by this candidate
+            await tx.application.deleteMany({ where: { applicantId: userId } });
+
+            // 4. Delete Admission Applications submitted by this student
+            await tx.admissionApplication.deleteMany({ where: { studentId: userId } });
+
+            // 5. Delete Admission Documents uploaded by this student
+            await tx.admissionDocument.deleteMany({ where: { studentId: userId } });
+
+            // 6. Delete Admission Queries submitted by this student
+            await tx.admissionQuery.deleteMany({ where: { studentId: userId } });
+
+            // 7. Delete Jobs posted by this employer (and all job applications received on them)
+            const employerJobs = await tx.job.findMany({
+                where: { employerId: userId },
+                select: { id: true }
+            });
+            const jobIds = employerJobs.map(j => j.id);
+            if (jobIds.length > 0) {
+                await tx.application.deleteMany({ where: { jobId: { in: jobIds } } });
+                await tx.job.deleteMany({ where: { id: { in: jobIds } } });
+            }
+
+            // 8. Delete Colleges administered by this user and all their nested courses/requirements/applications
+            const administeredColleges = await tx.college.findMany({
+                where: { adminId: userId },
+                select: { id: true }
+            });
+            const collegeIds = administeredColleges.map(c => c.id);
+            if (collegeIds.length > 0) {
+                // Delete Admission Documents connected to requirements of these colleges
+                const requirements = await tx.admissionRequirement.findMany({
+                    where: { collegeId: { in: collegeIds } },
+                    select: { id: true }
+                });
+                const reqIds = requirements.map(r => r.id);
+                if (reqIds.length > 0) {
+                    await tx.admissionDocument.deleteMany({ where: { requirementId: { in: reqIds } } });
+                }
+
+                // Delete Requirements, Photos, Queries, Admission Applications, and Courses (Offered Courses)
+                await tx.admissionRequirement.deleteMany({ where: { collegeId: { in: collegeIds } } });
+                await tx.collegePhoto.deleteMany({ where: { collegeId: { in: collegeIds } } });
+                await tx.admissionQuery.deleteMany({ where: { collegeId: { in: collegeIds } } });
+                await tx.admissionApplication.deleteMany({ where: { collegeId: { in: collegeIds } } });
+                await tx.course.deleteMany({ where: { collegeId: { in: collegeIds } } });
+
+                // Finally delete the College records themselves
+                await tx.college.deleteMany({ where: { id: { in: collegeIds } } });
+            }
+
+            // 9. Delete the main User record
+            await tx.user.delete({ where: { id: userId } });
+        }, { timeout: 15000 });
     } catch (e) {
         console.error("Failed to delete user", e);
     }
