@@ -35,6 +35,7 @@ export default function JobApplyPage() {
     const [applying, setApplying] = useState(false);
     const [resumeUrl, setResumeUrl] = useState("");
     const [answers, setAnswers] = useState<Record<string, string>>({});
+    const [agreed, setAgreed] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
@@ -74,6 +75,10 @@ export default function JobApplyPage() {
         e.preventDefault();
         if (!resumeUrl) {
             alert("Please upload your resume");
+            return;
+        }
+        if (!agreed) {
+            alert("Please authorize Shark Edutech to share your profile by checking the box.");
             return;
         }
 
@@ -382,7 +387,21 @@ export default function JobApplyPage() {
                             </div>
                         )}
 
-                        <button type="submit" className="submit-btn" disabled={applying || !resumeUrl}>
+                        <div style={{ display: "flex", gap: "0.75rem", alignItems: "flex-start", margin: "1.5rem 0", cursor: "pointer", fontSize: "0.9rem", color: "#475569" }}>
+                            <input
+                                id="authorize-checkbox"
+                                type="checkbox"
+                                checked={agreed}
+                                onChange={(e) => setAgreed(e.target.checked)}
+                                required
+                                style={{ marginTop: "0.25rem", cursor: "pointer", width: "1.2rem", height: "1.2rem", flexShrink: 0 }}
+                            />
+                            <label htmlFor="authorize-checkbox" style={{ cursor: "pointer", lineHeight: "1.5", fontWeight: 500 }}>
+                                I hereby authorize Shark Edutech to securely share my academic profile, identity documents, and contact information with <strong>{job.companyName || job.employer.name}</strong> for the purpose of admission evaluation and institutional communication. I agree to the platform's Terms and Conditions.
+                            </label>
+                        </div>
+
+                        <button type="submit" className="submit-btn" disabled={applying || !resumeUrl || !agreed}>
                             {applying ? "Perfecting Application..." : "Submit Application"}
                         </button>
                         <p style={{ textAlign: "center", color: "#64748b", fontSize: "0.8rem", marginTop: "1.5rem" }}>
