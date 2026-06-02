@@ -63,9 +63,9 @@ export default function ContactPage() {
                             <p>Have questions about admissions, job postings, or technical issues? Our team is ready to assist.</p>
                             
                             <div style={{ marginTop: '2rem' }}>
-                                <p><strong>📍 Address:</strong><br />Indore, Madhya Pradesh, India</p>
-                                <p><strong>📧 Email:</strong><br />info@shark.com</p>
-                                <p><strong>📞 Phone:</strong><br />+91 98765 43210</p>
+                                <p><strong>📍 Address:</strong><br />chinar park (behind Aminia Restaurant), Rajarhat, Kolkata - 700157</p>
+                                <p><strong>📧 Email:</strong><br />mamimulakanda@gmail.com</p>
+                                <p><strong>📞 Phone:</strong><br />+91 98362 43555</p>
                             </div>
                         </div>
 
