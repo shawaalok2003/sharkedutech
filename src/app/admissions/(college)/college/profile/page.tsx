@@ -51,6 +51,7 @@ export default function InstituteProfilePage() {
                 const data = await res.json();
                 if (data[0]) {
                     setCollege(data[0]);
+                    loadExtras(data[0].id);
                 } else {
                     setCollege({
                         id: "",
@@ -82,10 +83,10 @@ export default function InstituteProfilePage() {
                 }
             }
         }
-        async function loadExtras() {
+        async function loadExtras(collegeId: string) {
             const [photosRes, reqRes] = await Promise.all([
-                fetch("/api/admissions/college-photos"),
-                fetch("/api/admissions/requirements")
+                fetch(`/api/admissions/college-photos?collegeId=${collegeId}`),
+                fetch(`/api/admissions/requirements?collegeId=${collegeId}`)
             ]);
             if (photosRes.ok) {
                 const data = await photosRes.json();
@@ -97,7 +98,6 @@ export default function InstituteProfilePage() {
             }
         }
         loadCollege();
-        loadExtras();
     }, []);
 
     const updateField = (field: keyof College, value: string) => {
@@ -134,10 +134,10 @@ export default function InstituteProfilePage() {
         }
     };
 
-    const uploadPhoto = async (file: File) => {
+    const uploadPhotos = async (files: File[]) => {
+        if (!college?.id) return;
         setUploadingPhoto(true);
         try {
-            const formData = new FormData();
             for (const file of files) {
                 const formData = new FormData();
                 formData.append("file", file);
@@ -409,6 +409,7 @@ export default function InstituteProfilePage() {
                     }
                 }
             `}</style>
+
             <div className="profile-container">
                 <div className="profile-header">
                     <h1 className="profile-title">Institute Profile</h1>
@@ -555,205 +556,10 @@ export default function InstituteProfilePage() {
                                     <input type="number" value={college?.totalSeats ?? ""} onChange={(e) => updateNumberField("totalSeats", e.target.value)} className="form-input" />
                                 </div>
                             </form>
-                    </CardContent>
-                    </Card>
-                </div>
-                
-                {!college?.id ? (
-                    <Card style={{ border: '2px dashed var(--muted)', opacity: 0.7 }}>
-                        <CardContent style={{ padding: '3rem', textAlign: 'center' }}>
-                @media (max-width: 768px) {
-                    .profile-header {
-                        flex-direction: column;
-                        align-items: stretch;
-                    }
-                    .profile-header button {
-                        width: 100%;
-                    }
-                    .details-form {
-                        grid-template-columns: 1fr;
-                    }
-                    .form-full {
-                        grid-column: span 1;
-                    }
-                    .extras-grid {
-                        grid-template-columns: 1fr;
-                    }
-                    .req-form {
-                        grid-template-columns: 1fr;
-                    }
-                    .req-form textarea {
-                        grid-column: span 1;
-                    }
-                    .logo-section {
-                        flex-direction: column;
-                        text-align: center;
-                    }
-                }
-                @media (max-width: 480px) {
-                    .profile-title {
-                        font-size: 1.5rem;
-                    }
-                    .req-item {
-                        flex-direction: column;
-                        align-items: stretch;
-                        text-align: center;
-                    }
-                    .req-actions {
-                        justify-content: center;
-                    }
-                }
-            `}</style>
-            <div className="profile-container">
-                <div className="profile-header">
-                    <h1 className="profile-title">Institute Profile</h1>
-                    <Button onClick={saveChanges} disabled={saving || !college}>{saving ? "Saving..." : "Save Changes"}</Button>
-                </div>
-
-                <div className="main-grid">
-                    <Card>
-                        <CardContent className="logo-section">
-                            <div className="logo-box">
-                                {college?.logoUrl ? (
-                                    <img src={college.logoUrl} alt="Logo" />
-                                ) : (
-                                    college?.name?.slice(0, 3).toUpperCase() || "NEW"
-                                )}
-                            </div>
-                            <div style={{ textAlign: 'center' }}>
-                                <h2 className="college-name">{college?.name || "College"}</h2>
-                                <p className="college-location">{college?.location || "Location"}</p>
-                                <input 
-                                    ref={logoInputRef}
-                                    type="file" 
-                                    accept="image/*" 
-                                    hidden 
-                                    onChange={(e) => {
-                                        const file = e.target.files?.[0];
-                                        if (file) uploadLogo(file);
-                                    }}
-                                />
-                                <Button 
-                                    variant="outline" 
-                                    size="sm"
-                                    disabled={uploadingLogo}
-                                    onClick={() => logoInputRef.current?.click()}
-                                >
-                                    {uploadingLogo ? "Uploading..." : "Update Logo"}
-                                </Button>
-                            </div>
                         </CardContent>
                     </Card>
-
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Institute Details</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            {error && (
-                                <div className="error-box">{error}</div>
-                            )}
-                            <form className="details-form">
-                                <div className="form-full">
-                                    <label className="form-label">Institute Name</label>
-                                    <input type="text" required value={college?.name || ""} onChange={(e) => updateField("name", e.target.value)} className="form-input" />
-                                </div>
-                                <div className="form-full">
-                                    <label className="form-label">Location</label>
-                                    <input type="text" required value={college?.location || ""} onChange={(e) => updateField("location", e.target.value)} className="form-input" />
-                                </div>
-                                <div>
-                                    <label className="form-label">Established Year</label>
-                                    <input type="number" value={college?.establishedYear ?? ""} onChange={(e) => updateNumberField("establishedYear", e.target.value)} className="form-input" />
-                                </div>
-                                <div>
-                                    <label className="form-label">Campus Area</label>
-                                    <input type="text" value={college?.campusArea || ""} onChange={(e) => updateField("campusArea", e.target.value)} placeholder="e.g., 25 acres" className="form-input" />
-                                </div>
-                                <div>
-                                    <label className="form-label">Email Address</label>
-                                    <input type="email" value={college?.email || ""} onChange={(e) => updateField("email", e.target.value)} className="form-input" />
-                                </div>
-                                <div>
-                                    <label className="form-label">Contact Number</label>
-                                    <input type="tel" value={college?.phone || ""} onChange={(e) => updateField("phone", e.target.value)} className="form-input" />
-                                </div>
-                                <div className="form-full">
-                                    <label className="form-label">Address</label>
-                                    <textarea rows={3} value={college?.address || ""} onChange={(e) => updateField("address", e.target.value)} className="form-input" />
-                                </div>
-                                <div className="form-full">
-                                    <label className="form-label">Overview / Vision</label>
-                                    <textarea rows={4} value={college?.description || ""} onChange={(e) => updateField("description", e.target.value)} className="form-input" />
-                                </div>
-                                <div>
-                                    <label className="form-label">Accreditation</label>
-                                    <input type="text" value={college?.accreditation || ""} onChange={(e) => updateField("accreditation", e.target.value)} placeholder="NAAC, NBA, etc." className="form-input" />
-                                </div>
-                                <div>
-                                    <label className="form-label">Affiliation</label>
-                                    <input type="text" value={college?.affiliation || ""} onChange={(e) => updateField("affiliation", e.target.value)} placeholder="University / Board" className="form-input" />
-                                </div>
-                                <div>
-                                    <label className="form-label">Ranking</label>
-                                    <input type="text" value={college?.ranking || ""} onChange={(e) => updateField("ranking", e.target.value)} placeholder="NIRF/State ranking" className="form-input" />
-                                </div>
-                                <div>
-                                    <label className="form-label">Hostel Available</label>
-                                    <select value={college?.hostelAvailable ? "yes" : "no"} onChange={(e) => updateBooleanField("hostelAvailable", e.target.value === "yes")} className="form-input">
-                                        <option value="yes">Yes</option>
-                                        <option value="no">No</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label className="form-label">Placement Rate</label>
-                                    <input type="text" value={college?.placementRate || ""} onChange={(e) => updateField("placementRate", e.target.value)} placeholder="e.g., 92%" className="form-input" />
-                                </div>
-                                <div>
-                                    <label className="form-label">Average Package</label>
-                                    <input type="text" value={college?.avgPackage || ""} onChange={(e) => updateField("avgPackage", e.target.value)} placeholder="e.g., 6.5 LPA" className="form-input" />
-                                </div>
-                                <div className="form-full">
-                                    <label className="form-label">Top Recruiters</label>
-                                    <input type="text" value={college?.topRecruiters || ""} onChange={(e) => updateField("topRecruiters", e.target.value)} placeholder="Comma separated" className="form-input" />
-                                </div>
-                                <div className="form-full">
-                                    <label className="form-label">Admission Process</label>
-                                    <textarea rows={3} value={college?.admissionProcess || ""} onChange={(e) => updateField("admissionProcess", e.target.value)} className="form-input" />
-                                </div>
-                                <div className="form-full">
-                                    <label className="form-label">Eligibility Criteria</label>
-                                    <textarea rows={3} value={college?.eligibility || ""} onChange={(e) => updateField("eligibility", e.target.value)} className="form-input" />
-                                </div>
-                                <div className="form-full">
-                                    <label className="form-label">Scholarships</label>
-                                    <textarea rows={2} value={college?.scholarships || ""} onChange={(e) => updateField("scholarships", e.target.value)} className="form-input" />
-                                </div>
-                                <div className="form-full">
-                                    <label className="form-label">Facilities</label>
-                                    <input type="text" value={college?.facilities || ""} onChange={(e) => updateField("facilities", e.target.value)} placeholder="Library, Lab, Sports, Wi-Fi..." className="form-input" />
-                                </div>
-                                <div className="form-full">
-                                    <label className="form-label">Website URL</label>
-                                    <input type="url" value={college?.website || ""} onChange={(e) => updateField("website", e.target.value)} className="form-input" />
-                                </div>
-                                <div>
-                                    <label className="form-label">Brochure URL</label>
-                                    <input type="url" value={college?.brochureUrl || ""} onChange={(e) => updateField("brochureUrl", e.target.value)} className="form-input" />
-                                </div>
-                                <div>
-                                    <label className="form-label">Application Fee</label>
-                                    <input type="number" value={college?.applicationFee ?? ""} onChange={(e) => updateNumberField("applicationFee", e.target.value)} className="form-input" />
-                                </div>
-                                <div>
-                                    <label className="form-label">Total Seats</label>
-                                    <input type="number" value={college?.totalSeats ?? ""} onChange={(e) => updateNumberField("totalSeats", e.target.value)} className="form-input" />
-                                </div>
-                            </form>
-                    </CardContent>
-                    </Card>
                 </div>
-                
+
                 {!college?.id ? (
                     <Card style={{ border: '2px dashed var(--muted)', opacity: 0.7 }}>
                         <CardContent style={{ padding: '3rem', textAlign: 'center' }}>
