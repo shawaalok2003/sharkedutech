@@ -56,8 +56,29 @@ export default async function ApplicationsAdminPage() {
                                     <div style={{ fontWeight: 500 }}>{app.job?.title || "Unknown Job"}</div>
                                 </td>
                                 <td style={{ padding: "1rem" }}>
-                                    {app.resumeUrl && <a href={app.resumeUrl} target="_blank" rel="noreferrer" style={{ color: "#2563eb", textDecoration: "underline", marginRight: "0.5rem" }}>Resume</a>}
-                                    {app.coverLetter && <span style={{ fontSize: "0.875rem", color: "#475569" }}>Has Cover Letter</span>}
+                                    {app.resumeUrl && (() => {
+                                        const isData = app.resumeUrl.startsWith('data:');
+                                        const getExt = (url: string) => {
+                                            const parts = url.split(';');
+                                            if (parts.length < 2) return 'pdf';
+                                            const mime = parts[0].split(':')[1];
+                                            if (mime === 'application/pdf') return 'pdf';
+                                            if (mime === 'image/jpeg') return 'jpg';
+                                            if (mime === 'image/png') return 'png';
+                                            return mime.split('/')[1] || 'pdf';
+                                        };
+                                        const ext = isData ? getExt(app.resumeUrl) : 'pdf';
+                                        return (
+                                            <a 
+                                                href={app.resumeUrl} 
+                                                download={`resume-${app.name.replace(/\s+/g, '-')}.${ext}`}
+                                                style={{ color: "#2563eb", textDecoration: "underline", marginRight: "0.5rem", fontWeight: 600 }}
+                                            >
+                                                Resume
+                                            </a>
+                                        );
+                                    })()}
+                                    {app.coverLetter && <span style={{ fontSize: "0.875rem", color: "#475569", marginLeft: "0.5rem" }}>Has Cover Letter</span>}
                                 </td>
                                 <td style={{ padding: "1rem" }}>
                                     <span style={{

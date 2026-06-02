@@ -496,14 +496,29 @@ function CandidatesContent() {
                             {detailModalApp.resumeUrl && (
                                 <div className="section">
                                     <h3 className="section-title">Resume</h3>
-                                    <a
-                                        href={detailModalApp.resumeUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        style={{ color: 'var(--primary)', textDecoration: 'underline', fontSize: '0.875rem' }}
-                                    >
-                                        View Resume (PDF)
-                                    </a>
+                                    {(() => {
+                                        const isData = detailModalApp.resumeUrl.startsWith('data:');
+                                        const getExt = (url: string) => {
+                                            const parts = url.split(';');
+                                            if (parts.length < 2) return 'pdf';
+                                            const mime = parts[0].split(':')[1];
+                                            if (mime === 'application/pdf') return 'pdf';
+                                            if (mime === 'image/jpeg') return 'jpg';
+                                            if (mime === 'image/png') return 'png';
+                                            return mime.split('/')[1] || 'pdf';
+                                        };
+                                        const ext = isData ? getExt(detailModalApp.resumeUrl) : 'pdf';
+                                        const downloadName = `resume-${(detailModalApp.applicant?.name || detailModalApp.name || 'candidate').replace(/\s+/g, '-')}.${ext}`;
+                                        return (
+                                            <a
+                                                href={detailModalApp.resumeUrl}
+                                                download={downloadName}
+                                                style={{ color: 'var(--primary)', textDecoration: 'underline', fontSize: '0.875rem', fontWeight: 600 }}
+                                            >
+                                                Download Resume
+                                            </a>
+                                        );
+                                    })()}
                                 </div>
                             )}
 
