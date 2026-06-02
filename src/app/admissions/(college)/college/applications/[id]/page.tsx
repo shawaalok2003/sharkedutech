@@ -192,7 +192,7 @@ export default function AdminApplicationDetailPage() {
           <CardContent>
             <div className="docs-grid">
               {requirements?.map((req: any) => {
-                const doc = documents?.find((d: any) => d.requirement?.id === req.id);
+                const doc = documents?.find((d: any) => d.requirementId === req.id || d.requirement?.id === req.id);
                 const submitted = !!doc;
                 return (
                   <div key={req.id} style={{ padding: '0.75rem', borderRadius: 'var(--radius)', border: '1px solid var(--border)', background: 'white' }}>

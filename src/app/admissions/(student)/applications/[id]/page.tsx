@@ -237,7 +237,7 @@ export default function ApplicationTrackingPage() {
                       {index === 1 && (
                         <div className="docs-grid">
                           {requirements?.map((req: any) => {
-                            const doc = documents?.find((d: any) => d.requirement?.id === req.id);
+                            const doc = documents?.find((d: any) => d.requirementId === req.id || d.requirement?.id === req.id);
                             const submitted = !!doc;
                             return (
                               <div key={req.id} className="doc-card">

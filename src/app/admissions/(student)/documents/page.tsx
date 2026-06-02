@@ -414,7 +414,7 @@ export default function DocumentsPage() {
                         <h3 className="requirements-title">Required Documents</h3>
                         <div className="requirements-grid">
                             {requirements.map((req) => {
-                                const submitted = docs.some(d => d.requirement?.id === req.id);
+                                const submitted = docs.some(d => d.requirementId === req.id || d.requirement?.id === req.id);
                                 return (
                                     <div key={req.id} className="requirement-card">
                                         <div className="requirement-header">

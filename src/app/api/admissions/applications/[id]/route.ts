@@ -40,13 +40,9 @@ export async function GET(_: Request, context: { params: Promise<{ id: string }>
         }),
         prisma.admissionDocument.findMany({
             where: {
-                studentId: application.studentId,
-                OR: [
-                    { requirement: { collegeId: application.collegeId } },
-                    { requirementId: null }
-                ]
+                studentId: application.studentId
             },
-            include: { requirement: { select: { id: true, name: true } } },
+            include: { requirement: { select: { id: true, name: true, collegeId: true } } },
             orderBy: { createdAt: "desc" }
         })
     ]);
