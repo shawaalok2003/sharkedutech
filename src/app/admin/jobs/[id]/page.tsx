@@ -7,6 +7,7 @@ async function updateJob(formData: FormData) {
     "use server";
     const id = formData.get("id") as string;
     const title = formData.get("title") as string;
+    const companyName = formData.get("companyName") as string;
     const type = formData.get("type") as string;
     const location = formData.get("location") as string;
     const salaryMin = Number(formData.get("salaryMin")) || null;
@@ -17,7 +18,7 @@ async function updateJob(formData: FormData) {
 
     await prisma.job.update({
         where: { id },
-        data: { title, type, location, salaryMin, salaryMax, description, requirements, status }
+        data: { title, companyName, type, location, salaryMin, salaryMax, description, requirements, status }
     });
 
     revalidatePath("/admin/jobs");
@@ -54,6 +55,10 @@ export default async function EditJobPage(props: { params: Promise<{  id: string
                         <div style={{ gridColumn: "span 2" }}>
                             <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Job Title</label>
                             <input name="title" defaultValue={job.title} required style={{ width: "100%", padding: "0.6rem", borderRadius: "4px", border: "1px solid #ccc" }} />
+                        </div>
+                        <div style={{ gridColumn: "span 2" }}>
+                            <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Company Name (Optional)</label>
+                            <input name="companyName" defaultValue={job.companyName || ""} placeholder="E.g., Marriott International, Radisson Blu, or leave empty if posted as admin" style={{ width: "100%", padding: "0.6rem", borderRadius: "4px", border: "1px solid #ccc" }} />
                         </div>
                         <div>
                             <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Type</label>

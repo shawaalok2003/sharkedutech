@@ -24,6 +24,7 @@ async function createJob(formData: FormData) {
     }
 
     const title = formData.get("title") as string;
+    const companyName = formData.get("companyName") as string;
     const type = formData.get("type") as string;
     const categorySelect = formData.get("category") as string;
     const customCategory = formData.get("customCategory") as string;
@@ -37,7 +38,7 @@ async function createJob(formData: FormData) {
 
     await prisma.job.create({
         data: {
-            title, type, category, location, salaryMin, salaryMax, description, requirements, status,
+            title, companyName, type, category, location, salaryMin, salaryMax, description, requirements, status,
             employerId
         }
     });
@@ -87,6 +88,10 @@ export default function NewJobPage() {
                         <div style={{ gridColumn: "span 2" }}>
                             <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Job Title</label>
                             <input name="title" required style={{ width: "100%", padding: "0.6rem", borderRadius: "4px", border: "1px solid #ccc" }} />
+                        </div>
+                        <div style={{ gridColumn: "span 2" }}>
+                            <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Company Name (Optional)</label>
+                            <input name="companyName" placeholder="E.g., Marriott International, Radisson Blu, or leave empty if posted as admin" style={{ width: "100%", padding: "0.6rem", borderRadius: "4px", border: "1px solid #ccc" }} />
                         </div>
                         <div>
                             <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Type</label>

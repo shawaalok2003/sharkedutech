@@ -16,6 +16,7 @@ interface Job {
     id: string;
     title: string;
     type: string;
+    companyName?: string;
     location: string;
     salaryMin: number;
     salaryMax: number;
@@ -252,7 +253,7 @@ export default function JobApplyPage() {
                         ← Back to Careers
                     </Link>
                     <div className="job-summary">
-                        <div className="company">{job.employer.name}</div>
+                        <div className="company">{job.companyName || job.employer.name}</div>
                         <h1 className="title">{job.title}</h1>
                         <div className="meta">
                             <span>📍 {job.location}</span>
