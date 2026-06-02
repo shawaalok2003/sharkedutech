@@ -64,8 +64,8 @@ export default function ContactPage() {
                             
                             <div style={{ marginTop: '2rem' }}>
                                 <p><strong>📍 Address:</strong><br />chinar park (behind Aminia Restaurant), Rajarhat, Kolkata - 700157</p>
-                                <p><strong>📧 Email:</strong><br />mamimulakanda@gmail.com</p>
-                                <p><strong>📞 Phone:</strong><br />+91 98362 43555</p>
+                                <p><strong>📧 Email:</strong><br /><a href="mailto:info@sharkedutech.com" style={{ color: 'var(--primary)', textDecoration: 'none' }}>info@sharkedutech.com</a></p>
+                                <p><strong>📞 Phone:</strong><br /><a href="tel:+919147331167" style={{ color: 'var(--primary)', textDecoration: 'none' }}>+91 91473 31167</a></p>
                             </div>
                         </div>
 
