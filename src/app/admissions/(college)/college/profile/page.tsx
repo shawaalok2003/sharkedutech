@@ -206,10 +206,12 @@ export default function InstituteProfilePage() {
                 }
                 return;
             }
-            if (!college?.id) {
-                const created = await res.json();
-                setCollege(created);
-            }
+            const saved = await res.json();
+            setCollege(saved);
+            alert("Profile saved successfully!");
+        } catch (err) {
+            console.error("Failed to save changes:", err);
+            setError("An unexpected error occurred while saving.");
         } finally {
             setSaving(false);
         }
