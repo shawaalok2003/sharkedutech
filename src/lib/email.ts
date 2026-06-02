@@ -149,3 +149,40 @@ export function validateEmail(email: string): boolean {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
 }
+
+export async function sendContactEmail(name: string, email: string, message: string): Promise<boolean> {
+    if (!transporter) {
+        console.error('❌ Email not configured. Please set EMAIL_USER and EMAIL_PASSWORD in .env');
+        return false;
+    }
+
+    try {
+        await transporter.sendMail({
+            from: emailFrom,
+            to: emailUser, // Admin's email address
+            subject: `New Contact Form Inquiry from ${name}`,
+            html: `
+                <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
+                    <div style="background: #0f172a; padding: 30px; text-align: center; color: #fbbf24; font-weight: 800; font-size: 20px;">SHARKEDUTECH</div>
+                    <div style="padding: 30px; color: #1e293b; line-height: 1.6;">
+                        <h2 style="margin-top: 0; color: #0f172a;">New Contact Inquiry Received</h2>
+                        <p>You have received a new message from the website contact form.</p>
+                        <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
+                        <p><strong>Name:</strong> ${name}</p>
+                        <p><strong>Email Address:</strong> <a href="mailto:${email}">${email}</a></p>
+                        <p><strong>Message:</strong></p>
+                        <div style="background: #f8fafc; padding: 15px; border-radius: 6px; border: 1px solid #e2e8f0; white-space: pre-wrap;">${message}</div>
+                    </div>
+                    <div style="text-align: center; padding: 20px; background: #f8fafc; color: #64748b; font-size: 12px; border-top: 1px solid #e2e8f0;">
+                        © 2026 Sharkedutech Administration
+                    </div>
+                </div>
+            `
+        });
+        console.log(`✅ Contact inquiry email sent to admin (${emailUser})`);
+        return true;
+    } catch (error) {
+        console.error("❌ Failed to send contact email to admin:", error);
+        return false;
+    }
+}
