@@ -1,13 +1,4 @@
 import { NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
-import { createClient } from '@supabase/supabase-js';
-
-// Initialize Supabase Client dynamically
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_SECRET_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-const supabase = supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
 
 export async function POST(request: Request) {
     try {
@@ -18,73 +9,27 @@ export async function POST(request: Request) {
             return NextResponse.json({ success: false, error: "No file uploaded" }, { status: 400 });
         }
 
+        // Limit file size to 4MB for Base64 database storage
+        if (file.size > 4 * 1024 * 1024) {
+            return NextResponse.json({ success: false, error: "File size exceeds the 4MB database limit" }, { status: 400 });
+        }
+
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
 
-        // --- PRODUCTION: SUPABASE STORAGE ---
-        if (supabase) {
-            try {
-                const filename = `${Date.now()}-${file.name.replace(/\s/g, '-')}`;
-                const bucketName = 'uploads';
+        // Convert the file to a standard Base64 Data URL
+        const base64String = buffer.toString('base64');
+        const dataUrl = `data:${file.type};base64,${base64String}`;
 
-                // Check and ensure the 'uploads' bucket exists
-                const { data: buckets } = await supabase.storage.listBuckets();
-                const bucketExists = buckets?.some(b => b.name === bucketName);
-                if (!bucketExists) {
-                    await supabase.storage.createBucket(bucketName, {
-                        public: true,
-                        fileSizeLimit: 10485760 // 10MB
-                    });
-                }
-
-                // Upload file to Supabase Storage
-                const { error: uploadError } = await supabase.storage
-                    .from(bucketName)
-                    .upload(filename, buffer, {
-                        contentType: file.type,
-                        upsert: true
-                    });
-
-                if (uploadError) {
-                    throw uploadError;
-                }
-
-                // Get public URL
-                const { data: { publicUrl } } = supabase.storage
-                    .from(bucketName)
-                    .getPublicUrl(filename);
-
-                console.log(`✅ Uploaded file to Supabase Storage: ${publicUrl}`);
-
-                return NextResponse.json({
-                    success: true,
-                    url: publicUrl
-                });
-
-            } catch (supabaseError) {
-                console.error("⚠️ Supabase upload failed, falling back to local storage:", supabaseError);
-                // Fall through to local storage fallback
-            }
-        }
-
-        // --- LOCAL DEVELOPMENT FALLBACK: WRITE TO DISK ---
-        console.log("💾 Using local filesystem storage fallback...");
-        const uploadDir = join(process.cwd(), 'public/uploads');
-        await mkdir(uploadDir, { recursive: true });
-
-        const filename = `${Date.now()}-${file.name.replace(/\s/g, '-')}`;
-        const filePath = join(uploadDir, filename);
-
-        await writeFile(filePath, buffer);
-        console.log(`✅ Saved file locally to ${filePath}`);
+        console.log(`✅ File successfully converted to Base64 Data URL (Size: ${file.size} bytes)`);
 
         return NextResponse.json({
             success: true,
-            url: `/uploads/${filename}`
+            url: dataUrl
         });
 
     } catch (error) {
-        console.error("❌ Upload failed entirely:", error);
+        console.error("❌ Upload failed:", error);
         return NextResponse.json({ success: false, error: "Upload failed" }, { status: 500 });
     }
 }
