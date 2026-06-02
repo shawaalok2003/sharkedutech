@@ -37,7 +37,14 @@ export async function GET(request: Request) {
             where: whereClause,
             include: {
                 job: {
-                    select: { id: true, title: true }
+                    select: { 
+                        id: true, 
+                        title: true,
+                        companyName: true,
+                        employer: {
+                            select: { name: true }
+                        }
+                    }
                 },
                 applicant: {
                     select: {

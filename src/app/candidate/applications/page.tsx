@@ -86,7 +86,7 @@ export default function CandidateApplicationsPage() {
                                     <tr key={app.id} style={{ borderBottom: '1px solid #f1f5f9', cursor: 'pointer', transition: 'background-color 0.15s' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8fafc'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'white'}>
                                         <td style={{ padding: '1.25rem 1.5rem' }}>
                                             <p style={{ margin: '0 0 0.25rem 0', fontWeight: 800, color: '#0f172a' }}>{app.job?.title || 'Unknown Position'}</p>
-                                            <p style={{ margin: 0, fontSize: '0.875rem', color: '#64748b' }}>{app.job?.employer?.name || 'Unknown Company'}</p>
+                                            <p style={{ margin: 0, fontSize: '0.875rem', color: '#64748b' }}>{app.job?.companyName || app.job?.employer?.name || 'Unknown Company'}</p>
                                         </td>
                                         <td style={{ padding: '1.25rem 1.5rem', color: '#475569', fontSize: '0.875rem' }}>
                                             {new Date(app.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}
