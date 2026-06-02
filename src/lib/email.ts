@@ -145,6 +145,72 @@ export async function sendAdmissionApplicationEmail(email: string, name: string,
     }
 }
 
+export async function sendAdmissionStatusEmail(email: string, name: string, collegeName: string, courseName: string, status: string, remarks?: string): Promise<boolean> {
+    if (!transporter) return false;
+
+    let statusHtml = '';
+    let subject = `Admission Application Status Update: ${status} at ${collegeName}`;
+
+    if (status === 'Approved' || status === 'Offer') {
+        statusHtml = `
+            <div style="margin-top: 30px; padding: 20px; background: #f0fdf4; border-radius: 8px; border: 1px solid #bbf7d0;">
+                <p style="margin: 0; font-weight: 600; color: #166534; font-size: 18px;">Congratulations! Admission Approved! 🎉</p>
+                <p style="margin: 5px 0 0 0; font-size: 14px; color: #14532d;">The college has officially issued an offer for you. Please check your student portal dashboard for further steps regarding confirmation and document submissions.</p>
+            </div>
+        `;
+    } else if (status === 'Rejected') {
+        statusHtml = `
+            <div style="margin-top: 30px; padding: 20px; background: #fef2f2; border-radius: 8px; border: 1px solid #fca5a5;">
+                <p style="margin: 0; font-weight: 600; color: #991b1b; font-size: 16px;">Application Update</p>
+                <p style="margin: 5px 0 0 0; font-size: 14px; color: #7f1d1d;">Unfortunately, your application for admission has not been accepted at this time.</p>
+            </div>
+        `;
+    } else {
+        statusHtml = `
+            <div style="margin-top: 30px; padding: 20px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <p style="margin: 0; font-weight: 600; color: #0f172a;">Status Update: ${status}</p>
+                <p style="margin: 5px 0 0 0; font-size: 14px; color: #475569;">Your application is currently marked as: <strong>${status}</strong>.</p>
+            </div>
+        `;
+    }
+
+    if (remarks) {
+        statusHtml += `
+            <div style="margin-top: 15px; padding: 15px; background: #f1f5f9; border-radius: 8px; border: 1px solid #cbd5e1;">
+                <p style="margin: 0 0 5px 0; font-weight: 600; font-size: 14px; color: #334155;">Remarks from Admission Office:</p>
+                <p style="margin: 0; font-size: 14px; color: #475569; white-space: pre-wrap;">${remarks}</p>
+            </div>
+        `;
+    }
+
+    try {
+        await transporter.sendMail({
+            from: emailFrom,
+            to: email,
+            subject: subject,
+            html: `
+                <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
+                    <div style="background: #0f172a; padding: 30px; text-align: center; color: #fbbf24; font-weight: 800; font-size: 20px;">SHARKEDUTECH</div>
+                    <div style="padding: 30px; color: #1e293b; line-height: 1.6;">
+                        <h2 style="margin-top: 0;">Application Status Update</h2>
+                        <p>Hi ${name},</p>
+                        <p>There is an update regarding your admission application for <strong>${courseName}</strong> at <strong>${collegeName}</strong>.</p>
+                        ${statusHtml}
+                        <p style="margin-top: 25px;">You can view the full details and track your application status anytime in your Student Portal.</p>
+                    </div>
+                    <div style="text-align: center; padding: 20px; background: #f8fafc; color: #64748b; font-size: 12px; border-top: 1px solid #e2e8f0;">
+                        © 2026 Sharkedutech. Empowering Hospitality Careers.
+                    </div>
+                </div>
+            `
+        });
+        return true;
+    } catch (e) {
+        console.error("Admission status email error:", e);
+        return false;
+    }
+}
+
 export function validateEmail(email: string): boolean {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);

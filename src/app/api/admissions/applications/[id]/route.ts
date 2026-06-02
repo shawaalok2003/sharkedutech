@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { sendAdmissionStatusEmail } from "@/lib/email";
 
 export const dynamic = 'force-dynamic';
 
@@ -87,8 +88,24 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
 
     const updated = await prisma.admissionApplication.update({
         where: { id },
-        data: { status, step: resolvedStep, remarks }
+        data: { status, step: resolvedStep, remarks },
+        include: {
+            student: { select: { name: true, email: true } },
+            college: { select: { name: true } },
+            course: { select: { title: true } }
+        }
     });
+
+    if (updated.student?.email) {
+        await sendAdmissionStatusEmail(
+            updated.student.email,
+            updated.student.name || "Candidate",
+            updated.college?.name || "College",
+            updated.course?.title || "General Admission",
+            status,
+            remarks
+        );
+    }
 
     return NextResponse.json(updated);
 }
