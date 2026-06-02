@@ -62,14 +62,20 @@ export default async function JobsAdminPage() {
                         {jobs.map((job) => (
                             <tr key={job.id} style={{ borderBottom: "1px solid #eee" }}>
                                 <td style={{ padding: "1rem" }}>
-                                    <div style={{ fontWeight: 600 }}>{job.title}</div>
+                                    <div style={{ fontWeight: 600 }}>
+                                        <a href={`/admin/jobs/${job.id}`} style={{ color: "#2563eb", textDecoration: "none" }}>{job.title}</a>
+                                    </div>
                                     <div style={{ fontSize: "0.875rem", color: "#64748b" }}>{job.employer?.companyName || job.employer?.name || "Unknown Employer"}</div>
                                 </td>
                                 <td style={{ padding: "1rem" }}>
                                     <div>{job.type}</div>
                                     <div style={{ fontSize: "0.875rem", color: "#64748b" }}>{job.location}</div>
                                 </td>
-                                <td style={{ padding: "1rem", fontWeight: "bold" }}>{job.applications.length}</td>
+                                <td style={{ padding: "1rem", fontWeight: "bold" }}>
+                                    <a href={`/admin/jobs/${job.id}#applications`} style={{ color: "#2563eb", textDecoration: "underline" }}>
+                                        {job.applications.length}
+                                    </a>
+                                </td>
                                 <td style={{ padding: "1rem" }}>
                                     <span style={{
                                         padding: "0.25rem 0.5rem",

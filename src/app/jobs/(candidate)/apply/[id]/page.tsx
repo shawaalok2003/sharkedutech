@@ -129,8 +129,36 @@ export default function JobApplyPage() {
         <div className={spaceGrotesk.className} style={{ minHeight: "100vh", background: "#f8fafc", padding: "4rem 1.5rem" }}>
             <style jsx>{`
                 .container {
-                    max-width: 800px;
+                    max-width: 1200px;
                     margin: 0 auto;
+                }
+                .split-layout {
+                    display: grid;
+                    grid-template-columns: 1.2fr 1fr;
+                    gap: 2.5rem;
+                    align-items: start;
+                }
+                .job-details-panel {
+                    background: #ffffff;
+                    border: 1px solid #e2e8f0;
+                    border-radius: 2rem;
+                    padding: 2.5rem;
+                    box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.08);
+                }
+                .details-section h3 {
+                    font-size: 1.25rem;
+                    font-weight: 800;
+                    color: #0f172a;
+                    margin-top: 0;
+                    margin-bottom: 1rem;
+                    border-bottom: 2px solid #f1f5f9;
+                    padding-bottom: 0.5rem;
+                }
+                .details-text {
+                    font-size: 0.95rem;
+                    color: #475569;
+                    line-height: 1.7;
+                    white-space: pre-wrap;
                 }
                 .header {
                     margin-bottom: 3rem;
@@ -153,7 +181,7 @@ export default function JobApplyPage() {
                     background: #ffffff;
                     border: 1px solid #e2e8f0;
                     border-radius: 2rem;
-                    padding: 3.5rem;
+                    padding: 2.5rem;
                     box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.08);
                 }
                 .job-summary {
@@ -245,6 +273,12 @@ export default function JobApplyPage() {
                     cursor: not-allowed;
                     transform: none;
                 }
+                @media (max-width: 968px) {
+                    .split-layout {
+                        grid-template-columns: 1fr;
+                        gap: 2rem;
+                    }
+                }
             `}</style>
 
             <div className="container">
@@ -261,87 +295,104 @@ export default function JobApplyPage() {
                             <span>💼 {job.type}</span>
                             <span>•</span>
                             <span style={{ color: "#0f172a", fontWeight: 700 }}>
-                                ₹{(job.salaryMin / 100000).toFixed(1)}L - {(job.salaryMax / 100000).toFixed(1)}L
+                                ₹{job.salaryMin ? (job.salaryMin / 100000).toFixed(1) : "NA"}L - {job.salaryMax ? (job.salaryMax / 100000).toFixed(1) : "NA"}L
                             </span>
                         </div>
                     </div>
                 </div>
 
-                <form onSubmit={handleApply} className="card">
-                    <div className="section">
-                        <h2 className="section-title">
-                            <span style={{ width: 8, height: 8, borderRadius: 999, background: "#0f172a" }}></span>
-                            Resume Attachment
-                        </h2>
-                        {resumeUrl ? (
-                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "1.5rem", background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: "1rem" }}>
-                                <div>
-                                    <div style={{ fontWeight: 700, color: "#166534" }}>Resume Ready</div>
-                                    <div style={{ fontSize: "0.85rem", color: "#15803d" }}>Your document is attached and secure.</div>
-                                </div>
-                                <Button variant="ghost" size="sm" type="button" onClick={() => setResumeUrl("")}>Change</Button>
-                            </div>
-                        ) : (
-                            <div className="upload-box">
-                                <label style={{ cursor: "pointer" }}>
-                                    <div style={{ fontSize: "2rem", marginBottom: "1rem" }}>📄</div>
-                                    <div style={{ fontWeight: 700, marginBottom: "0.5rem" }}>Upload your Resume (PDF)</div>
-                                    <div style={{ fontSize: "0.85rem", color: "#64748b" }}>We'll pull your details from here.</div>
-                                    <input
-                                        type="file"
-                                        accept="application/pdf"
-                                        style={{ display: "none" }}
-                                        required
-                                        onChange={async (e) => {
-                                            const file = e.target.files?.[0];
-                                            if (!file) return;
-                                            const formData = new FormData();
-                                            formData.append("file", file);
-                                            try {
-                                                const res = await fetch("/api/upload", { method: "POST", body: formData });
-                                                if (res.ok) {
-                                                    const data = await res.json();
-                                                    setResumeUrl(data.url);
-                                                }
-                                            } catch (err) {
-                                                alert("Upload failed. Please try again.");
-                                            }
-                                        }}
-                                    />
-                                </label>
+                <div className="split-layout">
+                    <div className="job-details-panel">
+                        <div className="details-section">
+                            <h3>Job Description</h3>
+                            <div className="details-text">{job.description}</div>
+                        </div>
+                        {job.requirements && (
+                            <div className="details-section" style={{ marginTop: "2rem" }}>
+                                <h3>Requirements</h3>
+                                <div className="details-text">{job.requirements}</div>
                             </div>
                         )}
                     </div>
 
-                    {screeningQuestions.length > 0 && (
+                    <form onSubmit={handleApply} className="card" style={{ marginTop: 0 }}>
                         <div className="section">
                             <h2 className="section-title">
                                 <span style={{ width: 8, height: 8, borderRadius: 999, background: "#0f172a" }}></span>
-                                Screening Questions
+                                Resume Attachment
                             </h2>
-                            {screeningQuestions.map((q: string, i: number) => (
-                                <div key={i}>
-                                    <label className="label">{q}</label>
-                                    <input
-                                        required
-                                        value={answers[q] || ""}
-                                        onChange={(e) => setAnswers((prev) => ({ ...prev, [q]: e.target.value }))}
-                                        className="input"
-                                        placeholder="Type your answer here..."
-                                    />
+                            {resumeUrl ? (
+                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "1.5rem", background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: "1rem" }}>
+                                    <div>
+                                        <div style={{ fontWeight: 700, color: "#166534" }}>Resume Ready</div>
+                                        <div style={{ fontSize: "0.85rem", color: "#15803d" }}>Your document is attached and secure.</div>
+                                    </div>
+                                    <Button variant="ghost" size="sm" type="button" onClick={() => setResumeUrl("")}>Change</Button>
                                 </div>
-                            ))}
+                            ) : (
+                                <div className="upload-box">
+                                    <label style={{ cursor: "pointer" }}>
+                                        <div style={{ fontSize: "2rem", marginBottom: "1rem" }}>📄</div>
+                                        <div style={{ fontWeight: 700, marginBottom: "0.5rem" }}>Upload your Resume (PDF)</div>
+                                        <div style={{ fontSize: "0.85rem", color: "#64748b" }}>We'll pull your details from here.</div>
+                                        <input
+                                            type="file"
+                                            accept="application/pdf"
+                                            style={{ display: "none" }}
+                                            required
+                                            onChange={async (e) => {
+                                                const file = e.target.files?.[0];
+                                                if (!file) return;
+                                                const formData = new FormData();
+                                                formData.append("file", file);
+                                                try {
+                                                    const res = await fetch("/api/upload", { method: "POST", body: formData });
+                                                    if (res.ok) {
+                                                        const data = await res.json();
+                                                        setResumeUrl(data.url);
+                                                    }
+                                                } catch (err) {
+                                                    alert("Upload failed. Please try again.");
+                                                }
+                                            }}
+                                        />
+                                    </label>
+                                </div>
+                            )}
                         </div>
-                    )}
 
-                    <button type="submit" className="submit-btn" disabled={applying || !resumeUrl}>
-                        {applying ? "Perfecting Application..." : "Submit Application"}
-                    </button>
-                    <p style={{ textAlign: "center", color: "#64748b", fontSize: "0.8rem", marginTop: "1.5rem" }}>
-                        By submitting, you agree to our Terms of Service.
-                    </p>
-                </form>
+                        {screeningQuestions.length > 0 && (
+                            <div className="section">
+                                <h2 className="section-title">
+                                    <span style={{ width: 8, height: 8, borderRadius: 999, background: "#0f172a" }}></span>
+                                    Screening Questions
+                                </h2>
+                                {screeningQuestions.map((q: string, i: number) => (
+                                    <div key={i}>
+                                        <label className="label">{q}</label>
+                                        <input
+                                            required
+                                            value={answers[q] || ""}
+                                            onChange={(e) => setAnswers((prev) => ({ ...prev, [q]: e.target.value }))}
+                                            className="input"
+                                            placeholder="Type your answer here..."
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        <button type="submit" className="submit-btn" disabled={applying || !resumeUrl}>
+                            {applying ? "Perfecting Application..." : "Submit Application"}
+                        </button>
+                        <p style={{ textAlign: "center", color: "#64748b", fontSize: "0.8rem", marginTop: "1.5rem" }}>
+                            By submitting, you agree to our Terms of Service.
+                        </p>
+                    </form>
+                </div>
             </div>
         </div>
+    );
+}
     );
 }
