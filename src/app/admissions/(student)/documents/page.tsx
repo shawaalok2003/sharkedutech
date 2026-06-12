@@ -12,6 +12,7 @@ type Doc = {
     size?: string;
     status: string;
     url: string;
+    requirementId?: string | null;
     requirement?: { id: string; name: string; collegeId: string } | null;
 };
 

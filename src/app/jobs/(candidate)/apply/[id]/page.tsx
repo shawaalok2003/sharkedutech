@@ -21,6 +21,7 @@ interface Job {
     salaryMin: number;
     salaryMax: number;
     description: string;
+    requirements?: string;
     questions?: string;
     employer: { name: string };
 }

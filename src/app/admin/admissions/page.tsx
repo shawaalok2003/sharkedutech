@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
+export const dynamic = 'force-dynamic';
+
 async function updateAdmissionStatus(formData: FormData) {
     "use server";
     const admissionId = formData.get("admissionId") as string;
