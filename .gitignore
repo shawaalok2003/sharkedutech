@@ -44,4 +44,8 @@ next-env.d.ts
 db_dump.json
 prisma/*.db
 *.db
+*.zip
+*.tar.gz
+cpanel_deploy*/
+
 

@@ -1,30 +1,61 @@
 import nodemailer from 'nodemailer';
+import fs from 'fs';
+import path from 'path';
 
-const emailUser = process.env.EMAIL_USER;
-const emailPassword = process.env.EMAIL_PASSWORD;
-const emailFrom = process.env.EMAIL_FROM || 'Sharkedutech <noreply@sharkedutech.com>';
+function loadEnvVars() {
+    if (!process.env.EMAIL_USER && !process.env.SMTP_USER) {
+        try {
+            const possiblePaths = [
+                path.join(process.cwd(), '.env'),
+                path.join(process.cwd(), '.env.production'),
+                path.join(process.cwd(), '..', '.env'),
+                path.join(process.cwd(), '..', '.env.production'),
+            ];
+            for (const p of possiblePaths) {
+                if (fs.existsSync(p)) {
+                    const content = fs.readFileSync(p, 'utf8');
+                    content.split('\n').forEach(line => {
+                        const m = line.match(/^\s*([\w.-]+)\s*=\s*"?([^"\r\n]+)"?\s*$/);
+                        if (m && !process.env[m[1]]) {
+                            process.env[m[1]] = m[2];
+                        }
+                    });
+                }
+            }
+        } catch (_) {}
+    }
+}
 
-let transporter: nodemailer.Transporter | null = null;
+function getTransporter(): nodemailer.Transporter {
+    loadEnvVars();
 
-if (emailUser && emailPassword) {
-    transporter = nodemailer.createTransport({
-        service: 'gmail',
+    const user = process.env.EMAIL_USER || process.env.SMTP_USER || 'sharkedutechinternational@gmail.com';
+    const pass = (process.env.EMAIL_PASSWORD || process.env.SMTP_PASS || 'eszv vwry rhlo hxvn').replace(/\s/g, '');
+    const host = process.env.SMTP_HOST || 'smtp.gmail.com';
+    const port = Number(process.env.SMTP_PORT) || 465;
+
+    return nodemailer.createTransport({
+        host,
+        port,
+        secure: port === 465,
         auth: {
-            user: emailUser,
-            pass: emailPassword.replace(/\s/g, ''),
-        },
+            user,
+            pass
+        }
     });
 }
 
-export async function sendEmailOTP(email: string, code: string): Promise<boolean> {
-    if (!transporter) {
-        console.error('❌ Email not configured. Please set EMAIL_USER and EMAIL_PASSWORD in .env');
-        return false;
-    }
+function getFromAddress(): string {
+    loadEnvVars();
+    const user = process.env.EMAIL_USER || process.env.SMTP_USER || 'sharkedutechinternational@gmail.com';
+    return `Sharkedutech <${user}>`;
+}
 
+export async function sendEmailOTP(email: string, code: string): Promise<boolean> {
     try {
+        const transporter = getTransporter();
         const result = await transporter.sendMail({
-            from: emailFrom,
+            from: getFromAddress(),
             to: email,
             subject: 'Your Sharkedutech Verification Code',
             html: `
@@ -78,11 +109,10 @@ export async function sendEmailOTP(email: string, code: string): Promise<boolean
 }
 
 export async function sendJobApplicationEmail(email: string, name: string, jobTitle: string, companyName: string): Promise<boolean> {
-    if (!transporter) return false;
-
     try {
+        const transporter = getTransporter();
         await transporter.sendMail({
-            from: emailFrom,
+            from: getFromAddress(),
             to: email,
             subject: `Application Received: ${jobTitle} at ${companyName}`,
             html: `
@@ -112,11 +142,10 @@ export async function sendJobApplicationEmail(email: string, name: string, jobTi
 }
 
 export async function sendAdmissionApplicationEmail(email: string, name: string, collegeName: string, courseName: string): Promise<boolean> {
-    if (!transporter) return false;
-
     try {
+        const transporter = getTransporter();
         await transporter.sendMail({
-            from: emailFrom,
+            from: getFromAddress(),
             to: email,
             subject: `Admission Application Submitted: ${collegeName}`,
             html: `
@@ -146,8 +175,6 @@ export async function sendAdmissionApplicationEmail(email: string, name: string,
 }
 
 export async function sendAdmissionStatusEmail(email: string, name: string, collegeName: string, courseName: string, status: string, remarks?: string): Promise<boolean> {
-    if (!transporter) return false;
-
     let statusHtml = '';
     let subject = `Admission Application Status Update: ${status} at ${collegeName}`;
 
@@ -184,8 +211,9 @@ export async function sendAdmissionStatusEmail(email: string, name: string, coll
     }
 
     try {
+        const transporter = getTransporter();
         await transporter.sendMail({
-            from: emailFrom,
+            from: getFromAddress(),
             to: email,
             subject: subject,
             html: `
@@ -217,15 +245,12 @@ export function validateEmail(email: string): boolean {
 }
 
 export async function sendContactEmail(name: string, email: string, message: string): Promise<boolean> {
-    if (!transporter) {
-        console.error('❌ Email not configured. Please set EMAIL_USER and EMAIL_PASSWORD in .env');
-        return false;
-    }
-
     try {
+        const transporter = getTransporter();
+        const adminEmail = process.env.EMAIL_USER || process.env.SMTP_USER || 'sharkedutechinternational@gmail.com';
         await transporter.sendMail({
-            from: emailFrom,
-            to: emailUser, // Admin's email address
+            from: getFromAddress(),
+            to: adminEmail, // Admin's email address
             subject: `New Contact Form Inquiry from ${name}`,
             html: `
                 <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
@@ -245,7 +270,7 @@ export async function sendContactEmail(name: string, email: string, message: str
                 </div>
             `
         });
-        console.log(`✅ Contact inquiry email sent to admin (${emailUser})`);
+        console.log(`✅ Contact inquiry email sent to admin (${adminEmail})`);
         return true;
     } catch (error) {
         console.error("❌ Failed to send contact email to admin:", error);

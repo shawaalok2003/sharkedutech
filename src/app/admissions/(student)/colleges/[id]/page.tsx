@@ -25,6 +25,7 @@ export default function CollegeDetailPage() {
     notes: ''
   });
   const [error, setError] = useState<string | null>(null);
+  const [activePhotoIndex, setActivePhotoIndex] = useState<number | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -253,6 +254,76 @@ export default function CollegeDetailPage() {
           grid-column: span 2;
         }
 
+        .photos-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+          gap: 1.25rem;
+        }
+
+        .photo-card {
+          position: relative;
+          border-radius: 20px;
+          overflow: hidden;
+          aspect-ratio: 4 / 3;
+          background: #f1f5f9;
+          cursor: pointer;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+          transition: all 0.3s ease;
+        }
+
+        .photo-card:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 12px 24px rgba(0, 33, 71, 0.15);
+        }
+
+        .photo-card img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: transform 0.4s ease;
+        }
+
+        .photo-card:hover img {
+          transform: scale(1.08);
+        }
+
+        .photo-card-overlay {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(to top, rgba(0, 33, 71, 0.75) 0%, transparent 60%);
+          display: flex;
+          align-items: flex-end;
+          padding: 1rem;
+          opacity: 0;
+          transition: opacity 0.3s ease;
+        }
+
+        .photo-card:hover .photo-card-overlay {
+          opacity: 1;
+        }
+
+        .photo-view-badge {
+          color: white;
+          font-weight: 700;
+          font-size: 0.85rem;
+          display: flex;
+          align-items: center;
+          gap: 0.4rem;
+        }
+
+        .lightbox-overlay {
+          position: fixed;
+          inset: 0;
+          z-index: 99999;
+          background: rgba(0, 15, 35, 0.92);
+          backdrop-filter: blur(12px);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: 2rem;
+        }
+
         @media (max-width: 900px) {
           .main-grid { grid-template-columns: 1fr; }
           .glass-hero { flex-direction: column; text-align: center; padding: 2rem; }
@@ -263,6 +334,7 @@ export default function CollegeDetailPage() {
           .apply-form { grid-template-columns: 1fr; }
           .full-width { grid-column: span 1; }
           .college-title { font-size: 1.75rem; }
+          .photos-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
         }
       `}</style>
       <div className="detail-container">
@@ -342,15 +414,27 @@ export default function CollegeDetailPage() {
         </div>
 
       {college.photos?.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Campus Photos</CardTitle>
+        <Card style={{ borderRadius: '32px', border: '1px solid #e2e8f0', overflow: 'hidden' }}>
+          <CardHeader style={{ padding: '2rem 2.5rem 1rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <CardTitle style={{ fontSize: '1.5rem', fontWeight: 900, color: '#002147' }}>
+                  📸 Campus Gallery
+                </CardTitle>
+                <CardDescription style={{ fontSize: '0.9rem', color: '#64748b', marginTop: '0.2rem' }}>
+                  Explore photos of the campus, facilities, and student life ({college.photos.length} photo{college.photos.length !== 1 ? 's' : ''})
+                </CardDescription>
+              </div>
+            </div>
           </CardHeader>
-          <CardContent>
+          <CardContent style={{ padding: '1rem 2.5rem 2.5rem' }}>
             <div className="photos-grid">
-              {college.photos.map((photo: any) => (
-                <div key={photo.id} className="photo-card">
-                  <img src={photo.url} alt="Campus" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              {college.photos.map((photo: any, idx: number) => (
+                <div key={photo.id} className="photo-card" onClick={() => setActivePhotoIndex(idx)}>
+                  <img src={photo.url} alt={`Campus photo ${idx + 1}`} />
+                  <div className="photo-card-overlay">
+                    <span className="photo-view-badge">🔍 View Photo</span>
+                  </div>
                 </div>
               ))}
             </div>
@@ -479,6 +563,50 @@ export default function CollegeDetailPage() {
             {applying ? 'Processing Application...' : 'Confirm & Submit Application'}
           </Button>
       </div>
+
+      {activePhotoIndex !== null && college.photos?.[activePhotoIndex] && (
+        <div className="lightbox-overlay" onClick={() => setActivePhotoIndex(null)}>
+          <div style={{ position: 'absolute', top: '2rem', right: '2rem', display: 'flex', gap: '1.5rem', alignItems: 'center' }} onClick={(e) => e.stopPropagation()}>
+            <span style={{ color: 'white', fontSize: '1rem', fontWeight: 700, letterSpacing: '0.05em' }}>
+              Photo {activePhotoIndex + 1} of {college.photos.length}
+            </span>
+            <button 
+              type="button" 
+              style={{ background: 'rgba(255, 255, 255, 0.15)', color: 'white', border: '1px solid rgba(255, 255, 255, 0.3)', borderRadius: '50%', width: '44px', height: '44px', fontSize: '1.3rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}
+              onClick={() => setActivePhotoIndex(null)}
+            >
+              ✕
+            </button>
+          </div>
+
+          {college.photos.length > 1 && (
+            <>
+              <button 
+                type="button" 
+                style={{ position: 'absolute', left: '2rem', background: 'rgba(255, 255, 255, 0.15)', color: 'white', border: '1px solid rgba(255, 255, 255, 0.3)', borderRadius: '50%', width: '56px', height: '56px', fontSize: '1.75rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                onClick={(e) => { e.stopPropagation(); setActivePhotoIndex((activePhotoIndex - 1 + college.photos.length) % college.photos.length); }}
+              >
+                ❮
+              </button>
+              <button 
+                type="button" 
+                style={{ position: 'absolute', right: '2rem', background: 'rgba(255, 255, 255, 0.15)', color: 'white', border: '1px solid rgba(255, 255, 255, 0.3)', borderRadius: '50%', width: '56px', height: '56px', fontSize: '1.75rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                onClick={(e) => { e.stopPropagation(); setActivePhotoIndex((activePhotoIndex + 1) % college.photos.length); }}
+              >
+                ❯
+              </button>
+            </>
+          )}
+
+          <div style={{ maxWidth: '90vw', maxHeight: '82vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={(e) => e.stopPropagation()}>
+            <img 
+              src={college.photos[activePhotoIndex].url} 
+              alt="Campus View" 
+              style={{ maxWidth: '100%', maxHeight: '82vh', borderRadius: '24px', objectFit: 'contain', boxShadow: '0 25px 60px rgba(0, 0, 0, 0.6)' }} 
+            />
+          </div>
+        </div>
+      )}
       </div>
     </>
   );

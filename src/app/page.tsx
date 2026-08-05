@@ -9,13 +9,21 @@ import { Footer } from "@/components/layout/Footer";
 
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
-  const topJobs = await prisma.job.findMany({
-    where: { isTopOpportunity: true, status: 'Active' },
-    include: { employer: true },
-    take: 10,
-    orderBy: { createdAt: 'desc' }
-  });
+  let topJobs: any[] = [];
+  try {
+    topJobs = await prisma.job.findMany({
+      where: { isTopOpportunity: true, status: 'Active' },
+      include: { employer: true },
+      take: 10,
+      orderBy: { createdAt: 'desc' }
+    });
+  } catch (e) {
+    console.error('[Home] Failed to fetch jobs from DB:', e);
+    // Render page without jobs — DB may be sleeping (Neon free tier)
+  }
 
   return (
     <main>
@@ -30,3 +38,4 @@ export default async function Home() {
     </main>
   );
 }
+

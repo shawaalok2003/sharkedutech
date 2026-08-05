@@ -40,6 +40,9 @@ export default function InstituteProfilePage() {
     const [requirements, setRequirements] = useState<any[]>([]);
     const [reqForm, setReqForm] = useState({ name: "", description: "", required: true });
     const [uploadingPhoto, setUploadingPhoto] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState<string | null>(null);
+    const [deletingPhotoId, setDeletingPhotoId] = useState<string | null>(null);
+    const [activePhotoIndex, setActivePhotoIndex] = useState<number | null>(null);
     const [uploadingLogo, setUploadingLogo] = useState(false);
     const logoInputRef = useRef<HTMLInputElement>(null);
     const photoInputRef = useRef<HTMLInputElement>(null);
@@ -138,7 +141,9 @@ export default function InstituteProfilePage() {
         if (!college?.id) return;
         setUploadingPhoto(true);
         try {
-            for (const file of files) {
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                setUploadProgress(`Uploading ${i + 1} of ${files.length}...`);
                 const formData = new FormData();
                 formData.append("file", file);
                 const uploadRes = await fetch("/api/upload", { method: "POST", body: formData });
@@ -159,6 +164,28 @@ export default function InstituteProfilePage() {
             }
         } finally {
             setUploadingPhoto(false);
+            setUploadProgress(null);
+            if (photoInputRef.current) photoInputRef.current.value = "";
+        }
+    };
+
+    const deletePhoto = async (photoId: string, e?: React.MouseEvent) => {
+        if (e) e.stopPropagation();
+        if (!confirm("Are you sure you want to delete this photo?")) return;
+        setDeletingPhotoId(photoId);
+        try {
+            const res = await fetch(`/api/admissions/college-photos/${photoId}`, { method: "DELETE" });
+            if (res.ok) {
+                setPhotos(prev => prev.filter(p => p.id !== photoId));
+                setActivePhotoIndex(null);
+            } else {
+                alert("Failed to delete photo");
+            }
+        } catch (err) {
+            console.error("Delete photo error:", err);
+            alert("Error deleting photo");
+        } finally {
+            setDeletingPhotoId(null);
         }
     };
 
@@ -319,18 +346,78 @@ export default function InstituteProfilePage() {
                 }
                 .photos-grid {
                     display: grid;
-                    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-                    gap: 0.5rem;
+                    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                    gap: 0.75rem;
                 }
                 .photo-item {
+                    position: relative;
                     border: 1px solid var(--border);
-                    border-radius: 0.5rem;
+                    border-radius: 0.75rem;
                     overflow: hidden;
+                    aspect-ratio: 4 / 3;
+                    background: var(--muted);
+                    cursor: pointer;
                 }
                 .photo-item img {
                     width: 100%;
-                    height: 80px;
+                    height: 100%;
                     object-fit: cover;
+                    transition: transform 0.3s ease;
+                }
+                .photo-item:hover img {
+                    transform: scale(1.05);
+                }
+                .photo-overlay {
+                    position: absolute;
+                    inset: 0;
+                    background: rgba(0, 0, 0, 0.45);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 0.5rem;
+                    opacity: 0;
+                    transition: opacity 0.2s ease;
+                }
+                .photo-item:hover .photo-overlay {
+                    opacity: 1;
+                }
+                .action-btn {
+                    background: rgba(255, 255, 255, 0.9);
+                    color: #1e293b;
+                    border: none;
+                    border-radius: 50%;
+                    width: 34px;
+                    height: 34px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    font-size: 0.95rem;
+                    transition: all 0.2s ease;
+                    box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+                }
+                .action-btn:hover {
+                    transform: scale(1.1);
+                    background: #ffffff;
+                }
+                .action-btn.delete-btn {
+                    background: #ef4444;
+                    color: white;
+                }
+                .action-btn.delete-btn:hover {
+                    background: #dc2626;
+                }
+                .lightbox-overlay {
+                    position: fixed;
+                    inset: 0;
+                    z-index: 99999;
+                    background: rgba(0, 0, 0, 0.9);
+                    backdrop-filter: blur(10px);
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 2rem;
                 }
                 .req-form {
                     display: grid;
@@ -571,11 +658,14 @@ export default function InstituteProfilePage() {
                 ) : (
                     <div className="extras-grid">
                         <Card>
-                            <CardHeader>
-                                <CardTitle>Campus Photos</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <div style={{ marginBottom: '1rem' }}>
+                            <CardHeader style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <div>
+                                    <CardTitle>Campus Photos</CardTitle>
+                                    <p style={{ fontSize: '0.8rem', color: 'var(--muted-foreground)', marginTop: '0.25rem' }}>
+                                        {photos.length} photo{photos.length !== 1 ? 's' : ''} uploaded
+                                    </p>
+                                </div>
+                                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                                     <Button 
                                         variant="outline" 
                                         size="sm" 
@@ -583,7 +673,7 @@ export default function InstituteProfilePage() {
                                         type="button"
                                         onClick={() => photoInputRef.current?.click()}
                                     >
-                                        {uploadingPhoto ? "Uploading..." : "Upload Photo"}
+                                        {uploadingPhoto ? (uploadProgress || "Uploading...") : "➕ Upload Photos"}
                                     </Button>
                                     <input
                                         ref={photoInputRef}
@@ -599,13 +689,40 @@ export default function InstituteProfilePage() {
                                         }}
                                     />
                                 </div>
-                                <div className="photos-grid">
-                                    {photos.map((photo) => (
-                                        <div key={photo.id} className="photo-item">
-                                            <img src={photo.url} alt="Campus" />
-                                        </div>
-                                    ))}
-                                </div>
+                            </CardHeader>
+                            <CardContent>
+                                {photos.length === 0 ? (
+                                    <div style={{ textAlign: 'center', padding: '2rem 1rem', border: '2px dashed var(--border)', borderRadius: '0.75rem', color: 'var(--muted-foreground)' }}>
+                                        📷 No campus photos added yet. Click <strong>Upload Photos</strong> to add multiple images.
+                                    </div>
+                                ) : (
+                                    <div className="photos-grid">
+                                        {photos.map((photo, idx) => (
+                                            <div key={photo.id} className="photo-item" onClick={() => setActivePhotoIndex(idx)}>
+                                                <img src={photo.url} alt={`Campus photo ${idx + 1}`} />
+                                                <div className="photo-overlay">
+                                                    <button 
+                                                        type="button" 
+                                                        className="action-btn" 
+                                                        title="View photo"
+                                                        onClick={(e) => { e.stopPropagation(); setActivePhotoIndex(idx); }}
+                                                    >
+                                                        👁️
+                                                    </button>
+                                                    <button 
+                                                        type="button" 
+                                                        className="action-btn delete-btn" 
+                                                        title="Delete photo"
+                                                        disabled={deletingPhotoId === photo.id}
+                                                        onClick={(e) => deletePhoto(photo.id, e)}
+                                                    >
+                                                        🗑️
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
                             </CardContent>
                         </Card>
 
@@ -641,6 +758,57 @@ export default function InstituteProfilePage() {
                                 </div>
                             </CardContent>
                         </Card>
+                    </div>
+                )}
+
+                {activePhotoIndex !== null && photos[activePhotoIndex] && (
+                    <div className="lightbox-overlay" onClick={() => setActivePhotoIndex(null)}>
+                        <div style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', display: 'flex', gap: '1rem', alignItems: 'center' }} onClick={(e) => e.stopPropagation()}>
+                            <span style={{ color: 'white', fontSize: '0.9rem', fontWeight: 600 }}>
+                                Photo {activePhotoIndex + 1} of {photos.length}
+                            </span>
+                            <button 
+                                type="button" 
+                                style={{ background: '#ef4444', color: 'white', border: 'none', borderRadius: '8px', padding: '0.4rem 0.8rem', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem' }}
+                                onClick={(e) => deletePhoto(photos[activePhotoIndex].id, e)}
+                            >
+                                🗑️ Delete Photo
+                            </button>
+                            <button 
+                                type="button" 
+                                style={{ background: 'rgba(255,255,255,0.2)', color: 'white', border: 'none', borderRadius: '50%', width: '40px', height: '40px', fontSize: '1.2rem', cursor: 'pointer' }}
+                                onClick={() => setActivePhotoIndex(null)}
+                            >
+                                ✕
+                            </button>
+                        </div>
+
+                        {photos.length > 1 && (
+                            <>
+                                <button 
+                                    type="button" 
+                                    style={{ position: 'absolute', left: '1.5rem', background: 'rgba(255,255,255,0.2)', color: 'white', border: 'none', borderRadius: '50%', width: '48px', height: '48px', fontSize: '1.5rem', cursor: 'pointer' }}
+                                    onClick={(e) => { e.stopPropagation(); setActivePhotoIndex((activePhotoIndex - 1 + photos.length) % photos.length); }}
+                                >
+                                    ❮
+                                </button>
+                                <button 
+                                    type="button" 
+                                    style={{ position: 'absolute', right: '1.5rem', background: 'rgba(255,255,255,0.2)', color: 'white', border: 'none', borderRadius: '50%', width: '48px', height: '48px', fontSize: '1.5rem', cursor: 'pointer' }}
+                                    onClick={(e) => { e.stopPropagation(); setActivePhotoIndex((activePhotoIndex + 1) % photos.length); }}
+                                >
+                                    ❯
+                                </button>
+                            </>
+                        )}
+
+                        <div style={{ maxWidth: '90vw', maxHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={(e) => e.stopPropagation()}>
+                            <img 
+                                src={photos[activePhotoIndex].url} 
+                                alt="Campus Full View" 
+                                style={{ maxWidth: '100%', maxHeight: '80vh', borderRadius: '12px', objectFit: 'contain', boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }} 
+                            />
+                        </div>
                     </div>
                 )}
             </div>

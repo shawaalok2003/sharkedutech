@@ -2,14 +2,21 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminDashboard() {
-    const userCount = await prisma.user.count();
-    const jobCount = await prisma.job.count();
-    const applicationCount = await prisma.application.count();
-    const collegeCount = await prisma.college.count();
-    const courseCount = await prisma.course.count();
-    const admissionCount = await prisma.admissionApplication.count();
-    const inquiryCount = await prisma.collegePartnerInquiry.count();
+    let userCount = 0, jobCount = 0, applicationCount = 0, collegeCount = 0, courseCount = 0, admissionCount = 0, inquiryCount = 0;
+    try {
+        userCount = await prisma.user.count();
+        jobCount = await prisma.job.count();
+        applicationCount = await prisma.application.count();
+        collegeCount = await prisma.college.count();
+        courseCount = await prisma.course.count();
+        admissionCount = await prisma.admissionApplication.count();
+        inquiryCount = await prisma.collegePartnerInquiry.count();
+    } catch (e) {
+        console.error('[AdminDashboard] DB error:', e);
+    }
 
     return (
         <div>

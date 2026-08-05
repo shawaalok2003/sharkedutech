@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
+export const dynamic = "force-dynamic";
+
 async function deleteCollege(formData: FormData) {
     "use server";
     const collegeId = formData.get("collegeId") as string;

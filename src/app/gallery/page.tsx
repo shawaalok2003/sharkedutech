@@ -36,13 +36,16 @@ export default function GalleryPage() {
                                         .replace(/\s+/g, ' ')
                                         .trim();
 
+                                    const encodedSrc = src.split('/').map(segment => encodeURIComponent(segment)).join('/');
+
                                     return (
                                         <Card key={index} className={styles.imageCard}>
                                             <div className={styles.imageWrapper}>
                                                 <Image 
-                                                    src={src} 
+                                                    src={encodedSrc} 
                                                     alt={displayName}
                                                     fill
+                                                    unoptimized
                                                     className={styles.image}
                                                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                                 />

@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { ResetLinkButton } from "@/components/admin/ResetLinkButton";
 
+export const dynamic = "force-dynamic";
+
 async function updateUserRole(formData: FormData) {
     "use server";
     const userId = formData.get("userId") as string;

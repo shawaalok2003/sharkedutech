@@ -23,4 +23,19 @@ try {
   console.error('Error:', e.message);
 }
 
+try {
+  console.log('\n--- Running npx prisma generate ---');
+  const result = spawnSync('npx', ['prisma', 'generate'], {
+    cwd: appDir,
+    env: { ...process.env, HOME: '/home/sheduk', PATH: process.env.PATH },
+    stdio: 'pipe',
+    encoding: 'utf8'
+  });
+  if (result.stdout) console.log(result.stdout);
+  if (result.stderr) console.log('STDERR:', result.stderr);
+  console.log('Exit code:', result.status);
+} catch (e) {
+  console.error('Error:', e.message);
+}
+
 console.log('=== SETUP SCRIPT DONE ===');
