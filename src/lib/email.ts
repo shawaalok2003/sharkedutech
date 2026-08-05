@@ -57,7 +57,13 @@ export async function sendEmailOTP(email: string, code: string): Promise<boolean
         const result = await transporter.sendMail({
             from: getFromAddress(),
             to: email,
+            replyTo: getFromAddress(),
             subject: 'Your Sharkedutech Verification Code',
+            headers: {
+                'X-Priority': '1',
+                'X-MSMail-Priority': 'High',
+                'Importance': 'high'
+            },
             html: `
                 <!DOCTYPE html>
                 <html>

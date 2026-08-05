@@ -10,7 +10,7 @@ const config = {
   password: 'Gims@@2026'
 };
 
-const localZipPath = path.join(__dirname, 'project.zip');
+const localZipPath = path.join(__dirname, 'vps_deploy.zip');
 const remoteZipPath = '/var/www/project.zip';
 
 // Read production .env content from file
@@ -41,21 +41,8 @@ conn.on('ready', () => {
         return;
       }
       
-      // Check if project.zip already exists on the server to skip upload
-      console.log('Checking if project.zip already exists on VPS...');
-      conn.exec('[ -f /var/www/project.zip ] && echo "yes" || echo "no"', (err, stream) => {
-        if (err) throw err;
-        let output = '';
-        stream.on('data', (data) => output += data.toString().trim());
-        stream.on('close', () => {
-          if (output === 'yes') {
-            console.log('project.zip already exists on VPS. Skipping upload stage.');
-            extractAndBuild();
-          } else {
-            uploadArchive();
-          }
-        });
-      });
+      console.log('Preparation complete. Uploading fresh project archive to VPS...');
+      uploadArchive();
     }).on('data', (data) => process.stdout.write(data.toString()));
   });
 });
