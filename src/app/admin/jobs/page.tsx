@@ -93,24 +93,59 @@ export default async function JobsAdminPage() {
                                     <form action={toggleTopOpportunity}>
                                         <input type="hidden" name="jobId" value={job.id} />
                                         <input type="hidden" name="current" value={String(job.isTopOpportunity)} />
-                                        <button
-                                            type="submit"
-                                            style={{
-                                                padding: "0.4rem 0.8rem",
-                                                backgroundColor: job.isTopOpportunity ? "#fef08a" : "#f1f5f9",
-                                                color: job.isTopOpportunity ? "#854d0e" : "#64748b",
-                                                borderRadius: "4px",
-                                                border: "1px solid " + (job.isTopOpportunity ? "#facc15" : "#e2e8f0"),
-                                                cursor: "pointer",
-                                                fontSize: "0.875rem",
-                                                fontWeight: 600,
-                                                display: "flex",
-                                                alignItems: "center",
-                                                gap: "0.25rem"
-                                            }}
-                                        >
-                                            {job.isTopOpportunity ? "⭐ Top" : "☆ Mark Top"}
-                                        </button>
+                                        {job.isTopOpportunity ? (
+                                            <button
+                                                type="submit"
+                                                title="Click to remove from top opportunities"
+                                                style={{
+                                                    padding: "0.4rem 0.75rem",
+                                                    backgroundColor: "#fef08a",
+                                                    color: "#854d0e",
+                                                    borderRadius: "6px",
+                                                    border: "1px solid #facc15",
+                                                    cursor: "pointer",
+                                                    fontSize: "0.85rem",
+                                                    fontWeight: 700,
+                                                    display: "inline-flex",
+                                                    alignItems: "center",
+                                                    gap: "0.4rem",
+                                                    transition: "all 0.2s ease"
+                                                }}
+                                            >
+                                                <span>⭐ Top</span>
+                                                <span style={{
+                                                    fontSize: "0.75rem",
+                                                    backgroundColor: "#dc2626",
+                                                    color: "#ffffff",
+                                                    padding: "0.15rem 0.45rem",
+                                                    borderRadius: "4px",
+                                                    fontWeight: 700
+                                                }}>
+                                                    Remove ✕
+                                                </span>
+                                            </button>
+                                        ) : (
+                                            <button
+                                                type="submit"
+                                                title="Click to mark as top opportunity"
+                                                style={{
+                                                    padding: "0.4rem 0.75rem",
+                                                    backgroundColor: "#f1f5f9",
+                                                    color: "#475569",
+                                                    borderRadius: "6px",
+                                                    border: "1px solid #cbd5e1",
+                                                    cursor: "pointer",
+                                                    fontSize: "0.85rem",
+                                                    fontWeight: 600,
+                                                    display: "inline-flex",
+                                                    alignItems: "center",
+                                                    gap: "0.25rem",
+                                                    transition: "all 0.2s ease"
+                                                }}
+                                            >
+                                                <span>☆ Mark Top</span>
+                                            </button>
+                                        )}
                                     </form>
                                 </td>
                                 <td style={{ padding: "1rem" }}>

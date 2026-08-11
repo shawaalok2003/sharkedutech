@@ -19,7 +19,7 @@
 }
 
 .logo {
-    font-size: 1.5rem;
+    font-size: 1.65rem;
     font-weight: 700;
     color: var(--primary);
     display: flex;
@@ -28,22 +28,45 @@
     z-index: 52;
 }
 
+.logo img {
+    height: 56px !important;
+    max-height: 56px;
+    width: auto !important;
+    object-fit: contain;
+}
+
 .navLinks {
     display: flex;
-    gap: 2rem;
+    gap: 1.75rem;
     align-items: center;
 }
 
+.navIcon {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    transition: transform 0.2s ease, stroke 0.2s ease;
+}
+
 .link {
-    font-size: 0.95rem;
-    font-weight: 500;
+    font-size: 1.05rem;
+    font-weight: 600;
     color: var(--muted-foreground);
-    transition: color 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: color 0.15s ease, transform 0.15s ease;
 }
 
 .link:hover,
 .linkActive {
     color: var(--primary);
+}
+
+.link:hover .navIcon,
+.linkActive .navIcon {
+    transform: scale(1.15);
+    stroke: var(--primary);
 }
 
 .actions {
@@ -223,7 +246,7 @@
 }
 
 .mobileLink {
-    font-size: 1.15rem;
+    font-size: 1.25rem;
     font-weight: 700;
     color: var(--muted-foreground);
     padding: 1rem 1.5rem;
@@ -231,6 +254,12 @@
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
+    gap: 0.75rem;
+}
+
+.mobileLink .navIcon {
+    width: 26px;
+    height: 26px;
 }
 
 .mobileLink:hover,
@@ -283,16 +312,21 @@
         padding: 0.875rem 1rem;
     }
 
-    .logo {
-        font-size: 1.35rem;
+    .logo img {
+        height: 48px !important;
     }
 
     .navLinks {
-        gap: 1.5rem;
+        gap: 1.25rem;
     }
 
     .link {
-        font-size: 0.9rem;
+        font-size: 0.95rem;
+    }
+
+    .navIcon {
+        width: 20px;
+        height: 20px;
     }
 
     .actions {
@@ -310,8 +344,8 @@
         padding: 0.75rem 1rem;
     }
 
-    .logo {
-        font-size: 1.25rem;
+    .logo img {
+        height: 44px !important;
     }
 
     .navLinks {

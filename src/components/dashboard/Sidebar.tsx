@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 import styles from './Sidebar.module.css';
 
 interface SidebarItem {
@@ -73,7 +73,16 @@ export function Sidebar({ items, title = "Sharkedutech" }: SidebarProps) {
             {/* Sidebar */}
             <aside className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : ''}`}>
                 <div className={styles.header}>
-                    <div className={styles.brand}>{title}</div>
+                    <div className={styles.brandContainer}>
+                        <Link href="/" className={styles.logoLink}>
+                            <img 
+                                src="/images/shark_edu_tech_logo-removebg-preview.png" 
+                                alt="Sharkedutech Logo" 
+                                className={styles.logoImg}
+                            />
+                        </Link>
+                        {title && <span className={styles.adminBadge}>{title}</span>}
+                    </div>
                     <button 
                         className={styles.closeBtn}
                         onClick={() => setIsOpen(false)}
@@ -100,15 +109,26 @@ export function Sidebar({ items, title = "Sharkedutech" }: SidebarProps) {
                     <div className={styles.user}>
                         <div className={styles.avatar}>
                             {photoUrl ? (
-                                <img src={photoUrl} alt="User Balance" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+                                <img src={photoUrl} alt="User" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
                             ) : (
-                                session?.user?.name ? session.user.name.charAt(0).toUpperCase() : 'U'
+                                session?.user?.name ? session.user.name.charAt(0).toUpperCase() : 'A'
                             )}
                         </div>
                         <div className={styles.userInfo}>
-                            <div className={styles.userName}>{session?.user?.name || 'User'}</div>
-                            <div className={styles.userRole}>{(session?.user as any)?.role || 'Applicant'}</div>
+                            <div className={styles.userName}>{session?.user?.name || 'Admin User'}</div>
+                            <div className={styles.userRole}>{(session?.user as any)?.role || 'ADMIN'}</div>
                         </div>
+                    </div>
+                    <div className={styles.footerActions}>
+                        <Link href="/" className={styles.siteLink}>
+                            🌐 Main Site
+                        </Link>
+                        <button 
+                            onClick={() => signOut({ callbackUrl: '/' })}
+                            className={styles.logoutBtn}
+                        >
+                            Logout 🚪
+                        </button>
                     </div>
                 </div>
             </aside>

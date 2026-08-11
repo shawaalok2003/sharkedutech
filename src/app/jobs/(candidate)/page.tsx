@@ -149,32 +149,35 @@ export default function JobsPage() {
                     display: inline-flex;
                     align-items: center;
                     gap: 0.5rem;
-                    padding: 0.4rem 1rem;
+                    padding: 0.4rem 1.1rem;
                     border-radius: 9999px;
-                    background: #f1f5f9;
-                    border: 1px solid #e2e8f0;
-                    font-size: 0.7rem;
+                    background: #ffffff;
+                    border: 1px solid #cbd5e1;
+                    font-size: 0.75rem;
                     font-weight: 700;
-                    letter-spacing: 0.15em;
+                    letter-spacing: 0.12em;
                     text-transform: uppercase;
-                    color: rgba(15, 23, 42, 0.65);
-                    margin-bottom: 2rem;
+                    color: #001736;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+                    margin-bottom: 1.75rem;
                 }
 
                 .hero-title {
-                    font-size: 3rem;
+                    font-size: 3.5rem;
                     font-weight: 800;
-                    line-height: 1.05;
-                    letter-spacing: -0.02em;
-                    margin-bottom: 1.5rem;
+                    line-height: 1.1;
+                    letter-spacing: -0.03em;
+                    margin-bottom: 1.25rem;
+                    color: #001736;
                 }
 
                 .hero-subtitle {
-                    font-size: 1.1rem;
+                    font-size: 1.15rem;
                     color: #64748b;
-                    max-width: 42rem;
-                    margin: 0 auto 3rem;
-                    line-height: 1.7;
+                    max-width: 44rem;
+                    margin: 0 auto 2.5rem;
+                    line-height: 1.65;
+                    font-weight: 500;
                 }
 
                 .search-shell {

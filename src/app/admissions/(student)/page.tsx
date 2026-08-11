@@ -99,33 +99,33 @@ export default function AdmissionsCourseListingPage() {
                     display: inline-flex;
                     align-items: center;
                     gap: 0.5rem;
-                    padding: 0.6rem 1.25rem;
+                    padding: 0.4rem 1.1rem;
                     border-radius: 9999px;
-                    background: white;
-                    border: 1px solid var(--border);
+                    background: #ffffff;
+                    border: 1px solid #cbd5e1;
                     font-size: 0.75rem;
-                    font-weight: 800;
-                    letter-spacing: 0.1em;
+                    font-weight: 700;
+                    letter-spacing: 0.12em;
                     text-transform: uppercase;
-                    color: var(--primary);
-                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+                    color: #001736;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
                 }
 
                 .hero-title {
-                    font-size: 4.5rem;
-                    font-weight: 900;
-                    line-height: 1.05;
-                    letter-spacing: -0.04em;
-                    margin-bottom: 1.5rem;
-                    color: var(--primary);
+                    font-size: 3.5rem;
+                    font-weight: 800;
+                    line-height: 1.1;
+                    letter-spacing: -0.03em;
+                    margin-bottom: 1.25rem;
+                    color: #001736;
                 }
 
                 .hero-subtitle {
-                    font-size: 1.25rem;
+                    font-size: 1.15rem;
                     color: #64748b;
-                    max-width: 42rem;
-                    margin: 0 auto 3rem;
-                    line-height: 1.7;
+                    max-width: 44rem;
+                    margin: 0 auto 2.5rem;
+                    line-height: 1.65;
                     font-weight: 500;
                 }
 

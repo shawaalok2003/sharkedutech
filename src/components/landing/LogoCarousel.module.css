@@ -1,8 +1,10 @@
 .container {
-    padding: 4rem 0;
+    padding: 4.5rem 0;
     background-color: #ffffff;
     overflow: hidden;
     border-top: 1px solid #f1f5f9;
+    border-bottom: 1px solid #f1f5f9;
+    position: relative;
 }
 
 .header {
@@ -11,16 +13,34 @@
     padding: 0 1.5rem;
 }
 
+.tagline {
+    font-size: 0.85rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: #2563eb;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
+
 .title {
-    font-size: 2rem;
+    font-size: 2.35rem;
     font-weight: 800;
     color: #0f172a;
     margin-bottom: 0.75rem;
+    letter-spacing: -0.02em;
 }
 
 .subtitle {
     color: #64748b;
-    font-size: 1.1rem;
+    font-size: 1.15rem;
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.5;
+}
+
+.highlightText {
+    color: #2563eb;
+    font-weight: 600;
 }
 
 .slider {
@@ -29,36 +49,87 @@
     margin: 0 auto;
     display: flex;
     overflow: hidden;
-    mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+    padding: 1rem 0;
+    mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+
+.slider:hover .slideTrack {
+    animation-play-state: paused;
 }
 
 .slideTrack {
     display: flex;
-    width: calc(250px * 74); /* 37 logos * 2 * 250px */
-    animation: scroll 40s linear infinite;
+    width: calc(290px * 62);
+    animation: scroll 45s linear infinite;
 }
 
 .slide {
-    width: 250px;
-    height: 100px;
+    width: 280px;
+    height: 130px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    margin: 0 0.4rem;
+    flex-shrink: 0;
+    cursor: pointer;
+    position: relative;
+    user-select: none;
+}
+
+.logoCard {
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 1rem 1.5rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 1.5rem;
-    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
 }
 
 .slide img {
     max-width: 100%;
-    max-height: 100%;
+    max-height: 85px;
     object-fit: contain;
-    opacity: 0.9;
-    transition: all 0.3s ease;
+    transition: transform 0.3s ease;
+}
+
+.clickBadge {
+    position: absolute;
+    bottom: -10px;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+    z-index: 10;
+}
+
+.slide:hover .logoCard {
+    transform: translateY(-4px) scale(1.04);
+    border-color: #3b82f6;
+    box-shadow: 0 12px 28px -4px rgba(59, 130, 246, 0.25);
+    background: #ffffff;
 }
 
 .slide:hover img {
+    transform: scale(1.08);
+}
+
+.slide:hover .clickBadge {
     opacity: 1;
-    transform: scale(1.1);
+    transform: translateY(0);
 }
 
 @keyframes scroll {
@@ -66,23 +137,30 @@
         transform: translateX(0);
     }
     100% {
-        transform: translateX(calc(-250px * 37));
+        transform: translateX(calc(-290px * 31));
     }
 }
 
 @media (max-width: 768px) {
     .title {
-        font-size: 1.5rem;
+        font-size: 1.75rem;
+    }
+    .subtitle {
+        font-size: 1rem;
     }
     .slide {
-        width: 180px;
+        width: 220px;
+        height: 110px;
+    }
+    .slide img {
+        max-height: 65px;
     }
     .slideTrack {
-        width: calc(180px * 74);
+        width: calc(230px * 62);
     }
     @keyframes scroll {
         100% {
-            transform: translateX(calc(-180px * 37));
+            transform: translateX(calc(-230px * 31));
         }
     }
 }

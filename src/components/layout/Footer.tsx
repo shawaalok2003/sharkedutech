@@ -9,7 +9,7 @@ export function Footer() {
                 <div className={styles.grid}>
                     <div>
                         <div className={styles.brand} style={{ marginBottom: '1rem' }}>
-                            <Image src="/images/shark_edu_tech_logo-removebg-preview.png" alt="Sharkedutech Logo" width={150} height={40} style={{ objectFit: 'contain' }} />
+                            <Image src="/images/shark_edu_tech_logo-removebg-preview.png" alt="Sharkedutech Logo" width={220} height={58} style={{ objectFit: 'contain' }} />
                         </div>
                         <p className={styles.description}>
                             The leading integrated platform for hospitality education and career advancement. Connecting talent with opportunity globally.

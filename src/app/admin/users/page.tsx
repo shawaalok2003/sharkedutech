@@ -15,6 +15,14 @@ async function updateUserRole(formData: FormData) {
 async function deleteUser(formData: FormData) {
     "use server";
     const userId = formData.get("userId") as string;
+    
+    // Prevent deletion of admin accounts
+    const targetUser = await prisma.user.findUnique({ where: { id: userId }, select: { role: true } });
+    if (targetUser?.role === 'ADMIN') {
+        console.error("Admin user accounts cannot be deleted.");
+        return;
+    }
+
     try {
         await prisma.$transaction(async (tx) => {
             // 1. Delete StudentProfile
@@ -105,66 +113,82 @@ export default async function UsersAdminPage() {
 
     return (
         <div>
-            <div style={{ marginBottom: "2rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div style={{ marginBottom: "2rem", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
                 <div>
                     <h1 style={{ fontSize: "1.875rem", fontWeight: 700, color: "var(--primary)" }}>Manage Users</h1>
                     <p style={{ color: "var(--muted-foreground)" }}>View, edit roles, and remove users.</p>
                 </div>
-                <a href="/admin/users/new" style={{ padding: "0.5rem 1rem", backgroundColor: "#0f172a", color: "white", borderRadius: "6px", textDecoration: "none", fontWeight: 500 }}>
+                <a href="/admin/users/new" style={{ padding: "0.5rem 1rem", backgroundColor: "#0f172a", color: "white", borderRadius: "6px", textDecoration: "none", fontWeight: 500, whiteSpace: "nowrap" }}>
                     + Create User
                 </a>
             </div>
 
-            <div style={{ overflowX: "auto", backgroundColor: "white", borderRadius: "8px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <div style={{ overflowX: "auto", backgroundColor: "white", borderRadius: "12px", boxShadow: "0 4px 12px rgba(0,0,0,0.04)", border: "1px solid #e2e8f0", maxWidth: "100%" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.875rem" }}>
                     <thead>
-                        <tr style={{ borderBottom: "1px solid #eee", textAlign: "left", backgroundColor: "#f8fafc" }}>
-                            <th style={{ padding: "1rem" }}>Name</th>
-                            <th style={{ padding: "1rem" }}>Email</th>
-                            <th style={{ padding: "1rem" }}>Role</th>
-                            <th style={{ padding: "1rem" }}>Joined</th>
-                            <th style={{ padding: "1rem" }}>Password Recovery</th>
-                            <th style={{ padding: "1rem" }}>Actions</th>
+                        <tr style={{ borderBottom: "1px solid #e2e8f0", textAlign: "left", backgroundColor: "#f8fafc" }}>
+                            <th style={{ padding: "0.75rem 0.65rem", fontWeight: 700, color: "#334155" }}>Name</th>
+                            <th style={{ padding: "0.75rem 0.65rem", fontWeight: 700, color: "#334155" }}>Email</th>
+                            <th style={{ padding: "0.75rem 0.65rem", fontWeight: 700, color: "#334155" }}>Role</th>
+                            <th style={{ padding: "0.75rem 0.65rem", fontWeight: 700, color: "#334155" }}>Joined</th>
+                            <th style={{ padding: "0.75rem 0.65rem", fontWeight: 700, color: "#334155" }}>Password Recovery</th>
+                            <th style={{ padding: "0.75rem 0.65rem", fontWeight: 700, color: "#334155" }}>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {users.map((user) => (
-                            <tr key={user.id} style={{ borderBottom: "1px solid #eee" }}>
-                                <td style={{ padding: "1rem", fontWeight: 500 }}>{user.name || "No Name Provided"}</td>
-                                <td style={{ padding: "1rem" }}>{user.email}</td>
-                                <td style={{ padding: "1rem" }}>
+                            <tr key={user.id} style={{ borderBottom: "1px solid #f1f5f9" }}>
+                                <td style={{ padding: "0.75rem 0.65rem", fontWeight: 600, color: "#0f172a" }}>{user.name || "No Name Provided"}</td>
+                                <td style={{ padding: "0.75rem 0.65rem", color: "#475569" }}>{user.email}</td>
+                                <td style={{ padding: "0.75rem 0.65rem" }}>
                                     <span style={{
-                                        padding: "0.25rem 0.5rem",
+                                        padding: "0.2rem 0.5rem",
                                         borderRadius: "999px",
-                                        fontSize: "0.875rem",
+                                        fontSize: "0.75rem",
+                                        fontWeight: 700,
                                         backgroundColor: user.role === 'ADMIN' ? '#dcfce7' : '#f1f5f9',
                                         color: user.role === 'ADMIN' ? '#166534' : '#475569',
                                     }}>
                                         {user.role}
                                     </span>
                                 </td>
-                                <td style={{ padding: "1rem" }}>{user.createdAt.toLocaleDateString()}</td>
-                                <td style={{ padding: "1rem" }}>
+                                <td style={{ padding: "0.75rem 0.65rem", color: "#64748b" }}>{user.createdAt.toLocaleDateString()}</td>
+                                <td style={{ padding: "0.75rem 0.65rem" }}>
                                     <ResetLinkButton 
                                         userId={user.id} 
                                         resetToken={user.resetToken} 
                                         generateAction={generateResetLink} 
                                     />
                                 </td>
-                                <td style={{ padding: "1rem" }}>
-                                    <div style={{ display: "flex", gap: "0.5rem" }}>
-                                        <a href={`/admin/users/${user.id}`} style={{ padding: "0.4rem 0.8rem", backgroundColor: "#e2e8f0", color: "#0f172a", borderRadius: "4px", textDecoration: "none", fontSize: "0.875rem" }}>
+                                <td style={{ padding: "0.75rem 0.65rem" }}>
+                                    <div style={{ display: "flex", gap: "0.35rem", alignItems: "center" }}>
+                                        <a href={`/admin/users/${user.id}`} style={{ padding: "0.35rem 0.65rem", backgroundColor: "#e2e8f0", color: "#0f172a", borderRadius: "6px", textDecoration: "none", fontSize: "0.8rem", fontWeight: 600 }}>
                                             Edit Details
                                         </a>
-                                        <form action={deleteUser}>
-                                            <input type="hidden" name="userId" value={user.id} />
-                                            <button
-                                                type="submit"
-                                                style={{ padding: "0.4rem 0.8rem", backgroundColor: "#ef4444", color: "white", borderRadius: "4px", border: "none", cursor: "pointer", fontSize: "0.875rem" }}
-                                            >
-                                                Delete
-                                            </button>
-                                        </form>
+                                        {user.role === 'ADMIN' ? (
+                                            <span style={{
+                                                padding: "0.35rem 0.65rem",
+                                                backgroundColor: "#f1f5f9",
+                                                color: "#94a3b8",
+                                                borderRadius: "6px",
+                                                fontSize: "0.8rem",
+                                                fontWeight: 600,
+                                                cursor: "not-allowed",
+                                                border: "1px solid #cbd5e1"
+                                            }} title="Admin accounts cannot be deleted">
+                                                Protected 🔒
+                                            </span>
+                                        ) : (
+                                            <form action={deleteUser}>
+                                                <input type="hidden" name="userId" value={user.id} />
+                                                <button
+                                                    type="submit"
+                                                    style={{ padding: "0.35rem 0.65rem", backgroundColor: "#ef4444", color: "white", borderRadius: "6px", border: "none", cursor: "pointer", fontSize: "0.8rem", fontWeight: 600 }}
+                                                >
+                                                    Delete
+                                                </button>
+                                            </form>
+                                        )}
                                     </div>
                                 </td>
                             </tr>
