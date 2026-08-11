@@ -47,37 +47,45 @@ export default function EmployerLayout({
     return (
         <>
             <style jsx global>{`
+                html, body {
+                    margin: 0;
+                    padding: 0;
+                    overflow-x: hidden;
+                    background-color: #F0F9FF;
+                }
+
                 .employer-layout {
-                    display: flex;
                     min-height: 100vh;
                     background-color: #F0F9FF;
+                    position: relative;
+                    width: 100%;
                 }
                 
                 .employer-main {
-                    flex: 1;
-                    margin-left: 280px;
-                    padding: 2rem;
+                    margin-left: 260px;
+                    padding: 1.75rem 2rem;
+                    min-height: 100vh;
+                    box-sizing: border-box;
+                    width: calc(100% - 260px);
+                    max-width: calc(100% - 260px);
                     transition: margin-left 0.3s ease;
                 }
                 
                 @media (max-width: 1024px) {
                     .employer-main {
-                        margin-left: 240px;
-                        padding: 1.5rem;
+                        margin-left: 230px;
+                        width: calc(100% - 230px);
+                        max-width: calc(100% - 230px);
+                        padding: 1.25rem 1.5rem;
                     }
                 }
                 
                 @media (max-width: 768px) {
                     .employer-main {
                         margin-left: 0;
+                        width: 100%;
+                        max-width: 100%;
                         padding: 1rem;
-                        padding-bottom: 5rem;
-                    }
-                }
-                
-                @media (max-width: 480px) {
-                    .employer-main {
-                        padding: 0.75rem;
                         padding-bottom: 5rem;
                     }
                 }

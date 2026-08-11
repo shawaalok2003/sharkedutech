@@ -58,28 +58,36 @@ export default function AdmissionsLayout({
           display: flex;
           min-height: 100vh;
           background-color: #ffffff;
+          position: relative;
+          width: 100%;
         }
         
         .admissions-main {
-          flex: 1;
-          margin-left: ${isMainPage ? '0' : '280px'};
-          padding: ${isMainPage ? '0' : '2rem'};
+          margin-left: ${isMainPage ? '0' : '260px'};
+          padding: ${isMainPage ? '0' : '1.75rem 2rem'};
           transition: all 0.3s ease;
-          width: 100%;
+          width: ${isMainPage ? '100%' : 'calc(100% - 260px)'};
+          max-width: ${isMainPage ? '100%' : 'calc(100% - 260px)'};
+          box-sizing: border-box;
+          min-height: 100vh;
         }
         
         @media (max-width: 1024px) {
           .admissions-main {
-            margin-left: ${isMainPage ? '0' : '240px'};
-            padding: ${isMainPage ? '0' : '1.5rem'};
+            margin-left: ${isMainPage ? '0' : '230px'};
+            width: ${isMainPage ? '100%' : 'calc(100% - 230px)'};
+            max-width: ${isMainPage ? '100%' : 'calc(100% - 230px)'};
+            padding: ${isMainPage ? '0' : '1.25rem 1.5rem'};
           }
         }
         
         @media (max-width: 768px) {
           .admissions-main {
             margin-left: 0;
+            width: 100%;
+            max-width: 100%;
             padding: ${isMainPage ? '0' : '1rem'};
-            padding-bottom: 5rem;
+            padding-bottom: ${isMainPage ? '0' : '5rem'};
           }
         }
       `}</style>

@@ -14,8 +14,20 @@ export function Navbar() {
     const { data: session } = useSession();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-    // Hide main navbar on Admin Portal pages
-    if (pathname?.startsWith('/admin')) {
+    // Hide main top navbar on all Dashboard / Portal pages
+    const isDashboardRoute = 
+        pathname?.startsWith('/admin') ||
+        pathname?.startsWith('/candidate') ||
+        pathname?.startsWith('/admissions/college') ||
+        pathname?.startsWith('/jobs/employer') ||
+        (pathname?.startsWith('/admissions/') && pathname !== '/admissions') ||
+        pathname === '/admissions/profile' ||
+        pathname === '/admissions/documents' ||
+        pathname === '/admissions/applications' ||
+        pathname === '/admissions/dashboard' ||
+        pathname === '/admissions/dashboard-details';
+
+    if (isDashboardRoute) {
         return null;
     }
 
