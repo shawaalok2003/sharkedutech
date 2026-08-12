@@ -30,10 +30,10 @@ export default async function Home() {
       <HeroSection />
       <AdCarousel />
       <LogoCarousel />
+      <Testimonials />
       <JobCarousel jobs={topJobs} />
       <HowItWorks />
       <Benefits />
-      <Testimonials />
       <Footer />
     </main>
   );

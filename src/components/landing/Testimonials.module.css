@@ -1,69 +1,188 @@
 .section {
-    padding: 6rem 0;
-    background-color: var(--background);
+    padding: 6rem 1.5rem;
+    background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
     overflow: hidden;
+    position: relative;
+    border-top: 1px solid #f1f5f9;
+    border-bottom: 1px solid #f1f5f9;
 }
 
 .container {
-    max-width: var(--container-width);
+    max-width: 76rem;
     margin: 0 auto;
-    padding: 0 1rem;
+    position: relative;
 }
 
 .header {
     text-align: center;
-    margin-bottom: 4rem;
+    max-width: 42rem;
+    margin: 0 auto 4rem;
+}
+
+.kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 1.1rem;
+    border-radius: 9999px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #001736;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    margin-bottom: 1.25rem;
+}
+
+.sparkleIcon {
+    font-size: 0.9rem;
 }
 
 .title {
-    font-size: 2.25rem;
-    font-weight: 700;
-    color: var(--primary);
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1.15;
+    color: #001736;
+    letter-spacing: -0.03em;
     margin-bottom: 1rem;
 }
 
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 2rem;
+.highlight {
+    background: linear-gradient(135deg, #2563eb 0%, #001736 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+    font-size: 1.15rem;
+    color: #64748b;
+    line-height: 1.65;
+    font-weight: 500;
+}
+
+/* Carousel Container */
+.carouselWrapper {
+    position: relative;
+    padding: 0 3.5rem;
+}
+
+.trackContainer {
+    overflow: hidden;
+    width: 100%;
+    padding: 1rem 0 2rem;
+}
+
+.track {
+    display: flex;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+}
+
+.cardItem {
+    padding: 0 0.85rem;
+    box-sizing: border-box;
 }
 
 .card {
-    background-color: white;
-    padding: 2rem;
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-md);
-    border: 1px solid var(--border);
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 1.5rem;
+    padding: 2.25rem 2rem 2rem;
+    height: 100%;
     display: flex;
     flex-direction: column;
+    position: relative;
+    box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.06);
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    box-sizing: border-box;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    border-color: #2563eb;
+    box-shadow: 0 25px 40px -12px rgba(37, 99, 235, 0.14);
+}
+
+.watermarkQuote {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.75rem;
+    font-size: 5rem;
+    line-height: 1;
+    font-family: Georgia, serif;
+    color: #f1f5f9;
+    pointer-events: none;
+    user-select: none;
+    font-weight: 900;
+}
+
+.cardTop {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+    position: relative;
+    z-index: 1;
+}
+
+.ratingRow {
+    display: flex;
+    gap: 0.2rem;
+}
+
+.star {
+    color: #f59e0b;
+    font-size: 1.15rem;
+}
+
+.badge {
+    padding: 0.3rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    background: #f1f5f9;
+    color: #0f172a;
+    border: 1px solid #e2e8f0;
 }
 
 .quote {
-    font-size: 1.125rem;
-    line-height: 1.6;
-    color: var(--foreground);
-    margin-bottom: 1.5rem;
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: #334155;
+    margin-bottom: 2rem;
     font-style: italic;
     flex: 1;
+    position: relative;
+    z-index: 1;
+    font-weight: 400;
 }
 
 .author {
     display: flex;
     align-items: center;
     gap: 1rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid #f1f5f9;
+    position: relative;
+    z-index: 1;
 }
 
 .avatar {
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background-color: var(--primary);
-    color: white;
+    color: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 600;
-    font-size: 1.125rem;
+    font-weight: 800;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+    flex-shrink: 0;
 }
 
 .info {
@@ -72,11 +191,119 @@
 }
 
 .name {
-    font-weight: 600;
-    color: var(--primary);
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: #0f172a;
+    line-height: 1.2;
 }
 
 .role {
-    font-size: 0.875rem;
-    color: var(--muted-foreground);
+    font-size: 0.85rem;
+    color: #2563eb;
+    font-weight: 600;
+    margin-top: 0.15rem;
+}
+
+.company {
+    font-size: 0.8rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+/* Nav Buttons */
+.navBtn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #0f172a;
+    font-size: 1.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.25s ease;
+}
+
+.navBtn:hover {
+    background: #001736;
+    color: #ffffff;
+    border-color: #001736;
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 15px 25px rgba(0, 23, 54, 0.2);
+}
+
+.prevBtn {
+    left: 0;
+}
+
+.nextBtn {
+    right: 0;
+}
+
+/* Dots Row */
+.dotsRow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 2rem;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 9999px;
+    background: #cbd5e1;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+}
+
+.dot:hover {
+    background: #94a3b8;
+}
+
+.activeDot {
+    width: 32px;
+    background: #001736;
+}
+
+@media (max-width: 1024px) {
+    .title {
+        font-size: 2.5rem;
+    }
+
+    .carouselWrapper {
+        padding: 0 2.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .section {
+        padding: 4.5rem 1rem;
+    }
+
+    .title {
+        font-size: 2.15rem;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+    }
+
+    .carouselWrapper {
+        padding: 0;
+    }
+
+    .navBtn {
+        display: none;
+    }
 }

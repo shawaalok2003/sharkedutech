@@ -91,7 +91,7 @@ function extractAndBuild() {
   const deployCmds = [
     // Extract archive
     `rm -rf /var/www/sharkedutech && mkdir -p /var/www/sharkedutech`,
-    `unzip -o /var/www/project.zip -d /var/www/sharkedutech || [ $? -eq 1 ]`,
+    `tar -xzf /var/www/project.zip -C /var/www/sharkedutech || unzip -o /var/www/project.zip -d /var/www/sharkedutech || [ $? -eq 1 ]`,
     `rm -f /var/www/project.zip`,
     
     // Write env file
