@@ -79,6 +79,31 @@
     width: 100%;
 }
 
+.hoverOverlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 23, 54, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.hoverOverlay span {
+    color: #ffffff;
+    font-size: 0.9rem;
+    font-weight: 700;
+    padding: 0.5rem 1rem;
+    background: rgba(0, 23, 54, 0.8);
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.imageCard:hover .hoverOverlay {
+    opacity: 1;
+}
+
 .image {
     object-fit: cover;
     transition: transform var(--transition-slow);
