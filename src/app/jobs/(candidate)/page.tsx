@@ -15,6 +15,7 @@ interface Job {
     location: string;
     salaryMin: number;
     salaryMax: number;
+    posterUrl?: string;
     employer: { name: string };
     createdAt: string;
     description: string;
@@ -392,11 +393,19 @@ export default function JobsPage() {
                 .job-card {
                     background: #ffffff;
                     border: 1px solid #e2e8f0;
-                    border-radius: 1.5rem;
-                    padding: 2rem;
+                    border-radius: 1.25rem;
+                    padding: 1.5rem 1.75rem;
                     display: flex;
                     flex-direction: column;
-                    gap: 1.5rem;
+                    gap: 1.25rem;
+                    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+                    box-shadow: 0 4px 15px rgba(0, 23, 54, 0.03);
+                }
+
+                .job-card:hover {
+                    transform: translateY(-4px);
+                    box-shadow: 0 16px 35px rgba(0, 23, 54, 0.09);
+                    border-color: #cbd5e1;
                 }
 
                 .job-row {
@@ -407,77 +416,106 @@ export default function JobsPage() {
                 }
 
                 .job-logo {
-                    width: 5rem;
-                    height: 5rem;
+                    width: 5.5rem;
+                    height: 5.5rem;
                     border-radius: 1rem;
-                    background: #f1f5f9;
+                    background: #001736;
                     border: 1px solid #e2e8f0;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    font-size: 1.4rem;
-                    font-weight: 700;
-                    color: #0f172a;
+                    font-size: 1.5rem;
+                    font-weight: 800;
+                    color: #ffffff;
+                    overflow: hidden;
+                    flex-shrink: 0;
+                    box-shadow: 0 6px 12px rgba(0, 23, 54, 0.1);
+                }
+
+                .job-logo img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    display: block;
                 }
 
                 .job-title {
-                    font-size: 1.5rem;
+                    font-size: 1.35rem;
                     font-weight: 800;
-                    margin-bottom: 0.5rem;
+                    color: #001736;
+                    letter-spacing: -0.02em;
+                    line-height: 1.25;
                 }
 
                 .job-tags {
                     display: flex;
                     flex-wrap: wrap;
-                    gap: 0.5rem;
+                    gap: 0.4rem;
+                    margin-top: 0.4rem;
                 }
 
                 .job-badge {
-                    padding: 0.35rem 0.8rem;
+                    padding: 0.3rem 0.75rem;
                     border-radius: 9999px;
-                    font-size: 0.65rem;
-                    font-weight: 800;
+                    font-size: 0.7rem;
+                    font-weight: 700;
                     text-transform: uppercase;
-                    letter-spacing: 0.12em;
-                    background: rgba(15, 23, 42, 0.05);
-                    color: #0f172a;
-                    border: 1px solid rgba(15, 23, 42, 0.12);
+                    letter-spacing: 0.08em;
+                    background: #f1f5f9;
+                    color: #001736;
+                    border: 1px solid #cbd5e1;
+                }
+
+                .job-badge-luxury {
+                    background: linear-gradient(135deg, #001736 0%, #0b2545 100%);
+                    color: #ffffff;
+                    border: none;
                 }
 
                 .job-meta {
                     display: flex;
                     flex-wrap: wrap;
-                    gap: 1.5rem;
-                    font-size: 0.85rem;
+                    align-items: center;
+                    gap: 1.25rem;
+                    font-size: 0.88rem;
                     color: #64748b;
                     font-weight: 600;
+                    margin-top: 0.6rem;
                 }
 
                 .job-salary {
-                    font-size: 1.4rem;
+                    font-size: 1.3rem;
                     font-weight: 800;
-                    color: #0f172a;
+                    color: #001736;
+                    margin-bottom: 0.6rem;
+                    letter-spacing: -0.02em;
                 }
 
                 .job-action {
-                    padding: 0.8rem 2rem;
-                    background: #0f172a;
+                    padding: 0.8rem 1.8rem;
+                    background: #001736;
                     color: #ffffff;
-                    border-radius: 0.9rem;
+                    border-radius: 0.75rem;
                     border: none;
                     font-weight: 700;
+                    font-size: 0.95rem;
                     cursor: pointer;
-                    transition: background 0.2s ease;
+                    transition: all 0.2s ease;
+                    box-shadow: 0 4px 10px rgba(0, 23, 54, 0.15);
                 }
 
                 .job-action:hover {
-                    background: #1e293b;
+                    background: #0f2b5c;
+                    transform: translateY(-2px);
+                    box-shadow: 0 8px 18px rgba(0, 23, 54, 0.25);
                 }
 
                 .job-action[disabled] {
                     background: #e2e8f0;
                     color: #64748b;
                     cursor: not-allowed;
+                    box-shadow: none;
+                    transform: none;
                 }
 
                 .logos {
@@ -984,45 +1022,54 @@ export default function JobsPage() {
                                     Reset All Filters
                                 </button>
                             </div>
-                        ) : filteredJobs.map((job, i) => (
-                            <div key={job.id} className="job-card card-lift">
-                                <div className="job-row">
-                                    <div className="job-logo">{job.employer?.name?.charAt(0) || "L"}</div>
-                                    <div style={{ flex: 1 }}>
-                                        <div style={{ display: "flex", alignItems: "center", gap: "0.8rem", flexWrap: "wrap" }}>
-                                            <div className="job-title">{job.title}</div>
-                                            <span style={{ fontSize: "0.75rem", padding: "0.2rem 0.6rem", borderRadius: "9999px", background: "#f1f5f9", border: "1px solid #cbd5e1", fontWeight: 600 }}>
-                                                {job.category}
-                                            </span>
+                        ) : filteredJobs.map((job, i) => {
+                            const cleanTitle = job.title ? job.title.replace(/\s*#\d+\s*$/, '') : 'Hospitality Opportunity';
+                            return (
+                                <div key={job.id} className="job-card">
+                                    <div className="job-row">
+                                        <div className="job-logo">
+                                            {job.posterUrl ? (
+                                                <img src={job.posterUrl} alt={cleanTitle} />
+                                            ) : (
+                                                <span>🏨</span>
+                                            )}
                                         </div>
-                                        <div className="job-tags">
-                                            <span className="job-badge">{job.type}</span>
-                                            {i === 0 && <span className="job-badge">Top Brand</span>}
-                                            {i === 1 && <span className="job-badge">Urgent</span>}
+                                        <div style={{ flex: 1 }}>
+                                            <div style={{ display: "flex", alignItems: "center", gap: "0.8rem", flexWrap: "wrap" }}>
+                                                <div className="job-title">{cleanTitle}</div>
+                                                <span style={{ fontSize: "0.75rem", padding: "0.2rem 0.7rem", borderRadius: "9999px", background: "#f8fafc", border: "1px solid #e2e8f0", fontWeight: 700, color: "#475569" }}>
+                                                    {job.category || 'Hotel Operations'}
+                                                </span>
+                                            </div>
+                                            <div className="job-tags">
+                                                <span className="job-badge">{job.type}</span>
+                                                {i % 3 === 0 && <span className="job-badge job-badge-luxury">Top Brand</span>}
+                                                {i % 2 === 1 && <span className="job-badge">Urgent Hire</span>}
+                                            </div>
+                                            <div className="job-meta">
+                                                <span style={{ color: "#001736", fontWeight: 800 }}>
+                                                    {job.companyName || job.employer?.name || "Luxury Partner"}
+                                                </span>
+                                                <span>📍 {job.location}</span>
+                                                <span>Posted {new Date(job.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
+                                            </div>
                                         </div>
-                                        <div className="job-meta" style={{ marginTop: "0.8rem" }}>
-                                            <span style={{ color: job.companyName ? "var(--primary)" : "inherit", fontWeight: job.companyName ? 800 : 600 }}>
-                                                {job.companyName || job.employer?.name || "Company"}
-                                            </span>
-                                            <span>{job.location}</span>
-                                            <span>Posted {new Date(job.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
+                                        <div style={{ textAlign: "right" }}>
+                                            <div className="job-salary">
+                                                ₹{job.salaryMin ? (job.salaryMin / 100000).toFixed(1) : "0.2"} - {job.salaryMax ? (job.salaryMax / 100000).toFixed(1) : "0.5"} LPA
+                                            </div>
+                                            {appliedJobIds.has(job.id) ? (
+                                                <button className="job-action" disabled>Applied</button>
+                                            ) : (
+                                                <button className="job-action" onClick={() => handleApplyRedirect(job.id)}>
+                                                    View Details →
+                                                </button>
+                                            )}
                                         </div>
-                                    </div>
-                                    <div style={{ textAlign: "right" }}>
-                                        <div className="job-salary">
-                                            ₹{job.salaryMin ? (job.salaryMin / 100000).toFixed(1) : "NA"} - {job.salaryMax ? (job.salaryMax / 100000).toFixed(1) : "NA"} LPA
-                                        </div>
-                                        {appliedJobIds.has(job.id) ? (
-                                            <button className="job-action" disabled>Applied</button>
-                                        ) : (
-                                            <button className="job-action" onClick={() => handleApplyRedirect(job.id)}>
-                                                View Details
-                                            </button>
-                                        )}
                                     </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
 
                     <div style={{ marginTop: "3rem", textAlign: "center" }}>
