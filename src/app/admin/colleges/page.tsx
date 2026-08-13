@@ -6,12 +6,42 @@ export const dynamic = "force-dynamic";
 async function deleteCollege(formData: FormData) {
     "use server";
     const collegeId = formData.get("collegeId") as string;
+    if (!collegeId) return;
     try {
-        await prisma.college.delete({ where: { id: collegeId } });
+        await prisma.$transaction(async (tx) => {
+            // Find all course IDs under this college
+            const courses = await tx.course.findMany({ where: { collegeId }, select: { id: true } });
+            const courseIds = courses.map(c => c.id);
+
+            // Delete admission applications linked to these courses or college
+            if (courseIds.length > 0) {
+                await tx.admissionApplication.deleteMany({
+                    where: {
+                        OR: [
+                            { collegeId },
+                            { courseId: { in: courseIds } }
+                        ]
+                    }
+                });
+            } else {
+                await tx.admissionApplication.deleteMany({ where: { collegeId } });
+            }
+
+            // Delete admission queries, requirements, photos, and courses
+            await tx.admissionQuery.deleteMany({ where: { collegeId } });
+            await tx.admissionRequirement.deleteMany({ where: { collegeId } });
+            await tx.collegePhoto.deleteMany({ where: { collegeId } });
+            await tx.course.deleteMany({ where: { collegeId } });
+
+            // Finally delete the college record
+            await tx.college.delete({ where: { id: collegeId } });
+        });
     } catch (e) {
-        console.error("Failed to delete college. Ensure all dependent records (courses, admissions) are removed first.", e);
+        console.error("Failed to delete college:", e);
     }
     revalidatePath("/admin/colleges");
+    revalidatePath("/admissions");
+    revalidatePath("/");
 }
 
 export default async function CollegesAdminPage() {

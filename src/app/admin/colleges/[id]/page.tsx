@@ -57,8 +57,18 @@ async function deleteCourse(formData: FormData) {
     "use server";
     const courseId = formData.get("courseId") as string;
     const collegeId = formData.get("collegeId") as string;
-    await prisma.course.delete({ where: { id: courseId } });
+    if (!courseId) return;
+    try {
+        await prisma.$transaction([
+            prisma.admissionApplication.deleteMany({ where: { courseId } }),
+            prisma.course.delete({ where: { id: courseId } })
+        ]);
+    } catch (e) {
+        console.error("Failed to delete course:", e);
+    }
     revalidatePath(`/admin/colleges/${collegeId}`);
+    revalidatePath("/admin/colleges");
+    revalidatePath("/admissions");
 }
 
 export default async function EditCollegePage(props: { params: Promise<{ id: string }>, searchParams?: Promise<{ error?: string }> }) {

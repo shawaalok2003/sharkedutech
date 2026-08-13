@@ -14,12 +14,18 @@ async function updateJobStatus(formData: FormData) {
 async function deleteJob(formData: FormData) {
     "use server";
     const jobId = formData.get("jobId") as string;
+    if (!jobId) return;
     try {
-        await prisma.job.delete({ where: { id: jobId } });
+        await prisma.$transaction([
+            prisma.application.deleteMany({ where: { jobId } }),
+            prisma.job.delete({ where: { id: jobId } })
+        ]);
     } catch (e) {
         console.error("Failed to delete job", e);
     }
     revalidatePath("/admin/jobs");
+    revalidatePath("/jobs");
+    revalidatePath("/");
 }
 
 async function toggleTopOpportunity(formData: FormData) {
