@@ -67,8 +67,9 @@ export default function AdmissionsCourseListingPage() {
                 .hero {
                     position: relative;
                     overflow: hidden;
-                    padding: 8rem 1.5rem;
+                    padding: 3rem 1.5rem 2rem;
                     background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+                    border-bottom: 1px solid #f1f5f9;
                 }
 
                 .hero-pattern {
@@ -93,7 +94,7 @@ export default function AdmissionsCourseListingPage() {
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
-                    margin-bottom: 4rem;
+                    margin-bottom: 1.5rem;
                 }
 
                 .hero-badge {
@@ -113,52 +114,53 @@ export default function AdmissionsCourseListingPage() {
                 }
 
                 .hero-title {
-                    font-size: 3.5rem;
+                    font-size: 3rem;
                     font-weight: 800;
-                    line-height: 1.1;
+                    line-height: 1.15;
                     letter-spacing: -0.03em;
-                    margin-bottom: 1.25rem;
+                    margin-bottom: 1rem;
                     color: #001736;
                 }
 
                 .hero-subtitle {
-                    font-size: 1.15rem;
+                    font-size: 1.1rem;
                     color: #64748b;
                     max-width: 44rem;
-                    margin: 0 auto 2.5rem;
-                    line-height: 1.65;
+                    margin: 0 auto 1.75rem;
+                    line-height: 1.6;
                     font-weight: 500;
                 }
 
                 .profile-btn {
-                    padding: 0.75rem 1.5rem;
+                    padding: 0.6rem 1.25rem;
                     background: var(--primary);
                     color: #ffffff;
-                    border-radius: 14px;
+                    border-radius: 12px;
                     font-weight: 700;
+                    font-size: 0.88rem;
                     text-decoration: none;
                     display: flex;
                     align-items: center;
-                    gap: 0.6rem;
+                    gap: 0.5rem;
                     transition: all 0.3s ease;
-                    box-shadow: 0 10px 15px -3px rgba(0, 33, 71, 0.2);
+                    box-shadow: 0 4px 10px rgba(0, 33, 71, 0.15);
                 }
 
                 .profile-btn:hover {
                     transform: translateY(-2px);
                     background: var(--primary-light);
-                    box-shadow: 0 20px 25px -5px rgba(0, 33, 71, 0.25);
+                    box-shadow: 0 10px 18px rgba(0, 33, 71, 0.2);
                 }
 
                 .search-shell {
                     max-width: 56rem;
                     margin: 0 auto;
-                    background: rgba(255, 255, 255, 0.7);
+                    background: rgba(255, 255, 255, 0.9);
                     backdrop-filter: blur(20px);
-                    border: 1px solid rgba(255, 255, 255, 0.5);
-                    border-radius: 24px;
-                    box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.15);
-                    padding: 0.5rem;
+                    border: 1px solid #cbd5e1;
+                    border-radius: 20px;
+                    box-shadow: 0 15px 30px -10px rgba(15, 23, 42, 0.1);
+                    padding: 0.4rem;
                 }
 
                 .search-row {
@@ -173,9 +175,9 @@ export default function AdmissionsCourseListingPage() {
                     display: flex;
                     align-items: center;
                     gap: 0.75rem;
-                    padding: 0.75rem 1.25rem;
+                    padding: 0.6rem 1rem;
                     background: white;
-                    border-radius: 18px;
+                    border-radius: 14px;
                     margin: 0.25rem;
                 }
 
@@ -199,7 +201,7 @@ export default function AdmissionsCourseListingPage() {
                 .section {
                     max-width: 72rem;
                     margin: 0 auto;
-                    padding: 5rem 1.5rem;
+                    padding: 3rem 1.5rem;
                 }
 
                 .job-list {

@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import JobImageUploader from "../new/JobImageUploader";
 
 async function updateJob(formData: FormData) {
     "use server";
@@ -15,14 +16,21 @@ async function updateJob(formData: FormData) {
     const description = formData.get("description") as string;
     const requirements = formData.get("requirements") as string;
     const status = formData.get("status") as string;
+    const posterUrl = (formData.get("posterUrl") as string)?.trim() || null;
+    const isTopOpportunity = formData.get("isTopOpportunity") === "on";
 
     await prisma.job.update({
         where: { id },
-        data: { title, companyName, type, location, salaryMin, salaryMax, description, requirements, status }
+        data: { 
+            title, companyName, type, location, salaryMin, salaryMax, description, requirements, status,
+            posterUrl, isTopOpportunity
+        }
     });
 
     revalidatePath("/admin/jobs");
     revalidatePath(`/admin/jobs/${id}`);
+    revalidatePath("/");
+    revalidatePath("/jobs");
     redirect("/admin/jobs");
 }
 
@@ -57,6 +65,25 @@ export default async function EditJobPage(props: { params: Promise<{  id: string
                     <input type="hidden" name="id" value={job.id} />
 
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                        <div style={{ gridColumn: "span 2" }}>
+                            <JobImageUploader initialPosterUrl={job.posterUrl || ""} />
+                        </div>
+
+                        <div style={{ gridColumn: "span 2", padding: "1rem", backgroundColor: "#f8fafc", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                                <input 
+                                    name="isTopOpportunity" 
+                                    type="checkbox" 
+                                    id="isTopOpportunity" 
+                                    defaultChecked={job.isTopOpportunity} 
+                                    style={{ width: "1.25rem", height: "1.25rem", cursor: "pointer" }} 
+                                />
+                                <label htmlFor="isTopOpportunity" style={{ fontWeight: 700, cursor: "pointer", color: "#001736" }}>
+                                    ⭐ Feature in "Explore Opportunities" Carousel on Homepage
+                                </label>
+                            </div>
+                        </div>
+
                         <div style={{ gridColumn: "span 2" }}>
                             <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Job Title</label>
                             <input name="title" defaultValue={job.title} required style={{ width: "100%", padding: "0.6rem", borderRadius: "4px", border: "1px solid #ccc" }} />

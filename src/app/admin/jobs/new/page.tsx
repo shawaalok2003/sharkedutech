@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import JobImageUploader from "./JobImageUploader";
 
 async function createJob(formData: FormData) {
     "use server";
@@ -35,15 +36,20 @@ async function createJob(formData: FormData) {
     const description = formData.get("description") as string;
     const requirements = formData.get("requirements") as string;
     const status = formData.get("status") as string;
+    const posterUrl = (formData.get("posterUrl") as string)?.trim() || null;
+    const isTopOpportunity = formData.get("isTopOpportunity") === "on";
 
     await prisma.job.create({
         data: {
             title, companyName, type, category, location, salaryMin, salaryMax, description, requirements, status,
+            posterUrl, isTopOpportunity,
             employerId
         }
     });
 
     revalidatePath("/admin/jobs");
+    revalidatePath("/");
+    revalidatePath("/jobs");
     redirect("/admin/jobs");
 }
 
@@ -57,7 +63,7 @@ export default function NewJobPage() {
             <div style={{ marginBottom: "2rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <div>
                     <h1 style={{ fontSize: "1.875rem", fontWeight: 700, color: "var(--primary)" }}>Create Job Posting</h1>
-                    <p style={{ color: "var(--muted-foreground)" }}>Manually define a new job on behalf of an employer.</p>
+                    <p style={{ color: "var(--muted-foreground)" }}>Manually define a new job on behalf of an employer with poster image.</p>
                 </div>
                 <Link href="/admin/jobs" style={{ padding: "0.5rem 1rem", backgroundColor: "#e2e8f0", color: "#0f172a", borderRadius: "6px", textDecoration: "none", fontWeight: 500 }}>
                     Back to Jobs
@@ -70,7 +76,7 @@ export default function NewJobPage() {
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
                         <div style={{ gridColumn: "span 2", padding: "1rem", backgroundColor: "#f0f9ff", borderRadius: "8px", border: "1px solid #bae6fd", marginBottom: "0.5rem" }}>
                             <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-                                <input name="postAsAdmin" type="checkbox" id="postAsAdmin" style={{ width: "1.25rem", height: "1.25rem", cursor: "pointer" }} />
+                                <input name="postAsAdmin" type="checkbox" id="postAsAdmin" defaultChecked style={{ width: "1.25rem", height: "1.25rem", cursor: "pointer" }} />
                                 <label htmlFor="postAsAdmin" style={{ fontWeight: 600, cursor: "pointer", color: "#0369a1" }}>
                                     Post Directly as Shark Edutech (Super Admin)
                                 </label>
@@ -85,6 +91,21 @@ export default function NewJobPage() {
                             <input name="employerEmail" type="email" placeholder="user@company.com" style={{ width: "100%", padding: "0.6rem", borderRadius: "4px", border: "1px solid #ccc", backgroundColor: "#f8fafc" }} />
                             <p style={{ fontSize: "0.875rem", color: "#64748b", marginTop: "0.25rem" }}>Required only if not posting as Admin.</p>
                         </div>
+
+                        {/* Image Uploader Component */}
+                        <div style={{ gridColumn: "span 2" }}>
+                            <JobImageUploader />
+                        </div>
+
+                        <div style={{ gridColumn: "span 2", padding: "1rem", backgroundColor: "#f8fafc", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                                <input name="isTopOpportunity" type="checkbox" id="isTopOpportunity" defaultChecked style={{ width: "1.25rem", height: "1.25rem", cursor: "pointer" }} />
+                                <label htmlFor="isTopOpportunity" style={{ fontWeight: 700, cursor: "pointer", color: "#001736" }}>
+                                    ⭐ Feature in "Explore Opportunities" Carousel on Homepage
+                                </label>
+                            </div>
+                        </div>
+
                         <div style={{ gridColumn: "span 2" }}>
                             <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Job Title</label>
                             <input name="title" required style={{ width: "100%", padding: "0.6rem", borderRadius: "4px", border: "1px solid #ccc" }} />
@@ -95,11 +116,11 @@ export default function NewJobPage() {
                         </div>
                         <div>
                             <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Type</label>
-                            <input name="type" placeholder="Full-time, Contract, etc." required style={{ width: "100%", padding: "0.6rem", borderRadius: "4px", border: "1px solid #ccc" }} />
+                            <input name="type" placeholder="Full-time, Contract, OJT, etc." required style={{ width: "100%", padding: "0.6rem", borderRadius: "4px", border: "1px solid #ccc" }} />
                         </div>
                         <div>
                             <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Location</label>
-                            <input name="location" placeholder="Remote, New York, etc." required style={{ width: "100%", padding: "0.6rem", borderRadius: "4px", border: "1px solid #ccc" }} />
+                            <input name="location" placeholder="Remote, Goa, Delhi, etc." required style={{ width: "100%", padding: "0.6rem", borderRadius: "4px", border: "1px solid #ccc" }} />
                         </div>
                         <div className="cat-wrapper">
                             <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Category</label>
@@ -141,11 +162,11 @@ export default function NewJobPage() {
                             <input name="customCategory" className="custom-cat-input" placeholder="Enter your custom category..." style={{ width: "100%", padding: "0.6rem", borderRadius: "4px", border: "1px solid #ccc", marginTop: "0.5rem" }} />
                         </div>
                         <div>
-                            <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Min Salary</label>
+                            <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Min Salary (₹)</label>
                             <input name="salaryMin" type="number" style={{ width: "100%", padding: "0.6rem", borderRadius: "4px", border: "1px solid #ccc" }} />
                         </div>
                         <div>
-                            <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Max Salary</label>
+                            <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Max Salary (₹)</label>
                             <input name="salaryMax" type="number" style={{ width: "100%", padding: "0.6rem", borderRadius: "4px", border: "1px solid #ccc" }} />
                         </div>
                         <div>

@@ -65,7 +65,7 @@ export function Navbar() {
         <header className={styles.header}>
             <div className={styles.navContainer}>
                 <Link href="/" className={styles.logo} style={{ display: 'flex', alignItems: 'center' }}>
-                    <Image src="/images/shark_edu_tech_logo-removebg-preview.png" alt="Sharkedutech Logo" width={240} height={64} style={{ objectFit: 'contain' }} priority />
+                    <Image src="/images/shark_edu_tech_logo-removebg-preview.png" alt="Sharkedutech Logo" width={320} height={84} style={{ objectFit: 'contain' }} priority />
                 </Link>
 
                 {/* Hamburger Button */}
