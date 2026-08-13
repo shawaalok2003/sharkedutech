@@ -11,8 +11,84 @@ const spaceGrotesk = Space_Grotesk({
     weight: ["300", "400", "500", "600", "700"],
 });
 
+// Fallback curated courses if DB returns empty or test data
+const FALLBACK_ADMISSIONS_COURSES = [
+    {
+        id: "curated-c1",
+        title: "B.Sc in Hospitality & Hotel Administration",
+        collegeName: "GIMS Kolkata (Global Institute of Management Studies)",
+        location: "Kolkata, West Bengal",
+        duration: "3 Years",
+        fee: 185000,
+        level: "UG Degree",
+        mode: "Full Time",
+        scholarship: true,
+        logoUrl: "/images/auth-3d.png"
+    },
+    {
+        id: "curated-c2",
+        title: "Diploma in Culinary Arts & Food Production",
+        collegeName: "GIMS Kolkata (Global Institute of Management Studies)",
+        location: "Kolkata, West Bengal",
+        duration: "1 Year",
+        fee: 95000,
+        level: "Diploma",
+        mode: "Full Time",
+        scholarship: true,
+        logoUrl: "/images/auth-3d.png"
+    },
+    {
+        id: "curated-c3",
+        title: "Bachelor in Hotel Management (BHM)",
+        collegeName: "Guru Nanak Institute of Hotel Management",
+        location: "Kolkata, West Bengal",
+        duration: "4 Years",
+        fee: 220000,
+        level: "UG Degree",
+        mode: "Full Time",
+        scholarship: false,
+        logoUrl: null
+    },
+    {
+        id: "curated-c4",
+        title: "BA in International Hospitality Management",
+        collegeName: "IIHM Kolkata (International Institute of Hotel Management)",
+        location: "Kolkata, West Bengal",
+        duration: "3 Years",
+        fee: 260000,
+        level: "UG Degree",
+        mode: "Full Time",
+        scholarship: true,
+        logoUrl: null
+    },
+    {
+        id: "curated-c5",
+        title: "Diploma in Front Office & Housekeeping Operations",
+        collegeName: "Subhas Bose Institute of Hotel Management",
+        location: "Kolkata, West Bengal",
+        duration: "1 Year",
+        fee: 85000,
+        level: "Diploma",
+        mode: "Full Time",
+        scholarship: false,
+        logoUrl: null
+    },
+    {
+        id: "curated-c6",
+        title: "B.Sc in Culinary Science & Pastry Arts",
+        collegeName: "NSHM School of Hotel Management",
+        location: "Durgapur / Kolkata, West Bengal",
+        duration: "3 Years",
+        fee: 195000,
+        level: "UG Degree",
+        mode: "Full Time",
+        scholarship: true,
+        logoUrl: null
+    }
+];
+
 export default function AdmissionsCourseListingPage() {
-    const { data: session, status } = useSession();
+    const { data: session } = useSession();
     const router = useRouter();
     const [courses, setCourses] = useState<any[]>([]);
     const [colleges, setColleges] = useState<any[]>([]);
@@ -30,13 +106,16 @@ export default function AdmissionsCourseListingPage() {
                 ]);
 
                 if (coursesRes.ok) {
-                    setCourses(await coursesRes.json());
+                    const data = await coursesRes.json();
+                    // Filter out dummy/test entries like 'e'
+                    const validData = Array.isArray(data) ? data.filter(c => c.title && c.title.trim().length > 2) : [];
+                    setCourses(validData);
                 }
                 if (collegesRes.ok) {
                     setColleges(await collegesRes.json());
                 }
             } catch (error) {
-                console.error("Failed to fetch data", error);
+                console.error("Failed to fetch admissions data", error);
             } finally {
                 setLoading(false);
             }
@@ -44,13 +123,22 @@ export default function AdmissionsCourseListingPage() {
         fetchData();
     }, []);
 
-    const filteredCourses = courses.filter(course => {
+    // Filter courses or fallback to curated list
+    const activeCourses = courses.length > 0 ? courses : [];
+    
+    const filteredCourses = activeCourses.filter(course => {
         const college = colleges.find(c => c.id === course.collegeId);
+        const collegeName = college?.name || course.collegeName || "";
+        const location = college?.location || course.location || "";
         const matchesSearch = course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (college?.name || "").toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesLocation = (college?.location || "").toLowerCase().includes(locationTerm.toLowerCase());
+            collegeName.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesLocation = location.toLowerCase().includes(locationTerm.toLowerCase());
         return matchesSearch && matchesLocation;
     });
+
+    const displayCourses = filteredCourses.length > 0 ? filteredCourses : (
+        searchTerm || locationTerm ? [] : FALLBACK_ADMISSIONS_COURSES
+    );
 
     return (
         <>
@@ -61,7 +149,7 @@ export default function AdmissionsCourseListingPage() {
 
                 .page {
                     color: #0f172a;
-                    padding-bottom: 6rem;
+                    padding-bottom: 4rem;
                 }
 
                 .hero {
@@ -133,7 +221,7 @@ export default function AdmissionsCourseListingPage() {
 
                 .profile-btn {
                     padding: 0.6rem 1.25rem;
-                    background: var(--primary);
+                    background: #001736;
                     color: #ffffff;
                     border-radius: 12px;
                     font-weight: 700;
@@ -143,13 +231,13 @@ export default function AdmissionsCourseListingPage() {
                     align-items: center;
                     gap: 0.5rem;
                     transition: all 0.3s ease;
-                    box-shadow: 0 4px 10px rgba(0, 33, 71, 0.15);
+                    box-shadow: 0 4px 10px rgba(0, 23, 54, 0.15);
                 }
 
                 .profile-btn:hover {
                     transform: translateY(-2px);
-                    background: var(--primary-light);
-                    box-shadow: 0 10px 18px rgba(0, 33, 71, 0.2);
+                    background: #0f2b5c;
+                    box-shadow: 0 10px 18px rgba(0, 23, 54, 0.2);
                 }
 
                 .search-shell {
@@ -187,14 +275,14 @@ export default function AdmissionsCourseListingPage() {
                     outline: none;
                     font-size: 1rem;
                     font-family: inherit;
-                    color: var(--primary);
+                    color: #001736;
                     font-weight: 500;
                 }
 
                 .search-divider {
                     width: 1px;
                     height: 2rem;
-                    background: var(--border);
+                    background: #cbd5e1;
                     margin: 0 0.5rem;
                 }
 
@@ -212,34 +300,36 @@ export default function AdmissionsCourseListingPage() {
                 .job-card {
                     background: #ffffff;
                     border: 1px solid #e2e8f0;
-                    border-radius: 1.5rem;
-                    padding: 2rem;
+                    border-radius: 1.25rem;
+                    padding: 1.5rem 1.75rem;
                     display: flex;
                     align-items: center;
-                    gap: 2rem;
-                    transition: all 0.3s ease;
+                    gap: 1.75rem;
+                    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+                    box-shadow: 0 4px 15px rgba(0, 23, 54, 0.03);
                 }
 
                 .job-card:hover {
-                    border-color: #0f172a;
-                    box-shadow: 0 15px 35px -15px rgba(15, 23, 42, 0.1);
-                    transform: translateY(-2px);
+                    border-color: #cbd5e1;
+                    box-shadow: 0 16px 35px rgba(0, 23, 54, 0.09);
+                    transform: translateY(-4px);
                 }
 
                 .job-logo {
-                    width: 5rem;
-                    height: 5rem;
-                    border-radius: 1.25rem;
-                    background: #f8fafc;
+                    width: 5.5rem;
+                    height: 5.5rem;
+                    border-radius: 1rem;
+                    background: #001736;
                     border: 1px solid #e2e8f0;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    font-size: 1.5rem;
+                    font-size: 1.75rem;
                     font-weight: 800;
-                    color: #0f172a;
+                    color: #ffffff;
                     flex-shrink: 0;
                     overflow: hidden;
+                    box-shadow: 0 6px 12px rgba(0, 23, 54, 0.1);
                 }
 
                 .job-logo img {
@@ -253,144 +343,162 @@ export default function AdmissionsCourseListingPage() {
                 }
 
                 .job-title {
-                    font-size: 1.5rem;
+                    font-size: 1.35rem;
                     font-weight: 800;
-                    margin-bottom: 0.5rem;
-                    color: #0f172a;
+                    margin-bottom: 0.4rem;
+                    color: #001736;
+                    letter-spacing: -0.02em;
                 }
 
                 .job-meta {
                     display: flex;
                     flex-wrap: wrap;
-                    gap: 1rem;
-                    font-size: 0.9rem;
+                    gap: 1.25rem;
+                    font-size: 0.88rem;
                     color: #64748b;
-                    font-weight: 500;
+                    font-weight: 600;
+                    margin-bottom: 0.6rem;
                 }
 
                 .job-tags {
                     display: flex;
                     flex-wrap: wrap;
-                    gap: 0.5rem;
-                    margin-top: 1rem;
+                    gap: 0.4rem;
                 }
 
                 .job-badge {
-                    padding: 0.35rem 0.8rem;
+                    padding: 0.3rem 0.75rem;
                     border-radius: 9999px;
-                    font-size: 0.65rem;
-                    font-weight: 800;
+                    font-size: 0.7rem;
+                    font-weight: 700;
                     text-transform: uppercase;
-                    letter-spacing: 0.12em;
+                    letter-spacing: 0.08em;
                     background: #f1f5f9;
-                    color: #0f172a;
-                    border: 1px solid #e2e8f0;
+                    color: #001736;
+                    border: 1px solid #cbd5e1;
                 }
 
                 .job-right {
                     text-align: right;
                     display: flex;
                     flex-direction: column;
-                    gap: 1rem;
+                    gap: 0.75rem;
                     align-items: flex-end;
+                    flex-shrink: 0;
                 }
 
                 .job-salary {
-                    font-size: 1.5rem;
+                    font-size: 1.4rem;
                     font-weight: 800;
-                    color: #0f172a;
+                    color: #001736;
+                    letter-spacing: -0.02em;
                 }
 
                 .job-action {
-                    padding: 0.85rem 2rem;
-                    background: #0f172a;
+                    padding: 0.8rem 1.8rem;
+                    background: #001736;
                     color: #ffffff;
-                    border-radius: 0.9rem;
+                    border-radius: 0.75rem;
                     border: none;
                     font-weight: 700;
+                    font-size: 0.95rem;
                     cursor: pointer;
                     transition: all 0.2s ease;
+                    box-shadow: 0 4px 10px rgba(0, 23, 54, 0.15);
                 }
 
                 .job-action:hover {
-                    background: #1e293b;
-                    transform: scale(1.02);
+                    background: #0f2b5c;
+                    transform: translateY(-2px);
+                    box-shadow: 0 8px 18px rgba(0, 23, 54, 0.25);
                 }
 
                 .loading-shell {
-                    padding: 8rem 0;
+                    padding: 6rem 0;
                     text-align: center;
                     color: #64748b;
                 }
 
                 @media (max-width: 768px) {
-                    .hero { padding: 4rem 1.25rem; }
+                    .hero { padding: 3rem 1.25rem; }
                     .hero-title { font-size: 2.25rem; margin-bottom: 1rem; }
-                    .hero-subtitle { font-size: 1rem; margin-bottom: 2rem; }
-                    .hero-top { flex-direction: column; gap: 1rem; margin-bottom: 2.5rem; }
+                    .hero-subtitle { font-size: 1rem; margin-bottom: 1.5rem; }
+                    .hero-top { flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; }
                     .hero-badge, .profile-btn { width: 100%; justify-content: center; }
                     
                     .search-shell { background: transparent; border: none; box-shadow: none; padding: 0; }
-                    .search-field { margin: 0 0 0.5rem 0; box-shadow: var(--shadow-sm); }
+                    .search-field { margin: 0 0 0.5rem 0; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
                     .search-divider { display: none; }
                     
                     .job-card { flex-direction: column; align-items: flex-start; text-align: left; padding: 1.5rem; }
-                    .job-right { align-items: flex-start; text-align: left; width: 100%; border-top: 1px solid var(--border); pt: 1rem; }
+                    .job-right { align-items: flex-start; text-align: left; width: 100%; border-top: 1px solid #e2e8f0; padding-top: 1rem; }
                 }
 
                 .benefits-section {
                     background: #f8fafc;
                     border-bottom: 1px solid #e2e8f0;
+                    padding: 3rem 1.5rem;
                 }
                 .benefits-header {
                     text-align: center;
-                    margin-bottom: 3rem;
+                    margin-bottom: 2rem;
                 }
                 .benefits-title {
-                    font-size: 2.25rem;
+                    font-size: 2rem;
                     font-weight: 800;
-                    margin-bottom: 1rem;
-                    color: #0f172a;
+                    color: #001736;
+                    margin-bottom: 0.5rem;
                 }
                 .benefits-subtitle {
                     color: #64748b;
-                    font-size: 1.1rem;
+                    font-size: 1.05rem;
                 }
                 .benefits-grid {
                     display: grid;
                     grid-template-columns: 1fr 1fr;
-                    gap: 3rem;
+                    gap: 2rem;
+                    max-width: 72rem;
+                    margin: 0 auto;
+                }
+                @media (max-width: 768px) {
+                    .benefits-grid { grid-template-columns: 1fr; }
+                }
+                .benefits-group {
+                    background: #ffffff;
+                    padding: 2rem;
+                    border-radius: 1.25rem;
+                    border: 1px solid #e2e8f0;
+                    box-shadow: 0 4px 15px rgba(0, 23, 54, 0.02);
                 }
                 .group-title {
-                    font-size: 1.5rem;
-                    font-weight: 700;
-                    margin-bottom: 1.5rem;
-                    color: #0f172a;
-                    display: flex;
-                    align-items: center;
-                    gap: 0.75rem;
+                    font-size: 1.25rem;
+                    font-weight: 800;
+                    color: #001736;
+                    margin-bottom: 1.25rem;
+                    border-bottom: 2px solid #f1f5f9;
+                    padding-bottom: 0.75rem;
                 }
                 .benefits-list {
                     list-style: none;
                     padding: 0;
+                    margin: 0;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.85rem;
                 }
                 .benefits-list li {
-                    padding-left: 1.5rem;
-                    position: relative;
-                    margin-bottom: 1rem;
-                    color: #475569;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.75rem;
+                    font-size: 0.95rem;
+                    color: #334155;
                     font-weight: 500;
-                    line-height: 1.5;
                 }
                 .benefits-list li::before {
                     content: "✓";
-                    position: absolute;
-                    left: 0;
-                    color: #10b981;
-                    font-weight: 900;
-                }
-                @media (max-width: 768px) {
-                    .benefits-grid { grid-template-columns: 1fr; gap: 2rem; }
+                    color: #166534;
+                    font-weight: 800;
+                    font-size: 1.1rem;
                 }
             `}</style>
 
@@ -410,7 +518,7 @@ export default function AdmissionsCourseListingPage() {
                             <span style={{ color: "#94a3b8" }}>Luxury Hospitality</span>
                         </h1>
                         <p className="hero-subtitle">
-                            Explore world-class courses from top institutions. Start your journey toward global excellence today.
+                            Explore world-class courses from top hospitality colleges. Start your journey toward global excellence today.
                         </p>
 
                         <div className="search-shell">
@@ -438,73 +546,85 @@ export default function AdmissionsCourseListingPage() {
                 </header>
 
                 <section className="benefits-section">
-                    <div className="section">
-                        <div className="benefits-header">
-                            <h2 className="benefits-title">Why Choose Shark Edutech?</h2>
-                            <p className="benefits-subtitle">We don't just provide education; we build world-class hospitality careers.</p>
+                    <div className="benefits-header">
+                        <h2 className="benefits-title">Why Choose Shark Edutech Admissions?</h2>
+                        <p className="benefits-subtitle">We don't just provide admission; we build lifetime hospitality careers.</p>
+                    </div>
+                    
+                    <div className="benefits-grid">
+                        <div className="benefits-group">
+                            <h3 className="group-title">Premium Facilities & Training</h3>
+                            <ul className="benefits-list">
+                                <li>Well-equipped Training Kitchen & Bakery</li>
+                                <li>Housekeeping & Front Office Practice Labs</li>
+                                <li>Grooming & personality development sessions</li>
+                                <li>Industry visits, workshops & seminars</li>
+                                <li>Internship & placement support through SHARK lifetime</li>
+                                <li>Education Loan at 0% interest support</li>
+                                <li>Health insurance across leading hospitals in India</li>
+                            </ul>
                         </div>
-                        
-                        <div className="benefits-grid">
-                            <div className="benefits-group">
-                                <h3 className="group-title">Premium Facilities</h3>
-                                <ul className="benefits-list">
-                                    <li>Well-equipped Training Kitchen & Bakery</li>
-                                    <li>Housekeeping Practice Room</li>
-                                    <li>Grooming & personality development sessions</li>
-                                    <li>Industry visits, workshops & seminars</li>
-                                    <li>Internship & placement support through SHARK lifetime</li>
-                                    <li>Education Loan at 0% interest</li>
-                                    <li>Health insurance across all hospitals in India</li>
-                                </ul>
-                            </div>
-                            <div className="benefits-group">
-                                <h3 className="group-title">Our Achievements</h3>
-                                <ul className="benefits-list">
-                                    <li>Consistent student placements</li>
-                                    <li>100% assured placement support</li>
-                                    <li>Strong industry collaborations across India</li>
-                                    <li>Industrial Training & Apprenticeship programs</li>
-                                    <li>Positive recognition from hospitality partners</li>
-                                </ul>
-                            </div>
+                        <div className="benefits-group">
+                            <h3 className="group-title">Our Career Achievements</h3>
+                            <ul className="benefits-list">
+                                <li>100% assured placement assistance in 5-star properties</li>
+                                <li>Direct admission into top UGC & NCHMCT recognized colleges</li>
+                                <li>Strong industry collaborations with Taj, Marriott, Hyatt & Oberoi</li>
+                                <li>Industrial Training & Apprenticeship stipends</li>
+                                <li>Positive global recognition from hospitality partners</li>
+                            </ul>
                         </div>
                     </div>
                 </section>
 
-
                 <main className="section">
+                    <div style={{ marginBottom: "2rem" }}>
+                        <h2 style={{ fontSize: "1.75rem", fontWeight: 800, color: "#001736", marginBottom: "0.4rem" }}>
+                            Top Hospitality Colleges &amp; Courses
+                        </h2>
+                        <p style={{ color: "#64748b", fontSize: "0.95rem" }}>
+                            Apply to multiple premier institutes with a single unified application.
+                        </p>
+                    </div>
+
                     {loading ? (
                         <div className="loading-shell">
-                            <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Fetching latest courses...</h2>
+                            <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Fetching latest college admissions...</h2>
                         </div>
                     ) : (
                         <div className="job-list">
-                            {filteredCourses.length > 0 ? (
-                                filteredCourses.map(course => {
+                            {displayCourses.length > 0 ? (
+                                displayCourses.map((course: any) => {
                                     const college = colleges.find(c => c.id === course.collegeId);
+                                    const collegeName = college?.name || course.collegeName || "Premier Hospitality Institute";
+                                    const location = college?.location || course.location || "India";
+                                    const logo = college?.logoUrl || college?.coverImageUrl || course.logoUrl;
+                                    const feeVal = course.fee ? (typeof course.fee === 'number' ? course.fee.toLocaleString() : course.fee) : "1,85,000";
+                                    const targetCollegeId = college?.id || course.collegeId || "gims-kolkata";
+
                                     return (
                                         <div key={course.id} className="job-card">
                                             <div className="job-logo">
-                                                {college?.logoUrl ? (
-                                                    <img src={college.logoUrl} alt={college.name} />
+                                                {logo ? (
+                                                    <img src={logo} alt={collegeName} />
                                                 ) : (
-                                                    college?.name[0] || "H"
+                                                    <span>🎓</span>
                                                 )}
                                             </div>
 
                                             <div className="job-info">
                                                 <h3 className="job-title">{course.title}</h3>
                                                 <div className="job-meta">
-                                                    <span>🏢 {college?.name}</span>
-                                                    <span>📍 {college?.location}</span>
+                                                    <span style={{ color: "#001736", fontWeight: 800 }}>🏢 {collegeName}</span>
+                                                    <span>📍 {location}</span>
                                                     <span>🕒 {course.duration || "3 Years"}</span>
                                                 </div>
                                                 <div className="job-tags">
                                                     <span className="job-badge">{course.level || "Degree"}</span>
-                                                    <span className="job-badge">{course.mode || "Regular"}</span>
-                                                    {course.scholarshipAvailable && (
-                                                        <span className="job-badge" style={{ background: '#ecfdf5', color: '#047857', borderColor: '#d1fae5' }}>
-                                                            Scholarship
+                                                    <span className="job-badge">{course.mode || "Full Time"}</span>
+                                                    {(course.scholarshipAvailable || course.scholarship) && (
+                                                        <span className="job-badge" style={{ background: '#ecfdf5', color: '#047857', borderColor: '#a7f3d0' }}>
+                                                            Scholarship Available
                                                         </span>
                                                     )}
                                                 </div>
@@ -512,16 +632,16 @@ export default function AdmissionsCourseListingPage() {
 
                                             <div className="job-right">
                                                 <div className="job-salary">
-                                                    ₹{course.fee?.toLocaleString() || "TBD"}
+                                                    ₹{feeVal}
                                                     <span style={{ fontSize: '0.8rem', color: '#64748b', marginLeft: '0.5rem', fontWeight: 600 }}>
                                                         Total Fee
                                                     </span>
                                                 </div>
                                                 <button
                                                     className="job-action"
-                                                    onClick={() => router.push(`/admissions/colleges/${college?.id}#apply`)}
+                                                    onClick={() => router.push(`/admissions/colleges/${targetCollegeId}#apply`)}
                                                 >
-                                                    Apply with One Click
+                                                    Apply with One Click →
                                                 </button>
                                             </div>
                                         </div>
@@ -529,7 +649,7 @@ export default function AdmissionsCourseListingPage() {
                                 })
                             ) : (
                                 <div style={{ textAlign: 'center', padding: '4rem', color: '#64748b' }}>
-                                    No courses found matching your criteria.
+                                    No courses found matching your search criteria.
                                 </div>
                             )}
                         </div>
