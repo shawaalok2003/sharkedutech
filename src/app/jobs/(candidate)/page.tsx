@@ -123,7 +123,7 @@ export default function JobsPage() {
                 .hero {
                     position: relative;
                     overflow: hidden;
-                    padding: 6rem 1.5rem;
+                    padding: 3.5rem 1.5rem 2rem;
                     border-bottom: 1px solid #f1f5f9;
                     background: #ffffff;
                 }
@@ -160,24 +160,24 @@ export default function JobsPage() {
                     text-transform: uppercase;
                     color: #001736;
                     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-                    margin-bottom: 1.75rem;
+                    margin-bottom: 1.25rem;
                 }
 
                 .hero-title {
-                    font-size: 3.5rem;
+                    font-size: 3rem;
                     font-weight: 800;
-                    line-height: 1.1;
+                    line-height: 1.15;
                     letter-spacing: -0.03em;
-                    margin-bottom: 1.25rem;
+                    margin-bottom: 1rem;
                     color: #001736;
                 }
 
                 .hero-subtitle {
-                    font-size: 1.15rem;
+                    font-size: 1.1rem;
                     color: #64748b;
                     max-width: 44rem;
-                    margin: 0 auto 2.5rem;
-                    line-height: 1.65;
+                    margin: 0 auto 2rem;
+                    line-height: 1.6;
                     font-weight: 500;
                 }
 
@@ -187,7 +187,7 @@ export default function JobsPage() {
                     background: #ffffff;
                     border: 1px solid #e2e8f0;
                     border-radius: 1.25rem;
-                    box-shadow: 0 20px 30px -15px rgba(15, 23, 42, 0.2);
+                    box-shadow: 0 15px 25px -10px rgba(15, 23, 42, 0.1);
                     padding: 0.5rem;
                 }
 
@@ -241,8 +241,8 @@ export default function JobsPage() {
                     display: flex;
                     flex-wrap: wrap;
                     justify-content: center;
-                    gap: 1.5rem;
-                    margin-top: 2.5rem;
+                    gap: 1.25rem;
+                    margin-top: 1.5rem;
                     font-size: 0.85rem;
                     color: #94a3b8;
                 }
@@ -261,7 +261,7 @@ export default function JobsPage() {
                 .section {
                     max-width: 80rem;
                     margin: 0 auto;
-                    padding: 6rem 1.5rem;
+                    padding: 3rem 1.5rem;
                 }
 
                 .section-header {
