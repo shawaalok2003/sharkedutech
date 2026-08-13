@@ -25,7 +25,7 @@ export async function GET(request: Request) {
     const courses = await prisma.course.findMany({
         where,
         orderBy: { createdAt: "desc" },
-        include: { college: { select: { name: true } } }
+        include: { college: { select: { name: true, location: true, logoUrl: true } } }
     });
 
     return NextResponse.json(courses);

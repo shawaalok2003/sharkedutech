@@ -11,82 +11,6 @@ const spaceGrotesk = Space_Grotesk({
     weight: ["300", "400", "500", "600", "700"],
 });
 
-// Fallback curated courses if DB returns empty or test data
-const FALLBACK_ADMISSIONS_COURSES = [
-    {
-        id: "curated-c1",
-        title: "B.Sc in Hospitality & Hotel Administration",
-        collegeName: "GIMS Kolkata (Global Institute of Management Studies)",
-        location: "Kolkata, West Bengal",
-        duration: "3 Years",
-        fee: 185000,
-        level: "UG Degree",
-        mode: "Full Time",
-        scholarship: true,
-        logoUrl: "/images/auth-3d.png"
-    },
-    {
-        id: "curated-c2",
-        title: "Diploma in Culinary Arts & Food Production",
-        collegeName: "GIMS Kolkata (Global Institute of Management Studies)",
-        location: "Kolkata, West Bengal",
-        duration: "1 Year",
-        fee: 95000,
-        level: "Diploma",
-        mode: "Full Time",
-        scholarship: true,
-        logoUrl: "/images/auth-3d.png"
-    },
-    {
-        id: "curated-c3",
-        title: "Bachelor in Hotel Management (BHM)",
-        collegeName: "Guru Nanak Institute of Hotel Management",
-        location: "Kolkata, West Bengal",
-        duration: "4 Years",
-        fee: 220000,
-        level: "UG Degree",
-        mode: "Full Time",
-        scholarship: false,
-        logoUrl: null
-    },
-    {
-        id: "curated-c4",
-        title: "BA in International Hospitality Management",
-        collegeName: "IIHM Kolkata (International Institute of Hotel Management)",
-        location: "Kolkata, West Bengal",
-        duration: "3 Years",
-        fee: 260000,
-        level: "UG Degree",
-        mode: "Full Time",
-        scholarship: true,
-        logoUrl: null
-    },
-    {
-        id: "curated-c5",
-        title: "Diploma in Front Office & Housekeeping Operations",
-        collegeName: "Subhas Bose Institute of Hotel Management",
-        location: "Kolkata, West Bengal",
-        duration: "1 Year",
-        fee: 85000,
-        level: "Diploma",
-        mode: "Full Time",
-        scholarship: false,
-        logoUrl: null
-    },
-    {
-        id: "curated-c6",
-        title: "B.Sc in Culinary Science & Pastry Arts",
-        collegeName: "NSHM School of Hotel Management",
-        location: "Durgapur / Kolkata, West Bengal",
-        duration: "3 Years",
-        fee: 195000,
-        level: "UG Degree",
-        mode: "Full Time",
-        scholarship: true,
-        logoUrl: null
-    }
-];
-
 export default function AdmissionsCourseListingPage() {
     const { data: session } = useSession();
     const router = useRouter();
@@ -123,11 +47,9 @@ export default function AdmissionsCourseListingPage() {
         fetchData();
     }, []);
 
-    // Filter courses or fallback to curated list
-    const activeCourses = courses.length > 0 ? courses : [];
-    
-    const filteredCourses = activeCourses.filter(course => {
-        const college = colleges.find(c => c.id === course.collegeId);
+    // Purely database-driven list from Admin Panel
+    const filteredCourses = courses.filter(course => {
+        const college = colleges.find(c => c.id === course.collegeId) || course.college;
         const collegeName = college?.name || course.collegeName || "";
         const location = college?.location || course.location || "";
         const matchesSearch = course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -135,10 +57,6 @@ export default function AdmissionsCourseListingPage() {
         const matchesLocation = location.toLowerCase().includes(locationTerm.toLowerCase());
         return matchesSearch && matchesLocation;
     });
-
-    const displayCourses = filteredCourses.length > 0 ? filteredCourses : (
-        searchTerm || locationTerm ? [] : FALLBACK_ADMISSIONS_COURSES
-    );
 
     return (
         <>
@@ -580,10 +498,10 @@ export default function AdmissionsCourseListingPage() {
                 <main className="section">
                     <div style={{ marginBottom: "2rem" }}>
                         <h2 style={{ fontSize: "1.75rem", fontWeight: 800, color: "#001736", marginBottom: "0.4rem" }}>
-                            Top Hospitality Colleges &amp; Courses
+                            Top Hospitality Colleges &amp; Courses ({filteredCourses.length})
                         </h2>
                         <p style={{ color: "#64748b", fontSize: "0.95rem" }}>
-                            Apply to multiple premier institutes with a single unified application.
+                            Apply to premier institutes with a single unified application directly managed by Admin.
                         </p>
                     </div>
 
@@ -593,9 +511,9 @@ export default function AdmissionsCourseListingPage() {
                         </div>
                     ) : (
                         <div className="job-list">
-                            {displayCourses.length > 0 ? (
-                                displayCourses.map((course: any) => {
-                                    const college = colleges.find(c => c.id === course.collegeId);
+                            {filteredCourses.length > 0 ? (
+                                filteredCourses.map((course: any) => {
+                                    const college = colleges.find(c => c.id === course.collegeId) || course.college;
                                     const collegeName = college?.name || course.collegeName || "Premier Hospitality Institute";
                                     const location = college?.location || course.location || "India";
                                     const logo = college?.logoUrl || college?.coverImageUrl || course.logoUrl;
@@ -649,7 +567,7 @@ export default function AdmissionsCourseListingPage() {
                                 })
                             ) : (
                                 <div style={{ textAlign: 'center', padding: '4rem', color: '#64748b' }}>
-                                    No courses found matching your search criteria.
+                                    No college courses found matching your criteria.
                                 </div>
                             )}
                         </div>
