@@ -1,5 +1,4 @@
 import { HeroSection } from "@/components/landing/HeroSection";
-import { AdCarousel } from "@/components/landing/AdCarousel";
 import { LogoCarousel } from "@/components/landing/LogoCarousel";
 import { JobCarousel } from "@/components/landing/JobCarousel";
 import { HowItWorks } from "@/components/landing/HowItWorks";
@@ -8,34 +7,45 @@ import { Testimonials } from "@/components/landing/Testimonials";
 import { Footer } from "@/components/layout/Footer";
 
 import { prisma } from "@/lib/prisma";
+import { ensureOpportunitiesSeeded, OPPORTUNITIES_DATA } from "@/lib/seedOpportunities";
 
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
   let topJobs: any[] = [];
   try {
+    await ensureOpportunitiesSeeded();
     topJobs = await prisma.job.findMany({
-      where: { isTopOpportunity: true, status: 'Active' },
+      where: { 
+        isTopOpportunity: true, 
+        status: 'Active',
+        posterUrl: { not: null }
+      },
       include: { employer: true },
-      take: 10,
+      take: 16,
       orderBy: { createdAt: 'desc' }
     });
   } catch (e) {
     console.error('[Home] Failed to fetch jobs from DB:', e);
-    // Render page without jobs — DB may be sleeping (Neon free tier)
+  }
+
+  // Ensure fallback to OPPORTUNITIES_DATA if DB fetch returned empty or missing posterUrl
+  if (!topJobs || topJobs.length === 0) {
+    topJobs = OPPORTUNITIES_DATA.map((item, idx) => ({
+      id: `seed-job-${idx + 1}`,
+      ...item
+    }));
   }
 
   return (
     <main>
       <HeroSection />
-      <AdCarousel />
       <LogoCarousel />
-      <Testimonials />
       <JobCarousel jobs={topJobs} />
+      <Testimonials />
       <HowItWorks />
       <Benefits />
       <Footer />
     </main>
   );
 }
-

@@ -23,6 +23,7 @@ interface Job {
     description: string;
     requirements?: string;
     questions?: string;
+    posterUrl?: string;
     employer: { name: string };
 }
 
@@ -309,6 +310,15 @@ export default function JobApplyPage() {
 
                 <div className="split-layout">
                     <div className="job-details-panel">
+                        {job.posterUrl && (
+                            <div style={{ marginBottom: "2rem", borderRadius: "1.5rem", overflow: "hidden", border: "1px solid #e2e8f0", boxShadow: "0 10px 25px rgba(0,0,0,0.08)" }}>
+                                <img 
+                                    src={job.posterUrl} 
+                                    alt={job.title} 
+                                    style={{ width: "100%", maxHeight: "550px", objectFit: "contain", background: "#001736", display: "block" }} 
+                                />
+                            </div>
+                        )}
                         <div className="details-section">
                             <h3>Job Description</h3>
                             <div className="details-text">{job.description}</div>

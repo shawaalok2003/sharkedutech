@@ -3,10 +3,9 @@
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Button } from "@/components/ui/Button";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/Card";
 import OTPInput from "@/components/auth/OTPInput";
-import { signIn, signOut } from "next-auth/react";
+import { signIn } from "next-auth/react";
+import { AuthLayout } from "@/components/layout/AuthLayout";
 
 type AuthStep = 'method' | 'password' | 'otp-email' | 'otp-verify';
 
@@ -19,9 +18,7 @@ function SignInContent() {
     const isEmployer = type === 'employer';
     const isAdmin = type === 'admin';
 
-    // Default to password login as per user request
     const [authStep, setAuthStep] = useState<AuthStep>('password');
-
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [otp, setOtp] = useState("");
@@ -29,17 +26,13 @@ function SignInContent() {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
-    // Dynamic Title
     const title = isCandidate ? "Candidate Login" : isEmployer ? "Employer Login" : isAdmin ? "Admin & Institution Login" : "Login";
-    const showBackButton = isCandidate;
+    const subtitle = isCandidate 
+        ? "Welcome back! Sign in to access your student dashboard and courses" 
+        : isEmployer 
+        ? "Welcome back! Manage your candidate pipeline and job postings" 
+        : "Sign in to manage system administration settings";
 
-    // Step 1: Choose authentication method
-    const handleMethodSelect = (method: 'password' | 'otp') => {
-        setError(null);
-        setAuthStep(method === 'password' ? 'password' : 'otp-email');
-    };
-
-    // Step 2: Password Login
     const handlePasswordLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
@@ -58,15 +51,10 @@ function SignInContent() {
                 return;
             }
 
-            // Get updated session
             const response = await fetch('/api/auth/session');
             const session = await response.json();
             const userRole = session?.user?.role;
 
-            // Enforce role-based portal access (Disabled for unified login)
-            // Any user can log in from any portal type, we just redirect them to the right place.
-
-            // Redirect based on role
             if (userRole === 'ADMIN') {
                 router.push("/admin");
             } else if (userRole === 'COLLEGE') {
@@ -83,7 +71,6 @@ function SignInContent() {
         }
     };
 
-    // Step 3: Send OTP via SMTP
     const handleSendOTP = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
@@ -114,7 +101,6 @@ function SignInContent() {
         }
     };
 
-    // Step 4: Verify OTP
     const handleVerifyOTP = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
@@ -137,10 +123,9 @@ function SignInContent() {
 
             const userData = result.user;
 
-            // Sign in with NextAuth
             const signInResult = await signIn("credentials", {
                 email: userData.email,
-                password: '', // OTP users don't have passwords
+                password: '',
                 redirect: false,
             });
 
@@ -150,7 +135,6 @@ function SignInContent() {
                 return;
             }
 
-            // Redirect based on role
             const role = userData.role;
             if (role === 'ADMIN') {
                 router.push("/admin");
@@ -188,177 +172,196 @@ function SignInContent() {
     };
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh', padding: '1rem' }}>
-            <Card style={{ width: '100%', maxWidth: '450px' }}>
-                <CardHeader>
-                    <CardTitle style={{ textAlign: 'center', fontSize: '1.5rem', color: 'var(--primary)' }}>{title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    {error && (
-                        <div style={{ padding: '0.75rem', borderRadius: '0.5rem', backgroundColor: '#FEF2F2', color: '#DC2626', fontSize: '0.875rem', marginBottom: '1rem' }}>
-                            {error}
-                        </div>
-                    )}
+        <AuthLayout title={title} subtitle={subtitle}>
+            {error && (
+                <div style={{ padding: '0.85rem 1rem', borderRadius: '0.75rem', backgroundColor: '#FEF2F2', border: '1px solid #FCA5A5', color: '#DC2626', fontSize: '0.88rem', fontWeight: 500, marginBottom: '1.5rem' }}>
+                    {error}
+                </div>
+            )}
 
-                    {/* Method selection removed as per user request */}
+            {authStep === 'password' && (
+                <form onSubmit={handlePasswordLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                    <div>
+                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, fontSize: '0.9rem', color: '#0f172a' }}>
+                            Email Address
+                        </label>
+                        <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            disabled={loading}
+                            placeholder="your.email@example.com"
+                            required
+                            style={{
+                                width: '100%',
+                                padding: '0.85rem 1rem',
+                                borderRadius: '0.75rem',
+                                border: '1px solid #cbd5e1',
+                                fontSize: '0.95rem',
+                                color: '#0f172a',
+                                outline: 'none',
+                                boxSizing: 'border-box',
+                            }}
+                        />
+                    </div>
 
-                    {/* Step 2: Password Login */}
-                    {authStep === 'password' && (
-                        <form onSubmit={handlePasswordLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>
-                                    Email Address
-                                </label>
-                                <input
-                                    type="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    disabled={loading}
-                                    placeholder="your.email@example.com"
-                                    required
-                                    style={{
-                                        width: '100%',
-                                        padding: '0.75rem',
-                                        borderRadius: 'var(--radius)',
-                                        border: `1px solid ${error ? '#DC2626' : 'var(--border)'}`,
-                                        fontSize: '1rem',
-                                        backgroundColor: loading ? '#F3F4F6' : 'white',
-                                    }}
-                                />
-                            </div>
-
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>
-                                    Password
-                                </label>
-                                <input
-                                    type="password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    disabled={loading}
-                                    placeholder="••••••••"
-                                    required
-                                    style={{
-                                        width: '100%',
-                                        padding: '0.75rem',
-                                        borderRadius: 'var(--radius)',
-                                        border: `1px solid ${error ? '#DC2626' : 'var(--border)'}`,
-                                        fontSize: '1rem',
-                                        backgroundColor: loading ? '#F3F4F6' : 'white',
-                                    }}
-                                />
-                                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
-                                    <Link 
-                                        href="/auth/forgot-password" 
-                                        style={{ fontSize: '0.875rem', color: 'var(--primary)', fontWeight: 500, textDecoration: 'none' }}
-                                    >
-                                        Forgot Password?
-                                    </Link>
-                                </div>
-                            </div>
-
-                            <Button type="submit" className="w-full" disabled={loading || !email || !password}>
-                                {loading ? 'Logging in...' : 'Login'}
-                            </Button>
-                        </form>
-                    )}
-
-                    {/* Step 3: OTP - Email */}
-                    {authStep === 'otp-email' && (
-                        <form onSubmit={handleSendOTP} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>
-                                    Email Address
-                                </label>
-                                <input
-                                    type="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    disabled={loading}
-                                    placeholder="your.email@example.com"
-                                    required
-                                    style={{
-                                        width: '100%',
-                                        padding: '0.75rem',
-                                        borderRadius: 'var(--radius)',
-                                        border: `1px solid ${error ? '#DC2626' : 'var(--border)'}`,
-                                        fontSize: '1rem',
-                                        backgroundColor: loading ? '#F3F4F6' : 'white',
-                                    }}
-                                />
-                                <p style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)', marginTop: '0.25rem' }}>
-                                    We'll send you a 6-digit verification code
-                                </p>
-                            </div>
-                            <Button type="submit" className="w-full" disabled={loading || !email}>
-                                {loading ? 'Sending...' : 'Send OTP'}
-                            </Button>
-                        </form>
-                    )}
-
-                    {/* Step 4: OTP - Verify */}
-                    {authStep === 'otp-verify' && (
-                        <form onSubmit={handleVerifyOTP} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                            <div>
-                                <p style={{ textAlign: 'center', fontSize: '0.875rem', color: 'var(--muted-foreground)', marginBottom: '1rem' }}>
-                                    We sent a code to <strong>{email}</strong>
-                                </p>
-                                <OTPInput
-                                    value={otp}
-                                    onChange={setOtp}
-                                    disabled={loading}
-                                    error={error || undefined}
-                                />
-                            </div>
-                            <Button type="submit" className="w-full" disabled={loading || otp.length !== 6}>
-                                {loading ? 'Verifying...' : 'Verify & Login'}
-                            </Button>
-                            <div style={{ textAlign: 'center' }}>
-                                {resendCountdown > 0 ? (
-                                    <p style={{ fontSize: '0.875rem', color: 'var(--muted-foreground)' }}>
-                                        Resend OTP in {resendCountdown}s
-                                    </p>
-                                ) : (
-                                    <button
-                                        type="button"
-                                        onClick={handleResendOTP}
-                                        style={{ fontSize: '0.875rem', color: 'var(--primary)', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}
-                                    >
-                                        Resend OTP
-                                    </button>
-                                )}
-                                <button
-                                    type="button"
-                                    onClick={() => { setAuthStep('otp-email'); setOtp(""); setError(null); }}
-                                    style={{ fontSize: '0.875rem', color: 'var(--muted-foreground)', background: 'none', border: 'none', cursor: 'pointer', marginLeft: '1rem' }}
-                                >
-                                    Change Email
-                                </button>
-                            </div>
-                        </form>
-                    )}
-                </CardContent>
-                {!isAdmin && (
-                    <CardFooter style={{ display: 'flex', justifyContent: 'center', borderTop: '1px solid var(--border)', padding: '1rem' }}>
-                        <p style={{ fontSize: '0.875rem', color: 'var(--muted-foreground)' }}>
-                            Don't have an account?{' '}
+                    <div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                            <label style={{ fontWeight: 600, fontSize: '0.9rem', color: '#0f172a' }}>
+                                Password
+                            </label>
                             <Link 
-                                href={isEmployer ? "/auth/signup/employer" : "/auth/signup"} 
-                                style={{ color: 'var(--primary)', fontWeight: 600 }}
+                                href="/auth/forgot-password" 
+                                style={{ fontSize: '0.85rem', color: '#2563eb', fontWeight: 600, textDecoration: 'none' }}
                             >
-                                Sign Up
+                                Forgot Password?
                             </Link>
+                        </div>
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            disabled={loading}
+                            placeholder="••••••••"
+                            required
+                            style={{
+                                width: '100%',
+                                padding: '0.85rem 1rem',
+                                borderRadius: '0.75rem',
+                                border: '1px solid #cbd5e1',
+                                fontSize: '0.95rem',
+                                color: '#0f172a',
+                                outline: 'none',
+                                boxSizing: 'border-box',
+                            }}
+                        />
+                    </div>
+
+                    <button 
+                        type="submit" 
+                        disabled={loading || !email || !password}
+                        style={{
+                            width: '100%',
+                            padding: '0.9rem',
+                            borderRadius: '0.75rem',
+                            background: '#001736',
+                            color: '#ffffff',
+                            fontWeight: 700,
+                            fontSize: '1rem',
+                            border: 'none',
+                            cursor: (loading || !email || !password) ? 'not-allowed' : 'pointer',
+                            marginTop: '0.5rem',
+                            boxShadow: '0 10px 20px rgba(0, 23, 54, 0.15)'
+                        }}
+                    >
+                        {loading ? 'Logging in...' : 'Sign In'}
+                    </button>
+                </form>
+            )}
+
+            {authStep === 'otp-email' && (
+                <form onSubmit={handleSendOTP} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                    <div>
+                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, fontSize: '0.9rem', color: '#0f172a' }}>
+                            Email Address
+                        </label>
+                        <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            disabled={loading}
+                            placeholder="your.email@example.com"
+                            required
+                            style={{
+                                width: '100%',
+                                padding: '0.85rem 1rem',
+                                borderRadius: '0.75rem',
+                                border: '1px solid #cbd5e1',
+                                fontSize: '0.95rem',
+                                color: '#0f172a',
+                                outline: 'none',
+                                boxSizing: 'border-box',
+                            }}
+                        />
+                    </div>
+                    <button 
+                        type="submit" 
+                        disabled={loading || !email}
+                        style={{
+                            width: '100%',
+                            padding: '0.9rem',
+                            borderRadius: '0.75rem',
+                            background: '#001736',
+                            color: '#ffffff',
+                            fontWeight: 700,
+                            fontSize: '1rem',
+                            border: 'none',
+                            cursor: (loading || !email) ? 'not-allowed' : 'pointer',
+                            boxShadow: '0 10px 20px rgba(0, 23, 54, 0.15)'
+                        }}
+                    >
+                        {loading ? 'Sending Code...' : 'Send Login OTP'}
+                    </button>
+                </form>
+            )}
+
+            {authStep === 'otp-verify' && (
+                <form onSubmit={handleVerifyOTP} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                    <div>
+                        <p style={{ textAlign: 'center', fontSize: '0.88rem', color: '#64748b', marginBottom: '1.25rem' }}>
+                            We sent a verification code to <strong>{email}</strong>
                         </p>
-                    </CardFooter>
-                )}
-            </Card>
-        </div>
+                        <OTPInput
+                            value={otp}
+                            onChange={setOtp}
+                            disabled={loading}
+                            error={error || undefined}
+                        />
+                    </div>
+                    <button 
+                        type="submit" 
+                        disabled={loading || otp.length !== 6}
+                        style={{
+                            width: '100%',
+                            padding: '0.9rem',
+                            borderRadius: '0.75rem',
+                            background: '#001736',
+                            color: '#ffffff',
+                            fontWeight: 700,
+                            fontSize: '1rem',
+                            border: 'none',
+                            cursor: (loading || otp.length !== 6) ? 'not-allowed' : 'pointer',
+                            boxShadow: '0 10px 20px rgba(0, 23, 54, 0.15)'
+                        }}
+                    >
+                        {loading ? 'Verifying...' : 'Verify & Login'}
+                    </button>
+                </form>
+            )}
+
+            {!isAdmin && (
+                <div style={{ marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid #f1f5f9', display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.88rem', color: '#64748b' }}>
+                    <p>
+                        Don't have an account?{' '}
+                        <Link 
+                            href={isEmployer ? "/auth/signup/employer" : "/auth/signup"} 
+                            style={{ color: '#2563eb', fontWeight: 700, textDecoration: 'none' }}
+                        >
+                            Sign Up Now
+                        </Link>
+                    </p>
+                    {isCandidate && (
+                        <p>Are you a College Admin? <Link href="/admissions/auth/signin" style={{ color: '#001736', fontWeight: 700, textDecoration: 'none' }}>College Login</Link></p>
+                    )}
+                </div>
+            )}
+        </AuthLayout>
     );
 }
 
 export default function SignInPage() {
     return (
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>Loading...</div>}>
             <SignInContent />
         </Suspense>
     );

@@ -1,12 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import OTPInput from "@/components/auth/OTPInput";
 import { signIn } from "next-auth/react";
+import { AuthLayout } from "@/components/layout/AuthLayout";
 
 type SignupStep = 'form' | 'verify-otp';
 
@@ -30,17 +29,21 @@ export default function CollegeSignupPage() {
 
   const inputStyle = {
     width: '100%',
-    padding: '0.75rem',
-    borderRadius: 'var(--radius)',
-    border: '1px solid var(--border)',
-    fontSize: '1rem',
-    marginTop: '0.5rem',
+    padding: '0.85rem 1rem',
+    borderRadius: '0.75rem',
+    border: '1px solid #cbd5e1',
+    fontSize: '0.95rem',
+    color: '#0f172a',
+    outline: 'none',
+    boxSizing: 'border-box' as const,
   };
 
   const labelStyle = {
-    fontSize: '0.875rem',
-    fontWeight: 500,
-    color: 'var(--foreground)',
+    fontSize: '0.9rem',
+    fontWeight: 600,
+    color: '#0f172a',
+    display: 'block',
+    marginBottom: '0.5rem',
   };
 
   const startResendCountdown = () => {
@@ -167,142 +170,165 @@ export default function CollegeSignupPage() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#FFF7ED', padding: '2rem' }}>
-      <Card style={{ width: '100%', maxWidth: '500px' }}>
-        <CardHeader>
-          <CardTitle style={{ textAlign: 'center', fontSize: '1.5rem', color: '#9A3412' }}>Institute Registration</CardTitle>
-          <p style={{ textAlign: 'center', color: 'var(--muted-foreground)', fontSize: '0.875rem' }}>Partner with Sharkedutech to manage admissions</p>
-        </CardHeader>
+    <AuthLayout
+      title="Institute Registration"
+      subtitle="Partner with Sharkedutech to manage college admissions"
+    >
+      {step === 'form' ? (
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
+          {error && <div style={{ padding: '0.85rem 1rem', borderRadius: '0.75rem', backgroundColor: '#FEF2F2', border: '1px solid #FCA5A5', color: '#DC2626', fontSize: '0.88rem' }}>{error}</div>}
 
-        {step === 'form' ? (
-          <CardContent>
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-              {error && <div style={{ padding: '0.75rem', backgroundColor: '#FEE2E2', color: '#DC2626', borderRadius: 'var(--radius)', fontSize: '0.875rem' }}>{error}</div>}
+          <div>
+            <label htmlFor="name" style={labelStyle}>Administrator Full Name</label>
+            <input
+              name="name"
+              id="name"
+              required
+              placeholder="Prof. John Smith"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              style={inputStyle}
+            />
+          </div>
 
-              <div>
-                <label htmlFor="name" style={labelStyle}>Administrator Full Name</label>
-                <input
-                  name="name"
-                  id="name"
-                  required
-                  placeholder="Prof. John Smith"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  style={inputStyle}
-                />
-              </div>
+          <div>
+            <label htmlFor="email" style={labelStyle}>Official Email Address</label>
+            <input
+              name="email"
+              id="email"
+              type="email"
+              required
+              placeholder="admissions@institute.edu"
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              style={inputStyle}
+            />
+          </div>
 
-              <div>
-                <label htmlFor="email" style={labelStyle}>Official Email Address</label>
-                <input
-                  name="email"
-                  id="email"
-                  type="email"
-                  required
-                  placeholder="admissions@institute.edu"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  style={inputStyle}
-                />
-              </div>
+          <div>
+            <label htmlFor="collegeName" style={labelStyle}>Institute Name</label>
+            <input
+              name="collegeName"
+              id="collegeName"
+              required
+              placeholder="National Institute of Technology"
+              value={formData.collegeName}
+              onChange={(e) => setFormData({ ...formData, collegeName: e.target.value })}
+              style={inputStyle}
+            />
+          </div>
 
-              <div>
-                <label htmlFor="collegeName" style={labelStyle}>Institute Name</label>
-                <input
-                  name="collegeName"
-                  id="collegeName"
-                  required
-                  placeholder="National Institute of Technology"
-                  value={formData.collegeName}
-                  onChange={(e) => setFormData({ ...formData, collegeName: e.target.value })}
-                  style={inputStyle}
-                />
-              </div>
+          <div>
+            <label htmlFor="phone" style={labelStyle}>Contact Number</label>
+            <input
+              name="phone"
+              id="phone"
+              type="tel"
+              required
+              placeholder="+91 XXXXX XXXXX"
+              value={formData.phone}
+              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              style={inputStyle}
+            />
+          </div>
 
-              <div>
-                <label htmlFor="phone" style={labelStyle}>Contact Number</label>
-                <input
-                  name="phone"
-                  id="phone"
-                  type="tel"
-                  required
-                  placeholder="+91 XXXXX XXXXX"
-                  value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  style={inputStyle}
-                />
-              </div>
+          <div>
+            <label htmlFor="password" style={labelStyle}>Password</label>
+            <input
+              name="password"
+              id="password"
+              type="password"
+              required
+              placeholder="••••••••"
+              value={formData.password}
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              style={inputStyle}
+            />
+          </div>
 
-              <div>
-                <label htmlFor="password" style={labelStyle}>Password</label>
-                <input
-                  name="password"
-                  id="password"
-                  type="password"
-                  required
-                  placeholder="••••••••"
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  style={inputStyle}
-                />
-              </div>
+          <button 
+            type="submit" 
+            disabled={loading}
+            style={{
+              width: '100%',
+              padding: '0.9rem',
+              borderRadius: '0.75rem',
+              background: '#001736',
+              color: '#ffffff',
+              fontWeight: 700,
+              fontSize: '1rem',
+              border: 'none',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              marginTop: '0.5rem',
+              boxShadow: '0 10px 20px rgba(0, 23, 54, 0.15)'
+            }}
+          >
+            {loading ? 'Sending OTP...' : 'Register Institute'}
+          </button>
 
-              <Button type="submit" size="lg" disabled={loading} style={{ marginTop: '0.5rem', backgroundColor: '#9A3412' }}>
-                {loading ? 'Sending OTP...' : 'Register Institute'}
-              </Button>
+          <p style={{ textAlign: 'center', fontSize: '0.88rem', color: '#64748b', marginTop: '0.5rem' }}>
+            Not a College Admin? <Link href="/auth/signup" style={{ color: '#2563eb', fontWeight: 700, textDecoration: 'none' }}>Student Registration</Link>
+          </p>
+        </form>
+      ) : (
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          {error && <div style={{ padding: '0.85rem 1rem', borderRadius: '0.75rem', backgroundColor: '#FEF2F2', border: '1px solid #FCA5A5', color: '#DC2626', fontSize: '0.88rem' }}>{error}</div>}
 
-              <p style={{ textAlign: 'center', fontSize: '0.875rem', color: 'var(--muted-foreground)' }}>
-                Not a College Admin? <Link href="/auth/signup" style={{ color: 'var(--primary)', fontWeight: 600 }}>Student Registration</Link>
+          <div>
+            <p style={{ textAlign: 'center', fontSize: '0.88rem', color: '#64748b', marginBottom: '1.25rem' }}>
+              A verification code has been sent to <strong>{formData.email}</strong>
+            </p>
+            <OTPInput
+              value={otp}
+              onChange={setOtp}
+              disabled={loading}
+              error={error || undefined}
+            />
+          </div>
+
+          <button 
+            type="submit" 
+            disabled={loading || otp.length !== 6}
+            style={{
+              width: '100%',
+              padding: '0.9rem',
+              borderRadius: '0.75rem',
+              background: '#001736',
+              color: '#ffffff',
+              fontWeight: 700,
+              fontSize: '1rem',
+              border: 'none',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              boxShadow: '0 10px 20px rgba(0, 23, 54, 0.15)'
+            }}
+          >
+            {loading ? 'Verifying...' : 'Verify & Setup Dashboard'}
+          </button>
+
+          <div style={{ textAlign: 'center' }}>
+            {resendCountdown > 0 ? (
+              <p style={{ fontSize: '0.88rem', color: '#64748b' }}>
+                Resend OTP in {resendCountdown}s
               </p>
-            </form>
-          </CardContent>
-        ) : (
-          <CardContent>
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-              {error && <div style={{ padding: '0.75rem', backgroundColor: '#FEE2E2', color: '#DC2626', borderRadius: 'var(--radius)', fontSize: '0.875rem' }}>{error}</div>}
-
-              <div>
-                <p style={{ textAlign: 'center', fontSize: '0.875rem', color: 'var(--muted-foreground)', marginBottom: '1rem' }}>
-                  A verification code has been sent to <strong>{formData.email}</strong>
-                </p>
-                <OTPInput
-                  value={otp}
-                  onChange={setOtp}
-                  disabled={loading}
-                  error={error || undefined}
-                />
-              </div>
-
-              <Button type="submit" size="lg" disabled={loading || otp.length !== 6} style={{ marginTop: '0.5rem', backgroundColor: '#9A3412' }}>
-                {loading ? 'Verifying...' : 'Verify & Setup Dashboard'}
-              </Button>
-
-              <div style={{ textAlign: 'center' }}>
-                {resendCountdown > 0 ? (
-                  <p style={{ fontSize: '0.875rem', color: 'var(--muted-foreground)' }}>
-                    Resend OTP in {resendCountdown}s
-                  </p>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={handleResendOTP}
-                    style={{ fontSize: '0.875rem', color: '#9A3412', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}
-                  >
-                    Resend OTP
-                  </button>
-                )}
-                <button
-                  type="button"
-                  onClick={() => { setStep('form'); setOtp(""); setError(''); }}
-                  style={{ fontSize: '0.875rem', color: 'var(--muted-foreground)', background: 'none', border: 'none', cursor: 'pointer', marginLeft: '1rem' }}
-                >
-                  Back
-                </button>
-              </div>
-            </form>
-          </CardContent>
-        )}
-      </Card>
-    </div>
+            ) : (
+              <button
+                type="button"
+                onClick={handleResendOTP}
+                style={{ fontSize: '0.88rem', color: '#2563eb', fontWeight: 700, background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}
+              >
+                Resend OTP
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={() => { setStep('form'); setOtp(""); setError(''); }}
+              style={{ fontSize: '0.88rem', color: '#64748b', background: 'none', border: 'none', cursor: 'pointer', marginLeft: '1rem' }}
+            >
+              Back
+            </button>
+          </div>
+        </form>
+      )}
+    </AuthLayout>
   );
 }

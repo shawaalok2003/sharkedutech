@@ -86,6 +86,7 @@ export default function AdmissionsCourseListingPage() {
                     text-align: center;
                     position: relative;
                     z-index: 1;
+                    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
                 }
 
                 .hero-top {

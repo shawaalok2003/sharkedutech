@@ -31,18 +31,20 @@ export function Navbar() {
         };
     }, [isMobileMenuOpen]);
 
-    // Hide main top navbar on all Dashboard / Portal pages
-    const isDashboardRoute = 
+    // Hide main top navbar ONLY on Dashboard / Portal pages (keep Navbar visible on all Auth pages)
+    const isAuthRoute = pathname?.includes('/auth/');
+
+    const isDashboardRoute = !isAuthRoute && (
         pathname?.startsWith('/admin') ||
         pathname?.startsWith('/candidate') ||
         pathname?.startsWith('/admissions/college') ||
         pathname?.startsWith('/jobs/employer') ||
-        (pathname?.startsWith('/admissions/') && pathname !== '/admissions') ||
         pathname === '/admissions/profile' ||
         pathname === '/admissions/documents' ||
         pathname === '/admissions/applications' ||
         pathname === '/admissions/dashboard' ||
-        pathname === '/admissions/dashboard-details';
+        pathname === '/admissions/dashboard-details'
+    );
 
     if (isDashboardRoute) {
         return null;

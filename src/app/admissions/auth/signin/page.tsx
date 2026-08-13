@@ -3,7 +3,8 @@
 import { signIn } from 'next-auth/react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import styles from './signin.module.css';
+import Link from 'next/link';
+import { AuthLayout } from '@/components/layout/AuthLayout';
 
 export default function AdmissionsSignInPage() {
   const [formData, setFormData] = useState({
@@ -48,60 +49,97 @@ export default function AdmissionsSignInPage() {
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.loginBox}>
-        <div className={styles.header}>
-          <h1>Admissions Admin Login</h1>
-          <p>Sign in to manage your college admissions</p>
+    <AuthLayout 
+      title="Admissions Admin Login" 
+      subtitle="Sign in to manage your institute's admissions portal"
+    >
+      {error && (
+        <div style={{ padding: '0.85rem 1rem', borderRadius: '0.75rem', backgroundColor: '#FEF2F2', border: '1px solid #FCA5A5', color: '#DC2626', fontSize: '0.88rem', fontWeight: 500, marginBottom: '1.5rem' }}>
+          {error}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+        <div>
+          <label htmlFor="email" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, fontSize: '0.9rem', color: '#0f172a' }}>
+            Email Address
+          </label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="college.admin@institution.edu"
+            required
+            style={{
+              width: '100%',
+              padding: '0.85rem 1rem',
+              borderRadius: '0.75rem',
+              border: '1px solid #cbd5e1',
+              fontSize: '0.95rem',
+              color: '#0f172a',
+              outline: 'none',
+              transition: 'border-color 0.2s ease',
+              boxSizing: 'border-box'
+            }}
+          />
         </div>
 
-        <form onSubmit={handleSubmit} className={styles.form}>
-          {error && (
-            <div className={styles.error}>
-              {error}
-            </div>
-          )}
-
-          <div className={styles.inputGroup}>
-            <label htmlFor="email">Email Address</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Enter your email"
-              required
-            />
+        <div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+            <label htmlFor="password" style={{ fontWeight: 600, fontSize: '0.9rem', color: '#0f172a' }}>
+              Password
+            </label>
           </div>
-
-          <div className={styles.inputGroup}>
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Enter your password"
-              required
-            />
-          </div>
-
-          <button 
-            type="submit" 
-            className={styles.submitButton}
-            disabled={loading}
-          >
-            {loading ? 'Signing in...' : 'Sign In'}
-          </button>
-        </form>
-
-        <div className={styles.footer}>
-          <p>Don't have an account? <a href="/admissions/auth/signup">Register as College Admin</a></p>
-          <p><a href="/auth/signin">Student/Candidate Login</a></p>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="••••••••"
+            required
+            style={{
+              width: '100%',
+              padding: '0.85rem 1rem',
+              borderRadius: '0.75rem',
+              border: '1px solid #cbd5e1',
+              fontSize: '0.95rem',
+              color: '#0f172a',
+              outline: 'none',
+              transition: 'border-color 0.2s ease',
+              boxSizing: 'border-box'
+            }}
+          />
         </div>
+
+        <button 
+          type="submit" 
+          disabled={loading}
+          style={{
+            width: '100%',
+            padding: '0.9rem',
+            borderRadius: '0.75rem',
+            background: '#001736',
+            color: '#ffffff',
+            fontWeight: 700,
+            fontSize: '1rem',
+            border: 'none',
+            cursor: loading ? 'not-allowed' : 'pointer',
+            marginTop: '0.5rem',
+            transition: 'all 0.2s ease',
+            boxShadow: '0 10px 20px rgba(0, 23, 54, 0.15)'
+          }}
+        >
+          {loading ? 'Signing in...' : 'Sign In to Portal'}
+        </button>
+      </form>
+
+      <div style={{ marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid #f1f5f9', display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.88rem', color: '#64748b' }}>
+        <p>Don't have an institution account? <Link href="/admissions/auth/signup" style={{ color: '#2563eb', fontWeight: 700, textDecoration: 'none' }}>Register as College Admin</Link></p>
+        <p>Are you a student? <Link href="/auth/signin" style={{ color: '#001736', fontWeight: 700, textDecoration: 'none' }}>Candidate Login</Link></p>
       </div>
-    </div>
+    </AuthLayout>
   );
 }
