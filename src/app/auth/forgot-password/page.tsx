@@ -210,7 +210,7 @@ export default function ForgotPasswordPage() {
             )}
 
             {step !== 4 && (
-                <div style={{ marginTop: '1.75rem', paddingTop: '1.25rem', borderTop: '1px solid #f1f5f9', textAlignment: 'center' }}>
+                <div style={{ marginTop: '1.75rem', paddingTop: '1.25rem', borderTop: '1px solid #f1f5f9', textAlign: 'center' }}>
                     <Link href="/auth/signin" style={{ color: '#2563eb', textDecoration: 'none', fontSize: '0.88rem', fontWeight: 700 }}>
                         ← Back to Sign In
                     </Link>
