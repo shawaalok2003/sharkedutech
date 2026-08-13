@@ -22,7 +22,7 @@ export default async function Home() {
         posterUrl: { not: null }
       },
       include: { employer: true },
-      take: 30,
+      take: 50,
       orderBy: { createdAt: 'desc' }
     });
   } catch (e) {
