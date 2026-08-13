@@ -9,6 +9,13 @@ async function deleteCollege(formData: FormData) {
     if (!collegeId) return;
     try {
         await prisma.$transaction(async (tx) => {
+            // Delete documents attached to college requirements
+            const reqs = await tx.admissionRequirement.findMany({ where: { collegeId }, select: { id: true } });
+            const reqIds = reqs.map(r => r.id);
+            if (reqIds.length > 0) {
+                await tx.admissionDocument.deleteMany({ where: { requirementId: { in: reqIds } } });
+            }
+
             // Find all course IDs under this college
             const courses = await tx.course.findMany({ where: { collegeId }, select: { id: true } });
             const courseIds = courses.map(c => c.id);
