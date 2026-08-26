@@ -296,7 +296,7 @@ export default function AboutPage() {
                             <div style={{ background: 'rgba(255, 255, 255, 0.04)', backdropFilter: 'blur(16px)', padding: '2.25rem', borderRadius: '1.5rem', border: '1px solid rgba(255, 255, 255, 0.12)', boxShadow: '0 10px 30px rgba(0,0,0,0.3)' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
                                     <span style={{ fontSize: '1.6rem' }}>🏨</span>
-                                    <h3 style={{ fontSize: '1.3rem', fontWeight 800, color: '#ffffff', margin: 0 }}>Front Office Department</h3>
+                                    <h3 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#ffffff', margin: 0 }}>Front Office Department</h3>
                                 </div>
                                 <p style={{ fontSize: '0.95rem', color: '#cbd5e1', marginBottom: '1.25rem' }}>
                                     The face of the hotel. Responsible for guest reception, reservations, concierge, and guest coordination.
@@ -314,7 +314,7 @@ export default function AboutPage() {
                             <div style={{ background: 'rgba(255, 255, 255, 0.04)', backdropFilter: 'blur(16px)', padding: '2.25rem', borderRadius: '1.5rem', border: '1px solid rgba(255, 255, 255, 0.12)', boxShadow: '0 10px 30px rgba(0,0,0,0.3)' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
                                     <span style={{ fontSize: '1.6rem' }}>🧹</span>
-                                    <h3 style={{ fontSize: '1.3rem', fontWeight 800, color: '#ffffff', margin: 0 }}>Housekeeping Department</h3>
+                                    <h3 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#ffffff', margin: 0 }}>Housekeeping Department</h3>
                                 </div>
                                 <p style={{ fontSize: '0.95rem', color: '#cbd5e1', marginBottom: '1.25rem' }}>
                                     Ensures cleanliness, hygiene, room maintenance, decor, and overall aesthetic standards of the hotel.
