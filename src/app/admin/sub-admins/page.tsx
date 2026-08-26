@@ -11,6 +11,7 @@ type SubAdmin = {
     role: string;
     adminPermissions?: string;
     isInviteAccepted: boolean;
+    inviteToken?: string;
     createdAt: string;
 };
 
@@ -29,7 +30,9 @@ export default function SubAdminsPage() {
     const [selectedPerms, setSelectedPerms] = useState<string[]>(['manage_jobs', 'manage_colleges', 'manage_admissions']);
     const [submitting, setSubmitting] = useState(false);
     const [message, setMessage] = useState('');
+    const [createdVerifyLink, setCreatedVerifyLink] = useState('');
     const [error, setError] = useState('');
+    const [resendingEmail, setResendingEmail] = useState<string | null>(null);
 
     useEffect(() => {
         fetchSubAdmins();
@@ -60,6 +63,7 @@ export default function SubAdminsPage() {
     const handleGrantAccess = async (e: React.FormEvent) => {
         e.preventDefault();
         setMessage('');
+        setCreatedVerifyLink('');
         setError('');
 
         if (!email || !email.includes('@')) {
@@ -84,6 +88,9 @@ export default function SubAdminsPage() {
 
             if (res.ok) {
                 setMessage(data.message);
+                if (data.verifyLink) {
+                    setCreatedVerifyLink(data.verifyLink);
+                }
                 setEmail('');
                 setName('');
                 fetchSubAdmins();
@@ -95,6 +102,34 @@ export default function SubAdminsPage() {
         } finally {
             setSubmitting(false);
         }
+    };
+
+    const handleResendEmail = async (subEmail: string) => {
+        setResendingEmail(subEmail);
+        try {
+            const res = await fetch('/api/admin/sub-admins', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: subEmail })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                alert(data.message);
+                fetchSubAdmins();
+            } else {
+                alert(data.error || 'Failed to resend verification email');
+            }
+        } catch (err) {
+            alert('Error resending email');
+        } finally {
+            setResendingEmail(null);
+        }
+    };
+
+    const handleCopyLink = (sub: SubAdmin) => {
+        const link = `${window.location.origin}/auth/verify-admin?token=${sub.inviteToken}&email=${encodeURIComponent(sub.email)}`;
+        navigator.clipboard.writeText(link);
+        alert(`Verification link copied to clipboard!\n\n${link}`);
     };
 
     const handleRevoke = async (id: string, adminEmail: string) => {
@@ -133,8 +168,32 @@ export default function SubAdminsPage() {
                     </CardHeader>
                     <CardContent>
                         {message && (
-                            <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', color: '#166534', padding: '0.85rem 1rem', borderRadius: '8px', marginBottom: '1.25rem', fontSize: '0.9rem', fontWeight: 600 }}>
-                                ✅ {message}
+                            <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', color: '#166534', padding: '1rem', borderRadius: '10px', marginBottom: '1.25rem', fontSize: '0.9rem' }}>
+                                <div style={{ fontWeight: 700, marginBottom: '0.5rem' }}>✅ {message}</div>
+                                {createdVerifyLink && (
+                                    <div style={{ marginTop: '0.75rem', paddingTop: '0.75rem', borderTop: '1px solid #bbf7d0' }}>
+                                        <p style={{ margin: '0 0 0.5rem 0', fontSize: '0.825rem', fontWeight: 700, color: '#14532d' }}>
+                                            🔗 Direct Verification Link (Copy &amp; share directly):
+                                        </p>
+                                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                            <input 
+                                                type="text" 
+                                                readOnly 
+                                                value={createdVerifyLink} 
+                                                style={{ width: '100%', padding: '0.4rem 0.6rem', fontSize: '0.8rem', borderRadius: '6px', border: '1px solid #86efac', background: '#ffffff', color: '#1e293b' }} 
+                                            />
+                                            <button
+                                                onClick={() => {
+                                                    navigator.clipboard.writeText(createdVerifyLink);
+                                                    alert('Verification link copied to clipboard!');
+                                                }}
+                                                style={{ padding: '0.4rem 0.8rem', background: '#166534', color: '#ffffff', border: 'none', borderRadius: '6px', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' }}
+                                            >
+                                                Copy Link
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         )}
                         {error && (
@@ -220,6 +279,7 @@ export default function SubAdminsPage() {
                         </h3>
                         <ul style={{ paddingLeft: '1.25rem', margin: 0, fontSize: '0.9rem', color: '#cbd5e1', lineHeight: '1.75' }}>
                             <li>Every assigned admin receives an automated email verification link.</li>
+                            <li>If email delivery is delayed, Super Admin can copy the verification link directly from the table.</li>
                             <li>Access becomes active only after verification by the assigned email address.</li>
                             <li>Super Admin can revoke or update assigned access permissions at any time.</li>
                         </ul>
@@ -292,9 +352,28 @@ export default function SubAdminsPage() {
                                                             ✅ Email Verified &amp; Active
                                                         </span>
                                                     ) : (
-                                                        <span style={{ color: '#92400e', background: '#fef3c7', border: '1px solid #fde68a', padding: '0.25rem 0.65rem', borderRadius: '999px', fontSize: '0.75rem', fontWeight: 700 }}>
-                                                            ⏳ Pending Email Verification
-                                                        </span>
+                                                        <div>
+                                                            <span style={{ color: '#92400e', background: '#fef3c7', border: '1px solid #fde68a', padding: '0.25rem 0.65rem', borderRadius: '999px', fontSize: '0.75rem', fontWeight: 700, display: 'inline-block', marginBottom: '0.4rem' }}>
+                                                                ⏳ Pending Email Verification
+                                                            </span>
+                                                            <div style={{ display: 'flex', gap: '0.4rem' }}>
+                                                                <button 
+                                                                    onClick={() => handleResendEmail(sub.email)}
+                                                                    disabled={resendingEmail === sub.email}
+                                                                    style={{ background: '#eff6ff', border: '1px solid #bfdbfe', color: '#1d4ed8', padding: '0.25rem 0.5rem', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer' }}
+                                                                >
+                                                                    {resendingEmail === sub.email ? 'Sending...' : '📧 Resend Email'}
+                                                                </button>
+                                                                {sub.inviteToken && (
+                                                                    <button 
+                                                                        onClick={() => handleCopyLink(sub)}
+                                                                        style={{ background: '#f1f5f9', border: '1px solid #cbd5e1', color: '#334155', padding: '0.25rem 0.5rem', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer' }}
+                                                                    >
+                                                                        🔗 Copy Link
+                                                                    </button>
+                                                                )}
+                                                            </div>
+                                                        </div>
                                                     )}
                                                 </td>
                                                 <td style={{ padding: '1rem', textAlign: 'right' }}>

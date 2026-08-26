@@ -30,6 +30,7 @@ export async function GET(request: Request) {
                 role: true,
                 adminPermissions: true,
                 isInviteAccepted: true,
+                inviteToken: true,
                 createdAt: true
             },
             orderBy: { createdAt: 'desc' }
@@ -101,21 +102,79 @@ export async function POST(request: Request) {
 
         // Send Verification & Access Email
         const inviterName = session.user.name || session.user.email || 'Super Admin';
-        await sendAdminInviteEmail(email, permissions, inviteToken, inviterName);
+        const emailSent = await sendAdminInviteEmail(email, permissions, inviteToken, inviterName);
+
+        const baseUrl = process.env.NEXTAUTH_URL || 'https://www.sharkedutech.com';
+        const verifyLink = `${baseUrl}/auth/verify-admin?token=${inviteToken}&email=${encodeURIComponent(email)}`;
 
         return NextResponse.json({
-            message: `Admin access granted to ${email}. Verification email sent successfully.`,
+            message: emailSent 
+                ? `Admin access granted to ${email}. Verification email sent.` 
+                : `Admin access granted to ${email}. Email dispatch failed — use direct verification link below.`,
+            emailSent,
+            verifyLink,
             user: {
                 id: user.id,
                 email: user.email,
                 name: user.name,
                 permissions: user.adminPermissions,
-                isInviteAccepted: user.isInviteAccepted
+                isInviteAccepted: user.isInviteAccepted,
+                inviteToken: user.inviteToken
             }
         });
     } catch (error) {
         console.error("Grant admin access error:", error);
         return NextResponse.json({ error: 'Failed to grant admin access' }, { status: 500 });
+    }
+}
+
+// Resend Email Endpoint
+export async function PUT(request: Request) {
+    const session = await getServerSession(authOptions);
+
+    if (!session || !(session as any).user) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    try {
+        const body = await request.json();
+        const { email } = body;
+
+        const user = await prisma.user.findUnique({ where: { email } });
+        if (!user || user.role !== 'ADMIN') {
+            return NextResponse.json({ error: 'Admin account not found' }, { status: 404 });
+        }
+
+        let inviteToken = user.inviteToken;
+        if (!inviteToken) {
+            inviteToken = crypto.randomBytes(32).toString('hex');
+            await prisma.user.update({
+                where: { email },
+                data: {
+                    inviteToken,
+                    inviteTokenExpires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+                }
+            });
+        }
+
+        const permissions = user.adminPermissions ? user.adminPermissions.split(',') : ['manage_jobs'];
+        const inviterName = session.user.name || session.user.email || 'Super Admin';
+        const emailSent = await sendAdminInviteEmail(email, permissions, inviteToken, inviterName);
+
+        const baseUrl = process.env.NEXTAUTH_URL || 'https://www.sharkedutech.com';
+        const verifyLink = `${baseUrl}/auth/verify-admin?token=${inviteToken}&email=${encodeURIComponent(email)}`;
+
+        return NextResponse.json({
+            success: true,
+            emailSent,
+            message: emailSent 
+                ? `Verification email resent successfully to ${email}` 
+                : `Failed to resend email. Use the direct verification link.`,
+            verifyLink
+        });
+    } catch (error) {
+        console.error("Resend invite error:", error);
+        return NextResponse.json({ error: 'Failed to resend verification email' }, { status: 500 });
     }
 }
 
