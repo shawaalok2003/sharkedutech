@@ -3,13 +3,22 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
-export const dynamic = 'force-dynamic';
+let serverCoursesCache: { data: any; timestamp: number } | null = null;
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const collegeId = searchParams.get("collegeId") || undefined;
     const session = await getServerSession(authOptions);
     const role = session ? (session.user as any).role : null;
+
+    // Cache hit for general public courses request (<15s old)
+    if (!collegeId && !role && serverCoursesCache && (Date.now() - serverCoursesCache.timestamp < 15000)) {
+        return NextResponse.json(serverCoursesCache.data, {
+            headers: {
+                'Cache-Control': 'public, s-maxage=15, stale-while-revalidate=59'
+            }
+        });
+    }
 
     let where: any = collegeId ? { collegeId } : undefined;
 
@@ -28,7 +37,15 @@ export async function GET(request: Request) {
         include: { college: { select: { name: true, location: true, logoUrl: true } } }
     });
 
-    return NextResponse.json(courses);
+    if (!collegeId && !role) {
+        serverCoursesCache = { data: courses, timestamp: Date.now() };
+    }
+
+    return NextResponse.json(courses, {
+        headers: {
+            'Cache-Control': 'public, s-maxage=15, stale-while-revalidate=59'
+        }
+    });
 }
 
 

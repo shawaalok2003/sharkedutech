@@ -6,11 +6,14 @@ export default withAuth(
         const token = req.nextauth.token;
         const isApiRoute = req.nextUrl.pathname.startsWith('/api/admin');
 
-        if (token?.role !== "ADMIN") {
+        const role = token?.role;
+        const isAdmin = role === "ADMIN" || role === "SUPER_ADMIN";
+
+        if (!isAdmin) {
             if (isApiRoute) {
                 return new NextResponse("Unauthorized", { status: 401 });
             }
-            // Redirect non-admins to the home page or a not-authorized page
+            // Redirect non-admins to the home page
             return NextResponse.redirect(new URL("/", req.url));
         }
     },

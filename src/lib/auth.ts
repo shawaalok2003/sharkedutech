@@ -21,7 +21,13 @@ export const authOptions = {
 
                 // Handle OTP login (passwordless)
                 if (credentials.password === "" && user.password === "") {
-                    return { id: user.id, email: user.email, name: user.name, role: user.role };
+                    return { 
+                        id: user.id, 
+                        email: user.email, 
+                        name: user.name, 
+                        role: user.role,
+                        adminPermissions: user.adminPermissions 
+                    };
                 }
 
                 if (!credentials.password) return null;
@@ -30,7 +36,13 @@ export const authOptions = {
 
                 if (!isValid) return null;
 
-                return { id: user.id, email: user.email, name: user.name, role: user.role };
+                return { 
+                    id: user.id, 
+                    email: user.email, 
+                    name: user.name, 
+                    role: user.role,
+                    adminPermissions: user.adminPermissions 
+                };
             },
         }),
     ],
@@ -38,12 +50,28 @@ export const authOptions = {
         async jwt({ token, user }: any) {
             if (user) {
                 token.role = user.role;
+                token.adminPermissions = user.adminPermissions;
+            } else if (token?.sub && (token.role === 'ADMIN' || token.role === 'SUPER_ADMIN') && token.adminPermissions === undefined) {
+                // Auto-fetch adminPermissions for pre-existing JWT sessions
+                try {
+                    const dbUser = await prisma.user.findUnique({
+                        where: { id: token.sub },
+                        select: { adminPermissions: true, role: true }
+                    });
+                    if (dbUser) {
+                        token.role = dbUser.role;
+                        token.adminPermissions = dbUser.adminPermissions;
+                    }
+                } catch (e) {
+                    console.error("JWT adminPermissions fetch error:", e);
+                }
             }
             return token;
         },
         async session({ session, token }: any) {
             if (session?.user) {
                 session.user.role = token.role;
+                session.user.adminPermissions = token.adminPermissions;
                 session.user.id = token.sub;
             }
             return session;

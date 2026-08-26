@@ -3,12 +3,21 @@ import { prisma } from '@/lib/prisma';
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
-export const dynamic = 'force-dynamic';
+let serverJobsCache: { data: any; timestamp: number } | null = null;
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const type = searchParams.get('type');
     const category = searchParams.get('category');
+
+    // Return cached response instantly if cache is fresh (< 15 seconds) and no filter params
+    if (!type && !category && serverJobsCache && (Date.now() - serverJobsCache.timestamp < 15000)) {
+        return NextResponse.json(serverJobsCache.data, {
+            headers: {
+                'Cache-Control': 'public, s-maxage=15, stale-while-revalidate=59'
+            }
+        });
+    }
 
     // Build query based on status/filters
     const where: any = {};
@@ -25,7 +34,16 @@ export async function GET(request: Request) {
                 }
             }
         });
-        return NextResponse.json(jobs);
+
+        if (!type && !category) {
+            serverJobsCache = { data: jobs, timestamp: Date.now() };
+        }
+
+        return NextResponse.json(jobs, {
+            headers: {
+                'Cache-Control': 'public, s-maxage=15, stale-while-revalidate=59'
+            }
+        });
     } catch (error) {
         return NextResponse.json({ error: 'Failed to fetch jobs' }, { status: 500 });
     }
@@ -60,6 +78,9 @@ export async function POST(request: Request) {
                 employerId: ((session as any).user as any).id,
             },
         });
+
+        // Invalidate server cache on new job creation
+        serverJobsCache = null;
 
         return NextResponse.json(job);
     } catch (error) {

@@ -21,27 +21,67 @@ type AdmissionApp = {
     course?: { title?: string } | null;
 };
 
+// Global in-memory cache for instant client navigation
+let globalCollegeDashCache: { stats: Stats; apps: AdmissionApp[] } | null = null;
+
 export default function CollegeAdminPage() {
     const router = useRouter();
-    const [stats, setStats] = useState<Stats>({ totalApplications: 0, pending: 0, shortlisted: 0, accepted: 0 });
-    const [apps, setApps] = useState<AdmissionApp[]>([]);
+    const [stats, setStats] = useState<Stats>(() => globalCollegeDashCache?.stats || { totalApplications: 0, pending: 0, shortlisted: 0, accepted: 0 });
+    const [apps, setApps] = useState<AdmissionApp[]>(() => globalCollegeDashCache?.apps || []);
 
     useEffect(() => {
+        let isMounted = true;
+
+        if (!globalCollegeDashCache) {
+            try {
+                const stored = sessionStorage.getItem('shark_college_dash_cache_v2');
+                if (stored) {
+                    const parsed = JSON.parse(stored);
+                    if (parsed && typeof parsed === 'object') {
+                        globalCollegeDashCache = parsed;
+                        setStats(parsed.stats || { totalApplications: 0, pending: 0, shortlisted: 0, accepted: 0 });
+                        setApps(parsed.apps || []);
+                    }
+                }
+            } catch (e) {}
+        }
+
         async function load() {
-            const [statsRes, appsRes] = await Promise.all([
-                fetch("/api/admissions/analytics"),
-                fetch("/api/admissions/applications")
-            ]);
-            if (statsRes.ok) {
-                const data = await statsRes.json();
-                setStats(data);
-            }
-            if (appsRes.ok) {
-                const data = await appsRes.json();
-                setApps(data.slice(0, 5));
+            try {
+                const [statsRes, appsRes] = await Promise.all([
+                    fetch("/api/admissions/analytics"),
+                    fetch("/api/admissions/applications")
+                ]);
+
+                let newStats = { totalApplications: 0, pending: 0, shortlisted: 0, accepted: 0 };
+                let newApps: AdmissionApp[] = [];
+
+                if (statsRes.ok) {
+                    newStats = await statsRes.json();
+                }
+                if (appsRes.ok) {
+                    const data = await appsRes.json();
+                    newApps = data.slice(0, 5);
+                }
+
+                if (isMounted) {
+                    setStats(newStats);
+                    setApps(newApps);
+                    const cacheObj = { stats: newStats, apps: newApps };
+                    globalCollegeDashCache = cacheObj;
+                    try {
+                        sessionStorage.setItem('shark_college_dash_cache_v2', JSON.stringify(cacheObj));
+                    } catch (e) {}
+                }
+            } catch (err) {
+                console.error("Failed to load college analytics:", err);
             }
         }
         load();
+
+        return () => {
+            isMounted = false;
+        };
     }, []);
 
     return (

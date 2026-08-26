@@ -46,7 +46,7 @@ export function Navbar() {
         pathname === '/admissions/dashboard-details'
     );
 
-    if (isDashboardRoute) {
+    if (isAuthRoute || isDashboardRoute) {
         return null;
     }
 

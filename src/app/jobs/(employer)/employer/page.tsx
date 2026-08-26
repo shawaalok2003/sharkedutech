@@ -5,25 +5,54 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
+// Global in-memory cache for instant client navigation
+let globalEmployerDashCache: { stats: any; recentJobs: any[] } | null = null;
+
 export default function EmployerDashboard() {
     const router = useRouter();
-    const [stats, setStats] = useState({ activeJobs: 0, totalApplicants: 0, shortlisted: 0 });
-    const [recentJobs, setRecentJobs] = useState<any[]>([]);
+    const [stats, setStats] = useState(() => globalEmployerDashCache?.stats || { activeJobs: 0, totalApplicants: 0, shortlisted: 0 });
+    const [recentJobs, setRecentJobs] = useState<any[]>(() => globalEmployerDashCache?.recentJobs || []);
 
     useEffect(() => {
+        let isMounted = true;
+
+        if (!globalEmployerDashCache) {
+            try {
+                const stored = sessionStorage.getItem('shark_emp_dash_cache_v2');
+                if (stored) {
+                    const parsed = JSON.parse(stored);
+                    if (parsed && typeof parsed === 'object') {
+                        globalEmployerDashCache = parsed;
+                        setStats(parsed.stats || { activeJobs: 0, totalApplicants: 0, shortlisted: 0 });
+                        setRecentJobs(parsed.recentJobs || []);
+                    }
+                }
+            } catch (e) {}
+        }
+
         async function fetchDashboardData() {
             try {
                 const res = await fetch('/api/dashboard/stats');
                 if (res.ok) {
                     const data = await res.json();
-                    setStats(data.stats);
-                    setRecentJobs(data.recentJobs);
+                    if (isMounted) {
+                        setStats(data.stats);
+                        setRecentJobs(data.recentJobs);
+                        globalEmployerDashCache = data;
+                        try {
+                            sessionStorage.setItem('shark_emp_dash_cache_v2', JSON.stringify(data));
+                        } catch (e) {}
+                    }
                 }
             } catch (error) {
                 console.error("Failed to fetch dashboard data", error);
             }
         }
         fetchDashboardData();
+
+        return () => {
+            isMounted = false;
+        };
     }, []);
 
     return (

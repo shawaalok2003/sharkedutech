@@ -9,15 +9,15 @@ export function Footer() {
                 <div className={styles.grid}>
                     {/* Brand & Contact Column */}
                     <div>
-                        <div className={styles.logoPill}>
+                        <Link href="/" className={styles.logoPill} title="Go to Shark Edutech Home">
                             <Image 
                                 src="/images/shark_edu_tech_logo-removebg-preview.png" 
                                 alt="Shark Edutech Logo" 
-                                width={210} 
-                                height={52} 
-                                style={{ objectFit: 'contain', display: 'block' }} 
+                                width={300} 
+                                height={80} 
+                                style={{ objectFit: 'contain', display: 'block', maxHeight: '80px', width: 'auto' }} 
                             />
-                        </div>
+                        </Link>
                         <p className={styles.description}>
                             India's premier integrated platform for hospitality education and career advancement. Connecting aspiring candidates with <strong>400+ star hotels</strong> nationwide.
                         </p>

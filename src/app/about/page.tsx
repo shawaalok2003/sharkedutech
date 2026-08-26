@@ -188,7 +188,7 @@ export default function AboutPage() {
                             </p>
                         </div>
 
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem' }}>
+                        <div className={styles.lifetimeGrid}>
                             <div style={{ background: 'rgba(255, 255, 255, 0.04)', backdropFilter: 'blur(16px)', padding: '2rem', borderRadius: '1.5rem', border: '1px solid rgba(255, 255, 255, 0.12)', boxShadow: '0 10px 30px rgba(0,0,0,0.3)' }}>
                                 <div style={{ fontSize: '1.8rem', marginBottom: '0.75rem' }}>🌐</div>
                                 <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#ffffff', marginBottom: '0.5rem' }}>India's 1st Hospitality Portal</h3>
@@ -255,7 +255,7 @@ export default function AboutPage() {
                             </p>
                         </div>
 
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '2rem' }}>
+                        <div className={styles.deptGrid}>
                             {/* F&B Service */}
                             <div style={{ background: 'rgba(255, 255, 255, 0.04)', backdropFilter: 'blur(16px)', padding: '2.25rem', borderRadius: '1.5rem', border: '1px solid rgba(255, 255, 255, 0.12)', boxShadow: '0 10px 30px rgba(0,0,0,0.3)' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
@@ -414,8 +414,8 @@ export default function AboutPage() {
                             <p style={{ color: '#93c5fd', fontSize: '1.05rem' }}>Get in touch with Shark International Edutech Private Limited.</p>
                         </div>
 
-                        <div style={{ maxWidth: '46rem', margin: '0 auto', background: 'rgba(255, 255, 255, 0.04)', backdropFilter: 'blur(16px)', padding: '2.5rem', borderRadius: '1.5rem', border: '1px solid rgba(255, 255, 255, 0.14)', boxShadow: '0 20px 50px rgba(0,0,0,0.4)' }}>
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '2rem' }}>
+                        <div className={styles.corpBox}>
+                            <div className={styles.corpGrid}>
                                 <div>
                                     <h4 style={{ fontSize: '0.85rem', fontWeight: 800, color: '#fed488', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.5rem' }}>Company Registered Name</h4>
                                     <p style={{ fontWeight: 700, color: '#ffffff', fontSize: '1.05rem', margin: 0 }}>Shark International Edutech Pvt. Ltd.</p>

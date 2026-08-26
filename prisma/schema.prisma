@@ -43,6 +43,12 @@ model User {
   resetToken        String?   @unique
   resetTokenExpires DateTime?
 
+  // Role-Based Admin Access
+  adminPermissions  String?   // Comma separated e.g. manage_jobs,manage_colleges,manage_admissions,manage_users
+  inviteToken       String?   @unique
+  inviteTokenExpires DateTime?
+  isInviteAccepted  Boolean   @default(true)
+
   // Admissions
   studentProfile       StudentProfile?
   admissionApplications AdmissionApplication[]

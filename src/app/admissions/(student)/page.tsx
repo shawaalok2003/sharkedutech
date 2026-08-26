@@ -11,18 +11,47 @@ const spaceGrotesk = Space_Grotesk({
     weight: ["300", "400", "500", "600", "700"],
 });
 
+// Global in-memory cache for instant client navigation across routes
+let globalAdmissionsCoursesCache: any[] | null = null;
+let globalAdmissionsCollegesCache: any[] | null = null;
+
 export default function AdmissionsCourseListingPage() {
     const { data: session } = useSession();
     const router = useRouter();
-    const [courses, setCourses] = useState<any[]>([]);
-    const [colleges, setColleges] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [courses, setCourses] = useState<any[]>(() => globalAdmissionsCoursesCache || []);
+    const [colleges, setColleges] = useState<any[]>(() => globalAdmissionsCollegesCache || []);
+    const [loading, setLoading] = useState<boolean>(() => !globalAdmissionsCoursesCache || globalAdmissionsCoursesCache.length === 0);
     const [searchTerm, setSearchTerm] = useState("");
     const [locationTerm, setLocationTerm] = useState("");
 
     useEffect(() => {
+        let isMounted = true;
+
+        // 1. Instant load from sessionStorage if in-memory cache is empty
+        if (!globalAdmissionsCoursesCache || globalAdmissionsCoursesCache.length === 0) {
+            try {
+                const storedCourses = sessionStorage.getItem('shark_admissions_courses_v2');
+                const storedColleges = sessionStorage.getItem('shark_admissions_colleges_v2');
+                if (storedCourses) {
+                    const parsed = JSON.parse(storedCourses);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        globalAdmissionsCoursesCache = parsed;
+                        setCourses(parsed);
+                        setLoading(false);
+                    }
+                }
+                if (storedColleges) {
+                    const parsedColleges = JSON.parse(storedColleges);
+                    if (Array.isArray(parsedColleges) && parsedColleges.length > 0) {
+                        globalAdmissionsCollegesCache = parsedColleges;
+                        setColleges(parsedColleges);
+                    }
+                }
+            } catch (e) {}
+        }
+
+        // 2. Fetch/Revalidate in background (SWR pattern)
         async function fetchData() {
-            setLoading(true);
             try {
                 const [coursesRes, collegesRes] = await Promise.all([
                     fetch('/api/admissions/courses'),
@@ -31,20 +60,39 @@ export default function AdmissionsCourseListingPage() {
 
                 if (coursesRes.ok) {
                     const data = await coursesRes.json();
-                    // Filter out dummy/test entries like 'e'
                     const validData = Array.isArray(data) ? data.filter(c => c.title && c.title.trim().length > 2) : [];
-                    setCourses(validData);
+                    if (isMounted) {
+                        globalAdmissionsCoursesCache = validData;
+                        setCourses(validData);
+                        try {
+                            sessionStorage.setItem('shark_admissions_courses_v2', JSON.stringify(validData));
+                        } catch (e) {}
+                    }
                 }
                 if (collegesRes.ok) {
-                    setColleges(await collegesRes.json());
+                    const collegesData = await collegesRes.json();
+                    if (isMounted) {
+                        globalAdmissionsCollegesCache = collegesData;
+                        setColleges(collegesData);
+                        try {
+                            sessionStorage.setItem('shark_admissions_colleges_v2', JSON.stringify(collegesData));
+                        } catch (e) {}
+                    }
                 }
             } catch (error) {
                 console.error("Failed to fetch admissions data", error);
             } finally {
-                setLoading(false);
+                if (isMounted) {
+                    setLoading(false);
+                }
             }
         }
+
         fetchData();
+
+        return () => {
+            isMounted = false;
+        };
     }, []);
 
     // Purely database-driven list from Admin Panel

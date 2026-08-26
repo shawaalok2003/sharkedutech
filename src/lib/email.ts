@@ -283,3 +283,75 @@ export async function sendContactEmail(name: string, email: string, message: str
         return false;
     }
 }
+
+export async function sendAdminInviteEmail(
+    email: string,
+    permissions: string[],
+    inviteToken: string,
+    invitedByName: string = "Super Admin"
+): Promise<boolean> {
+    try {
+        const transporter = getTransporter();
+        const baseUrl = process.env.NEXTAUTH_URL || 'https://www.sharkedutech.com';
+        const verifyLink = `${baseUrl}/auth/verify-admin?token=${inviteToken}&email=${encodeURIComponent(email)}`;
+
+        const permLabels: Record<string, string> = {
+            manage_jobs: "Job Listings & Applications",
+            manage_colleges: "Colleges Directory & Partner Inquiries",
+            manage_admissions: "Admissions Courses & Student Applications",
+            manage_users: "User Accounts & Role Management"
+        };
+
+        const permBadges = permissions.map(p => 
+            `<span style="background: rgba(37, 99, 235, 0.1); border: 1px solid rgba(37, 99, 235, 0.3); color: #2563eb; padding: 4px 10px; border-radius: 6px; font-size: 13px; display: inline-block; margin: 3px 4px 3px 0; font-weight: 600;">
+                ✓ ${permLabels[p] || p}
+            </span>`
+        ).join('');
+
+        await transporter.sendMail({
+            from: getFromAddress(),
+            to: email,
+            subject: `🔐 Official Admin Access Invitation — Shark Edutech`,
+            html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; background: #ffffff;">
+                    <div style="background: linear-gradient(135deg, #000c1e 0%, #001736 100%); padding: 35px 25px; text-align: center; color: #ffffff;">
+                        <h1 style="margin: 0 0 8px 0; font-size: 24px; color: #ffffff;">SHARK EDUTECH</h1>
+                        <p style="margin: 0; color: #fed488; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">
+                            Role-Based Admin Access Verification
+                        </p>
+                    </div>
+                    <div style="padding: 30px 25px; color: #1e293b; line-height: 1.6;">
+                        <h2 style="margin-top: 0; color: #001736; font-size: 20px;">You Have Been Invited as an Administrator</h2>
+                        <p>Hello,</p>
+                        <p><strong>${invitedByName}</strong> has granted you administrative access to the <strong>Shark Edutech Platform</strong> with the following specific permissions:</p>
+                        
+                        <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; margin: 20px 0;">
+                            <p style="margin: 0 0 10px 0; font-weight: 700; font-size: 14px; color: #001736;">Assigned Administrative Permissions:</p>
+                            <div>${permBadges}</div>
+                        </div>
+
+                        <p>To verify your email address and activate your administrator account, please click the button below:</p>
+
+                        <div style="text-align: center; margin: 30px 0;">
+                            <a href="${verifyLink}" style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: 800; font-size: 15px; display: inline-block; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);">
+                                Verify Email &amp; Activate Admin Access →
+                            </a>
+                        </div>
+
+                        <p style="font-size: 13px; color: #64748b;">If the button above does not work, copy and paste this link into your browser:<br />
+                            <a href="${verifyLink}" style="color: #2563eb; word-break: break-all;">${verifyLink}</a>
+                        </p>
+                    </div>
+                    <div style="text-align: center; padding: 20px; background: #f8fafc; color: #64748b; font-size: 12px; border-top: 1px solid #e2e8f0;">
+                        © 2026 Shark International Edutech Pvt. Ltd. All rights reserved.
+                    </div>
+                </div>
+            `
+        });
+        console.log(`✅ Admin invitation verification email sent to ${email}`);
+        return true;
+    } catch (e) {
+        console.error("Admin invite email error:", e);
+        return false;
+    }
+}

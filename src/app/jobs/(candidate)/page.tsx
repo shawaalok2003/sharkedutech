@@ -34,13 +34,17 @@ const spaceGrotesk = Space_Grotesk({
     weight: ["300", "400", "500", "600", "700"],
 });
 
+// Global in-memory cache variables for instant client navigation
+let globalJobsMemoryCache: Job[] | null = null;
+let globalAppliedIdsMemoryCache: Set<string> | null = null;
+
 export default function JobsPage() {
     const { data: session, status } = useSession();
     const router = useRouter();
-    const [jobs, setJobs] = useState<Job[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [jobs, setJobs] = useState<Job[]>(() => globalJobsMemoryCache || []);
+    const [loading, setLoading] = useState<boolean>(() => !globalJobsMemoryCache || globalJobsMemoryCache.length === 0);
 
-    const [appliedJobIds, setAppliedJobIds] = useState<Set<string>>(new Set());
+    const [appliedJobIds, setAppliedJobIds] = useState<Set<string>>(() => globalAppliedIdsMemoryCache || new Set());
 
     // Search and filter state variables
     const [searchTerm, setSearchTerm] = useState("");
@@ -79,31 +83,79 @@ export default function JobsPage() {
     });
 
     useEffect(() => {
-        async function fetchJobs() {
+        let isMounted = true;
+
+        // 1. Instant load from sessionStorage if in-memory cache is empty
+        if (!globalJobsMemoryCache || globalJobsMemoryCache.length === 0) {
+            try {
+                const storedJobs = sessionStorage.getItem('shark_jobs_cache_v2');
+                if (storedJobs) {
+                    const parsed = JSON.parse(storedJobs);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        globalJobsMemoryCache = parsed;
+                        setJobs(parsed);
+                        setLoading(false);
+                    }
+                }
+            } catch (e) {}
+        }
+
+        if (!globalAppliedIdsMemoryCache) {
+            try {
+                const storedApps = sessionStorage.getItem('shark_applied_apps_v2');
+                if (storedApps) {
+                    const parsedApps = JSON.parse(storedApps);
+                    const setIds = new Set<string>(parsedApps);
+                    globalAppliedIdsMemoryCache = setIds;
+                    setAppliedJobIds(setIds);
+                }
+            } catch (e) {}
+        }
+
+        // 2. Fetch/Revalidate in background (SWR pattern)
+        async function fetchJobsAndApplications() {
             try {
                 const res = await fetch('/api/jobs');
                 if (res.ok) {
                     const data = await res.json();
-                    setJobs(data);
+                    if (isMounted) {
+                        globalJobsMemoryCache = data;
+                        setJobs(data);
+                        try {
+                            sessionStorage.setItem('shark_jobs_cache_v2', JSON.stringify(data));
+                        } catch (e) {}
+                    }
                 }
 
-                // Fetch User Applications (if logged in)
                 if (session) {
-                    const appsRes = await fetch('/api/applications'); // We need an endpoint that returns user's apps
+                    const appsRes = await fetch('/api/applications');
                     if (appsRes.ok) {
                         const appsData = await appsRes.json();
-                        // Assuming appsData is array of { jobId: string, ... }
-                        const ids = new Set<string>(appsData.map((app: any) => app.jobId));
-                        setAppliedJobIds(ids);
+                        const idsArray = appsData.map((app: any) => app.jobId);
+                        const ids = new Set<string>(idsArray);
+                        if (isMounted) {
+                            globalAppliedIdsMemoryCache = ids;
+                            setAppliedJobIds(ids);
+                            try {
+                                sessionStorage.setItem('shark_applied_apps_v2', JSON.stringify(idsArray));
+                            } catch (e) {}
+                        }
                     }
                 }
             } catch (error) {
                 console.error("Failed to fetch jobs", error);
             } finally {
-                setLoading(false);
+                if (isMounted) {
+                    setLoading(false);
+                }
             }
         }
-        fetchJobs();
+
+        fetchJobsAndApplications();
+
+        return () => {
+            isMounted = false;
+        };
     }, [session]);
 
     const handleApplyRedirect = (jobId: string) => {

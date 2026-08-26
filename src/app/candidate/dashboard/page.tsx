@@ -4,22 +4,33 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
+// Global in-memory cache for instant client navigation
+let globalCandDashCache: {
+    jobApplications: any[];
+    jobs: any[];
+    collegeApplications: any[];
+    profileCompletion: number;
+    documents: any[];
+    colleges: any[];
+    courses: any[];
+} | null = null;
+
 export default function UnifiedCandidateDashboard() {
     const { data: session, status } = useSession();
     const router = useRouter();
 
     // Jobs State
-    const [jobApplications, setJobApplications] = useState<any[]>([]);
-    const [jobs, setJobs] = useState<any[]>([]);
+    const [jobApplications, setJobApplications] = useState<any[]>(() => globalCandDashCache?.jobApplications || []);
+    const [jobs, setJobs] = useState<any[]>(() => globalCandDashCache?.jobs || []);
 
     // Admissions State
-    const [collegeApplications, setCollegeApplications] = useState<any[]>([]);
-    const [profileCompletion, setProfileCompletion] = useState(0);
-    const [documents, setDocuments] = useState<any[]>([]);
-    const [colleges, setColleges] = useState<any[]>([]);
-    const [courses, setCourses] = useState<any[]>([]);
+    const [collegeApplications, setCollegeApplications] = useState<any[]>(() => globalCandDashCache?.collegeApplications || []);
+    const [profileCompletion, setProfileCompletion] = useState<number>(() => globalCandDashCache?.profileCompletion || 0);
+    const [documents, setDocuments] = useState<any[]>(() => globalCandDashCache?.documents || []);
+    const [colleges, setColleges] = useState<any[]>(() => globalCandDashCache?.colleges || []);
+    const [courses, setCourses] = useState<any[]>(() => globalCandDashCache?.courses || []);
 
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState<boolean>(() => !globalCandDashCache);
 
     useEffect(() => {
         if (status === "unauthenticated") {
@@ -27,6 +38,30 @@ export default function UnifiedCandidateDashboard() {
             return;
         }
 
+        let isMounted = true;
+
+        // 1. Instant load from sessionStorage if in-memory cache is empty
+        if (!globalCandDashCache) {
+            try {
+                const stored = sessionStorage.getItem('shark_cand_dash_cache_v2');
+                if (stored) {
+                    const parsed = JSON.parse(stored);
+                    if (parsed && typeof parsed === 'object') {
+                        globalCandDashCache = parsed;
+                        setJobApplications(parsed.jobApplications || []);
+                        setJobs(parsed.jobs || []);
+                        setCollegeApplications(parsed.collegeApplications || []);
+                        setProfileCompletion(parsed.profileCompletion || 0);
+                        setDocuments(parsed.documents || []);
+                        setColleges(parsed.colleges || []);
+                        setCourses(parsed.courses || []);
+                        setLoading(false);
+                    }
+                }
+            } catch (e) {}
+        }
+
+        // 2. Background fetch for revalidation (SWR pattern)
         async function loadData() {
             try {
                 const [
@@ -42,29 +77,61 @@ export default function UnifiedCandidateDashboard() {
                     fetch("/api/admissions/courses")
                 ]);
 
-                if (jobAppsRes.ok) setJobApplications(await jobAppsRes.json());
-                if (jobsRes.ok) setJobs(await jobsRes.json());
-                if (colAppsRes.ok) setCollegeApplications(await colAppsRes.json());
+                let jApps = [], jList = [], cApps = [], pComp = 0, docs = [], cols = [], crses = [];
+
+                if (jobAppsRes.ok) jApps = await jobAppsRes.json();
+                if (jobsRes.ok) jList = await jobsRes.json();
+                if (colAppsRes.ok) cApps = await colAppsRes.json();
 
                 if (profileRes.ok) {
                     const profile = await profileRes.json();
                     const fields = ["phone", "dob", "city", "address", "bio", "education"];
                     const filled = fields.filter(f => profile?.[f]).length;
-                    setProfileCompletion(Math.round((filled / fields.length) * 100));
+                    pComp = Math.round((filled / fields.length) * 100);
                 }
-                if (docsRes.ok) setDocuments(await docsRes.json());
-                if (collegesRes.ok) setColleges(await collegesRes.json());
-                if (coursesRes.ok) setCourses(await coursesRes.json());
+                if (docsRes.ok) docs = await docsRes.json();
+                if (collegesRes.ok) cols = await collegesRes.json();
+                if (coursesRes.ok) crses = await coursesRes.json();
+
+                if (isMounted) {
+                    setJobApplications(jApps);
+                    setJobs(jList);
+                    setCollegeApplications(cApps);
+                    setProfileCompletion(pComp);
+                    setDocuments(docs);
+                    setColleges(cols);
+                    setCourses(crses);
+
+                    const updatedCache = {
+                        jobApplications: jApps,
+                        jobs: jList,
+                        collegeApplications: cApps,
+                        profileCompletion: pComp,
+                        documents: docs,
+                        colleges: cols,
+                        courses: crses
+                    };
+                    globalCandDashCache = updatedCache;
+                    try {
+                        sessionStorage.setItem('shark_cand_dash_cache_v2', JSON.stringify(updatedCache));
+                    } catch (e) {}
+                }
             } catch (error) {
                 console.error("Failed to load dashboard data:", error);
             } finally {
-                setLoading(false);
+                if (isMounted) {
+                    setLoading(false);
+                }
             }
         }
-
+        
         if (session) {
             loadData();
         }
+
+        return () => {
+            isMounted = false;
+        };
     }, [session, status, router]);
 
     if (loading) return (

@@ -55,7 +55,7 @@ function SignInContent() {
             const session = await response.json();
             const userRole = session?.user?.role;
 
-            if (userRole === 'ADMIN') {
+            if (userRole === 'ADMIN' || userRole === 'SUPER_ADMIN') {
                 router.push("/admin");
             } else if (userRole === 'COLLEGE') {
                 router.push("/admissions/college");
@@ -136,7 +136,7 @@ function SignInContent() {
             }
 
             const role = userData.role;
-            if (role === 'ADMIN') {
+            if (role === 'ADMIN' || role === 'SUPER_ADMIN') {
                 router.push("/admin");
             } else if (role === 'COLLEGE') {
                 router.push("/admissions/college");
