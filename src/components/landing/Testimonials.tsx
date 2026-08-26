@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import styles from "./Testimonials.module.css";
 
 interface Testimonial {
@@ -18,68 +18,90 @@ interface Testimonial {
 const testimonials: Testimonial[] = [
     {
         id: 1,
-        quote: "Sharkedutech helped me find the perfect culinary degree that aligned with my career goals. The admission guidance was incredibly smooth and hassle-free.",
-        name: "Sarah Jenkins",
-        role: "Culinary Arts Student",
-        company: "Swiss Hotel Management School",
-        badge: "Verified Student",
-        initials: "SJ",
-        bgGradient: "linear-gradient(135deg, #2563eb, #1e40af)",
+        quote: "SHARK Edutech helped me gain real industry exposure and confidence. My internship turned into a full-time job.",
+        name: "Asikul Mondal",
+        role: "Placed Graduate",
+        company: "Luxury Hospitality Partner",
+        badge: "Verified Placement",
+        initials: "AM",
+        bgGradient: "linear-gradient(135deg, #001736, #002b5b)",
         rating: 5
     },
     {
         id: 2,
-        quote: "As an employer, the quality of candidates we recruit from Shark Edutech is unmatched. It's our primary platform for hiring fresh hospitality leaders.",
-        name: "David Chen",
-        role: "HR & Talent Director",
-        company: "Grand Hyatt International",
-        badge: "Recruitment Partner",
-        initials: "DC",
-        bgGradient: "linear-gradient(135deg, #0f172a, #334155)",
-        rating: 5
-    },
-    {
-        id: 3,
-        quote: "The platform is exceptionally slick and easy to navigate. I submitted applications to 4 top institutes in one go and landed my dream scholarship!",
-        name: "Rahul Sharma",
-        role: "Hospitality Management Graduate",
-        company: "Marriott Luxury Collection",
-        badge: "Verified Alumni",
-        initials: "RS",
+        quote: "The practical training, industry tie-ups, and lifetime career support from SHARK Edutech helped me build my hospitality career.",
+        name: "Rima Bagchi",
+        role: "Hospitality Professional",
+        company: "Star Hotel Partner",
+        badge: "Verified Graduate",
+        initials: "RB",
         bgGradient: "linear-gradient(135deg, #d97706, #b45309)",
         rating: 5
     },
     {
+        id: 3,
+        quote: "Through SHARK Edutech's network of 400+ tie-up hotels, I secured a rewarding position right after my training.",
+        name: "Altab Hossain",
+        role: "F&B Operations",
+        company: "Barbeque Nation, Bangalore",
+        badge: "Placed Alumni",
+        initials: "AH",
+        bgGradient: "linear-gradient(135deg, #2563eb, #1e40af)",
+        rating: 5
+    },
+    {
         id: 4,
-        quote: "Shark Edutech connects world-class institutions with top talent seamlessly. The verified applicant process saves us weeks of recruitment effort.",
-        name: "Elena Rostova",
-        role: "Front Office Director",
-        company: "Ritz-Carlton Dubai",
-        badge: "Industry Partner",
-        initials: "ER",
+        quote: "Connecting with premier 5-star properties through SHARK Edutech gave me the hands-on exposure I needed for rapid career growth.",
+        name: "Shaon Das",
+        role: "Hotel Management Specialist",
+        company: "ITC Kohenur, Hyderabad",
+        badge: "Verified Alumni",
+        initials: "SD",
         bgGradient: "linear-gradient(135deg, #059669, #047857)",
         rating: 5
     },
     {
         id: 5,
-        quote: "Managing application pipelines through Shark Edutech has boosted our international student enrollment by over 40% year-on-year.",
-        name: "Vikramaditya Rao",
-        role: "Dean of Admissions",
-        company: "International Institute of Hotel Mgmt",
-        badge: "Institute Partner",
-        initials: "VR",
+        quote: "SHARK Edutech's strong industry partnerships opened international doors for my career. The lifetime assistance is real.",
+        name: "Robius Sani",
+        role: "Front Office Executive",
+        company: "The Diplomatic Club, Doha",
+        badge: "Global Placement",
+        initials: "RS",
         bgGradient: "linear-gradient(135deg, #7c3aed, #6d28d9)",
         rating: 5
     },
     {
         id: 6,
-        quote: "From course selection to my first luxury resort placement, Shark Edutech was with me every step. Highly recommended for aspiring professionals!",
-        name: "Aisha Al-Mansoor",
-        role: "Yacht Hospitality Executive",
-        company: "Oceanic Luxury Fleet",
+        quote: "Hospitality is not just a profession, it's the art of making people feel at home anywhere in the world. SHARK made this dream come true.",
+        name: "Suman Samanta",
+        role: "Guest Relations Associate",
+        company: "Rajmahal Palace Raas, Jaipur",
         badge: "Verified Graduate",
-        initials: "AA",
+        initials: "SS",
         bgGradient: "linear-gradient(135deg, #0284c7, #0369a1)",
+        rating: 5
+    },
+    {
+        id: 7,
+        quote: "From structured training to global employment opportunities, SHARK Edutech guided me every step into top luxury brands.",
+        name: "Abu Darda Molla",
+        role: "Hospitality Operations",
+        company: "Hotel Dollenberg, Germany",
+        badge: "International Alumni",
+        initials: "AM",
+        bgGradient: "linear-gradient(135deg, #001736, #1e293b)",
+        rating: 5
+    },
+    {
+        id: 8,
+        quote: "Great service turns a stay into a story worth telling. SHARK Edutech gave me the skills and confidence for star-rated properties.",
+        name: "Asfak Sk",
+        role: "Operations Specialist",
+        company: "Aramco Project, Saudi Arabia",
+        badge: "Global Placement",
+        initials: "AS",
+        bgGradient: "linear-gradient(135deg, #059669, #1d4ed8)",
         rating: 5
     }
 ];
@@ -133,7 +155,7 @@ export function Testimonials() {
                 <div className={styles.header}>
                     <div className={styles.kicker}>
                         <span className={styles.sparkleIcon}>✨</span>
-                        SUCCESS STORIES & TESTIMONIALS
+                        SUCCESS STORIES &amp; TESTIMONIALS
                     </div>
                     <h2 className={styles.title}>
                         What Our Community <span className={styles.highlight}>Says</span>

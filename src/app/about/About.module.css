@@ -65,34 +65,42 @@
     font-weight: 400;
 }
 
-/* Hero Section */
+/* Hero Section - Elite Dark Luxury Styling */
 .heroSection {
     position: relative;
     width: 100%;
-    min-height: 72vh;
+    min-height: 70vh;
     display: flex;
     align-items: center;
-    padding: 6rem 2rem;
+    padding: 5.5rem 2rem;
     overflow: hidden;
+    background: linear-gradient(135deg, #000c1e 0%, #001736 45%, #002b5b 100%);
 }
 
-.heroBg {
+.heroSection::before {
+    content: '';
     position: absolute;
-    inset: 0;
-    z-index: 0;
+    top: -30%;
+    left: -10%;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(37, 99, 235, 0.22) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 1;
 }
 
-.heroBgImg {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.heroOverlay {
+.heroSection::after {
+    content: '';
     position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(0, 23, 54, 0.75) 0%, rgba(0, 43, 91, 0.6) 100%);
-    backdrop-filter: blur(2px);
+    bottom: -30%;
+    right: -10%;
+    width: 650px;
+    height: 650px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(254, 212, 136, 0.12) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 1;
 }
 
 .heroContainer {
@@ -103,11 +111,140 @@
     z-index: 10;
 }
 
+/* Split Hero Grid */
+.heroGrid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 3rem;
+    align-items: center;
+}
+
 .heroCard {
-    max-width: 50rem;
-    padding: 3.5rem;
+    max-width: 100%;
+    padding: 3.25rem;
     border-radius: 1.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 0 25px 60px rgba(0, 15, 35, 0.5);
     animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.heroCarouselFrame {
+    position: relative;
+    width: 100%;
+    height: 490px;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6);
+    border: 2px solid rgba(255, 255, 255, 0.22);
+    background: #000c1e;
+}
+
+.heroCarouselImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+.heroCarouselOverlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 23, 54, 0.92) 0%, rgba(0, 23, 54, 0.3) 60%, transparent 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 2rem;
+    color: #ffffff;
+    z-index: 15;
+}
+
+.heroCarouselBadge {
+    align-self: flex-start;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    background: rgba(37, 99, 235, 0.95);
+    color: #ffffff;
+    padding: 0.3rem 0.85rem;
+    border-radius: 9999px;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.heroCarouselTitle {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 0.25rem;
+    line-height: 1.35;
+}
+
+.heroCarouselSub {
+    font-size: 0.85rem;
+    color: #93c5fd;
+    font-weight: 500;
+}
+
+.heroCarouselNavBtn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: #ffffff;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 20;
+    transition: all 0.2s ease;
+}
+
+.heroCarouselNavBtn:hover {
+    background: rgba(255, 255, 255, 0.9);
+    color: #001736;
+}
+
+.heroCarouselPrev {
+    left: 1rem;
+}
+
+.heroCarouselNext {
+    right: 1rem;
+}
+
+.heroCarouselDots {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    display: flex;
+    gap: 0.4rem;
+    z-index: 20;
+}
+
+.heroCarouselDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.heroCarouselDotActive {
+    width: 22px;
+    border-radius: 9999px;
+    background: #3b82f6;
 }
 
 /* Container */
@@ -398,7 +535,7 @@
     .headlineXl {
         font-size: 2.25rem;
     }
-    .whoGrid, .dualGrid, .teamGrid {
+    .whoGrid, .dualGrid, .teamGrid, .heroGrid {
         grid-template-columns: 1fr;
     }
     .bentoGrid {

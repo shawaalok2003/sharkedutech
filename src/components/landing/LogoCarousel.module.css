@@ -50,7 +50,7 @@
     display: flex;
     overflow: hidden;
     padding: 1rem 0;
-    mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+    mask-image: linear-gradient(to right, transparent, black 4%, black 96%, transparent);
 }
 
 .slider:hover .slideTrack {
@@ -59,19 +59,19 @@
 
 .slideTrack {
     display: flex;
-    width: calc(290px * 62);
-    animation: scroll 45s linear infinite;
+    width: calc(218px * 62);
+    animation: scroll 40s linear infinite;
 }
 
 .slide {
-    width: 280px;
-    height: 130px;
+    width: 210px;
+    height: 125px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 0.5rem;
-    margin: 0 0.4rem;
+    padding: 0.25rem;
+    margin: 0 0.25rem;
     flex-shrink: 0;
     cursor: pointer;
     position: relative;
@@ -83,19 +83,20 @@
     height: 100%;
     background: #ffffff;
     border: 1px solid #e2e8f0;
-    border-radius: 16px;
-    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    padding: 0.4rem 0.6rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
 }
 
 .slide img {
-    max-width: 100%;
-    max-height: 85px;
+    width: 100%;
+    height: 100%;
+    max-height: 110px;
     object-fit: contain;
     transition: transform 0.3s ease;
 }
@@ -105,9 +106,9 @@
     bottom: -10px;
     background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
     color: white;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 700;
-    padding: 0.25rem 0.75rem;
+    padding: 0.2rem 0.65rem;
     border-radius: 9999px;
     opacity: 0;
     transform: translateY(6px);
@@ -117,14 +118,14 @@
 }
 
 .slide:hover .logoCard {
-    transform: translateY(-4px) scale(1.04);
+    transform: translateY(-4px) scale(1.03);
     border-color: #3b82f6;
-    box-shadow: 0 12px 28px -4px rgba(59, 130, 246, 0.25);
+    box-shadow: 0 12px 24px -4px rgba(59, 130, 246, 0.25);
     background: #ffffff;
 }
 
 .slide:hover img {
-    transform: scale(1.08);
+    transform: scale(1.06);
 }
 
 .slide:hover .clickBadge {
@@ -137,7 +138,7 @@
         transform: translateX(0);
     }
     100% {
-        transform: translateX(calc(-290px * 31));
+        transform: translateX(calc(-218px * 31));
     }
 }
 
@@ -149,18 +150,22 @@
         font-size: 1rem;
     }
     .slide {
-        width: 220px;
-        height: 110px;
+        width: 170px;
+        height: 100px;
+        margin: 0 0.15rem;
+    }
+    .logoCard {
+        padding: 0.3rem 0.4rem;
     }
     .slide img {
-        max-height: 65px;
+        max-height: 88px;
     }
     .slideTrack {
-        width: calc(230px * 62);
+        width: calc(175px * 62);
     }
     @keyframes scroll {
         100% {
-            transform: translateX(calc(-230px * 31));
+            transform: translateX(calc(-175px * 31));
         }
     }
 }
