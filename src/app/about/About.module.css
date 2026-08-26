@@ -2,8 +2,8 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    background-color: #f8fafc;
-    color: #0f172a;
+    background-color: #000c1e;
+    color: #f8fafc;
     font-family: inherit;
     overflow-x: hidden;
 }
@@ -14,15 +14,15 @@
 
 /* Glass Panel */
 .glassPanel {
-    background: rgba(255, 255, 255, 0.92);
+    background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.8);
-    box-shadow: 0 20px 50px rgba(0, 23, 54, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 0 25px 60px rgba(0, 15, 35, 0.5);
 }
 
 .textGradientPrimary {
-    background: linear-gradient(135deg, #001736 0%, #002b5b 100%);
+    background: linear-gradient(135deg, #ffffff 60%, #ffdea5 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -31,37 +31,37 @@
 /* Typography */
 .headlineXl {
     font-family: inherit;
-    font-size: 3rem;
-    line-height: 1.2;
+    font-size: 2.85rem;
+    line-height: 1.25;
     letter-spacing: -0.02em;
-    font-weight: 700;
+    font-weight: 800;
 }
 
 .headlineLg {
     font-family: inherit;
-    font-size: 2rem;
+    font-size: 2.1rem;
     line-height: 1.3;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .headlineMd {
     font-family: inherit;
-    font-size: 1.35rem;
+    font-size: 1.3rem;
     line-height: 1.4;
     font-weight: 600;
 }
 
 .bodyLg {
     font-family: inherit;
-    font-size: 1.125rem;
-    line-height: 1.6;
+    font-size: 1.1rem;
+    line-height: 1.7;
     font-weight: 400;
 }
 
 .bodyMd {
     font-family: inherit;
     font-size: 0.975rem;
-    line-height: 1.6;
+    line-height: 1.65;
     font-weight: 400;
 }
 
@@ -75,6 +75,7 @@
     padding: 5.5rem 2rem;
     overflow: hidden;
     background: linear-gradient(135deg, #000c1e 0%, #001736 45%, #002b5b 100%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .heroSection::before {
@@ -152,7 +153,7 @@
 .heroCarouselOverlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, rgba(0, 23, 54, 0.92) 0%, rgba(0, 23, 54, 0.3) 60%, transparent 100%);
+    background: linear-gradient(to top, rgba(0, 12, 30, 0.95) 0%, rgba(0, 12, 30, 0.35) 60%, transparent 100%);
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -255,14 +256,15 @@
 }
 
 .sectionPadding {
-    padding: 5rem 2rem;
+    padding: 5.5rem 2rem;
 }
 
-/* Who We Are & Mission */
+/* Who We Are & Mission Section */
 .whoWeAreBg {
-    background-color: #f1f5f9;
+    background: linear-gradient(180deg, #000c1e 0%, #001736 100%);
     position: relative;
     overflow: hidden;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .whoGrid {
@@ -273,46 +275,49 @@
 }
 
 .whoCard {
-    background: #ffffff;
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(16px);
     padding: 2.75rem;
-    border-radius: 1.25rem;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+    border-radius: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
     position: relative;
     z-index: 10;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s ease, border-color 0.3s ease;
 }
 
 .whoCard:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
+    transform: translateY(-5px);
+    border-color: rgba(254, 212, 136, 0.4);
 }
 
 .missionCard {
-    background: linear-gradient(135deg, #001736 0%, #002b5b 100%);
+    background: linear-gradient(135deg, #001e47 0%, #00122e 100%);
     color: #ffffff;
     padding: 2.75rem;
-    border-radius: 1.25rem;
-    box-shadow: 0 16px 40px rgba(0, 23, 54, 0.2);
+    border-radius: 1.5rem;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    box-shadow: 0 20px 50px rgba(0, 23, 54, 0.4);
     position: relative;
     z-index: 10;
     transition: transform 0.3s ease;
 }
 
 .missionCard:hover {
-    transform: translateY(-4px);
+    transform: translateY(-5px);
 }
 
 .iconWrapper {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.15);
-    color: #ffdea5;
+    background: rgba(254, 212, 136, 0.15);
+    color: #fed488;
     flex-shrink: 0;
+    border: 1px solid rgba(254, 212, 136, 0.3);
 }
 
 .iconSvg {
@@ -332,28 +337,30 @@
 }
 
 .bentoCard1 {
-    background: #ffffff;
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(16px);
     padding: 2.25rem;
-    border-radius: 1.25rem;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    border-radius: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     display: flex;
     flex-direction: column;
     justify-content: center;
-    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .bentoCard1:hover {
-    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.07);
-    transform: translateY(-3px);
+    border-color: rgba(37, 99, 235, 0.5);
+    transform: translateY(-4px);
 }
 
 .bentoCard2 {
     background: linear-gradient(135deg, #002b5b 0%, #001736 100%);
     color: #ffffff;
     padding: 2.25rem;
-    border-radius: 1.25rem;
-    box-shadow: 0 10px 25px rgba(0, 43, 91, 0.25);
+    border-radius: 1.5rem;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 43, 91, 0.4);
     transition: transform 0.3s ease;
 }
 
@@ -362,24 +369,25 @@
 }
 
 .bentoCard3 {
-    background: #fffbeb;
+    background: linear-gradient(135deg, rgba(254, 212, 136, 0.1) 0%, rgba(245, 158, 11, 0.05) 100%);
     padding: 2.25rem;
-    border-radius: 1.25rem;
-    border: 1px solid #fde68a;
-    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    border-radius: 1.5rem;
+    border: 1px solid rgba(254, 212, 136, 0.3);
+    transition: all 0.3s ease;
 }
 
 .bentoCard3:hover {
-    box-shadow: 0 10px 25px rgba(245, 158, 11, 0.12);
-    transform: translateY(-3px);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(245, 158, 11, 0.15);
 }
 
 .bentoCard4 {
-    background: #ffffff;
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(16px);
     padding: 2.25rem;
-    border-radius: 1.25rem;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    border-radius: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     display: flex;
     align-items: center;
     gap: 1.5rem;
@@ -387,7 +395,8 @@
 }
 
 .bentoCard4:hover {
-    transform: translateY(-3px);
+    transform: translateY(-4px);
+    border-color: rgba(16, 185, 129, 0.4);
 }
 
 /* Dual Path Section */
@@ -400,9 +409,10 @@
 .dualCard {
     position: relative;
     overflow: hidden;
-    border-radius: 1.25rem;
+    border-radius: 1.5rem;
     height: 420px;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
 }
 
 .dualCardBg {
@@ -420,7 +430,7 @@
 .dualGradient {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, rgba(0, 23, 54, 0.95) 0%, rgba(0, 23, 54, 0.5) 60%, transparent 100%);
+    background: linear-gradient(to top, rgba(0, 12, 30, 0.96) 0%, rgba(0, 12, 30, 0.5) 60%, transparent 100%);
 }
 
 .dualContent {
@@ -436,30 +446,31 @@
 
 .dualBtn {
     align-self: flex-start;
-    padding: 0.75rem 1.75rem;
+    padding: 0.8rem 1.8rem;
     border: 1.5px solid #ffffff;
-    border-radius: 8px;
-    font-size: 0.9rem;
+    border-radius: 10px;
+    font-size: 0.95rem;
     font-weight: 700;
     color: #ffffff;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(4px);
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(6px);
     text-decoration: none;
-    transition: all 0.2s ease;
+    transition: all 0.25s ease;
 }
 
 .dualBtn:hover {
     background: #ffffff;
-    color: #001736;
+    color: #000c1e;
     transform: translateY(-2px);
 }
 
-/* Director & Team Section */
+/* Director & Corporate Section */
 .directorImg {
     position: relative;
     z-index: 10;
-    border-radius: 1.25rem;
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
+    border-radius: 1.5rem;
+    border: 3px solid rgba(254, 212, 136, 0.4);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
     width: 100%;
     height: 520px;
     object-fit: cover;
@@ -468,10 +479,11 @@
 
 .directorCard {
     padding: 3.5rem;
-    background: #ffffff;
-    border-radius: 1.25rem;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(16px);
+    border-radius: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
 }
 
 .teamGrid {
@@ -481,54 +493,56 @@
 }
 
 .teamCard {
-    background: #ffffff;
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(16px);
     padding: 1.75rem;
-    border-radius: 1.25rem;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.03);
+    border-radius: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     position: relative;
     z-index: 10;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s ease, border-color 0.3s ease;
 }
 
 .teamCard:hover {
     transform: translateY(-5px);
-    box-shadow: 0 14px 35px rgba(0, 0, 0, 0.08);
+    border-color: rgba(254, 212, 136, 0.4);
 }
 
 .teamImg {
     width: 100%;
     height: 280px;
     object-fit: cover;
-    border-radius: 0.75rem;
+    border-radius: 1rem;
     margin-bottom: 1.25rem;
 }
 
 /* Final CTA */
 .finalCta {
-    background: linear-gradient(135deg, #001736 0%, #002b5b 100%);
+    background: linear-gradient(135deg, #000c1e 0%, #001736 50%, #002b5b 100%);
     color: #ffffff;
-    padding: 6rem 2rem;
+    padding: 6.5rem 2rem;
     text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .ctaBtn {
-    background: #fed488;
-    color: #451a03;
-    padding: 1rem 2.5rem;
-    border-radius: 8px;
-    font-size: 1rem;
+    background: linear-gradient(135deg, #fed488 0%, #f59e0b 100%);
+    color: #000c1e;
+    padding: 1rem 2.6rem;
+    border-radius: 10px;
+    font-size: 1.05rem;
     font-weight: 800;
     text-decoration: none;
     display: inline-block;
-    box-shadow: 0 10px 25px rgba(254, 212, 136, 0.3);
-    transition: all 0.2s ease;
+    box-shadow: 0 10px 30px rgba(254, 212, 136, 0.35);
+    transition: all 0.25s ease;
 }
 
 .ctaBtn:hover {
-    background: #fde68a;
+    background: linear-gradient(135deg, #ffe3a3 0%, #fbbf24 100%);
     transform: translateY(-3px);
-    box-shadow: 0 14px 30px rgba(254, 212, 136, 0.4);
+    box-shadow: 0 16px 35px rgba(254, 212, 136, 0.5);
 }
 
 @media (max-width: 900px) {
