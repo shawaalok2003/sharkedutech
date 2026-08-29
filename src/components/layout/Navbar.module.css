@@ -29,8 +29,8 @@
 }
 
 .logo img {
-    height: 68px !important;
-    max-height: 68px;
+    height: 92px !important;
+    max-height: 92px;
     width: auto !important;
     object-fit: contain;
     transition: transform 0.2s ease;

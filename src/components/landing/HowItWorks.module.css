@@ -1,174 +1,178 @@
 .section {
-    padding: 6.5rem 1.5rem;
+    padding: 5.5rem 2rem;
     background: #ffffff;
-    position: relative;
-    overflow: hidden;
+    color: #0f172a;
     border-bottom: 1px solid #f1f5f9;
 }
 
 .container {
-    max-width: 76rem;
+    max-width: 1240px;
     margin: 0 auto;
-    position: relative;
-    z-index: 1;
 }
 
-.header {
-    text-align: center;
-    max-width: 44rem;
-    margin: 0 auto 4.5rem;
+/* Top Pill Toggle Switch */
+.toggleContainer {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 3.5rem;
 }
 
-.kicker {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.4rem 1.1rem;
-    border-radius: 9999px;
-    background: #ffffff;
-    border: 1px solid #cbd5e1;
-    font-size: 0.75rem;
+.togglePill {
+    display: flex;
+    background: #f1f5f9;
+    padding: 0.35rem;
+    border-radius: 999px;
+    border: 1px solid #e2e8f0;
+}
+
+.toggleBtn {
+    padding: 0.65rem 2rem;
+    border-radius: 999px;
+    font-size: 0.95rem;
     font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: #001736;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    margin-bottom: 1.25rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: transparent;
+    color: #64748b;
 }
 
-.badgeDot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #2563eb;
-    display: inline-block;
+.toggleBtnActive {
+    background: #3b82f6;
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(59, 130, 246, 0.35);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 4rem;
+    align-items: center;
 }
 
 .title {
-    font-size: 3rem;
-    font-weight: 800;
-    color: #001736;
-    margin-bottom: 1rem;
-    letter-spacing: -0.03em;
-    line-height: 1.15;
-}
-
-.highlight {
-    background: linear-gradient(135deg, #2563eb 0%, #001736 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.subtitle {
-    font-size: 1.15rem;
-    color: #64748b;
-    line-height: 1.65;
-    font-weight: 500;
-}
-
-.steps {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2.25rem;
-    position: relative;
-}
-
-.step {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 1.5rem;
-    padding: 2.5rem 2rem;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.05);
-    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.step:hover {
-    transform: translateY(-8px);
-    border-color: #2563eb;
-    box-shadow: 0 25px 40px -12px rgba(37, 99, 235, 0.14);
-}
-
-.cardHeader {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1.75rem;
-}
-
-.stepNum {
-    font-size: 2.25rem;
-    font-weight: 900;
-    color: #cbd5e1;
-    letter-spacing: -0.04em;
-    line-height: 1;
-    transition: color 0.3s ease;
-}
-
-.step:hover .stepNum {
-    color: #2563eb;
-}
-
-.iconWrapper {
-    width: 60px;
-    height: 60px;
-    border-radius: 1rem;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.75rem;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
-    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.step:hover .iconWrapper {
-    background: #001736;
-    border-color: #001736;
-    transform: scale(1.1) rotate(5deg);
-    box-shadow: 0 10px 20px rgba(0, 23, 54, 0.2);
-}
-
-.stepTitle {
-    font-size: 1.4rem;
+    font-size: 2.35rem;
     font-weight: 800;
     color: #0f172a;
-    margin-bottom: 0.85rem;
-    letter-spacing: -0.02em;
+    margin-bottom: 1rem;
     line-height: 1.25;
 }
 
-.stepDesc {
+.titleHighlight {
+    color: #3b82f6;
+}
+
+.subtitle {
+    font-size: 1.05rem;
     color: #64748b;
     line-height: 1.65;
-    font-size: 0.98rem;
-    font-weight: 500;
+    margin-bottom: 2.5rem;
 }
 
-@media (max-width: 1024px) {
-    .title {
-        font-size: 2.5rem;
-    }
-
-    .steps {
-        gap: 1.5rem;
-    }
+/* Stepper */
+.stepper {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    position: relative;
 }
 
-@media (max-width: 768px) {
-    .section {
-        padding: 4.5rem 1rem;
-    }
+.stepper::before {
+    content: '';
+    position: absolute;
+    top: 24px;
+    left: 20px;
+    bottom: 24px;
+    width: 2px;
+    border-left: 2px dashed #cbd5e1;
+    z-index: 1;
+}
 
-    .title {
-        font-size: 2.15rem;
-    }
+.stepItem {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    position: relative;
+    z-index: 5;
+    cursor: pointer;
+}
 
-    .steps {
+.stepCircle {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #f1f5f9;
+    color: #64748b;
+    font-weight: 800;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #e2e8f0;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+.stepCircleActive {
+    background: #3b82f6;
+    color: #ffffff;
+    border-color: #3b82f6;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.stepTitle {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 0.35rem;
+    transition: color 0.2s ease;
+}
+
+.stepTitleActive {
+    color: #2563eb;
+}
+
+.stepDesc {
+    font-size: 0.975rem;
+    color: #64748b;
+    line-height: 1.6;
+}
+
+.graphicCard {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border-radius: 1.75rem;
+    padding: 3rem 2rem;
+    border: 1px solid #bae6fd;
+    box-shadow: 0 20px 45px rgba(2, 132, 199, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 420px;
+    position: relative;
+    overflow: hidden;
+}
+
+.graphicImage {
+    width: 100%;
+    max-width: 440px;
+    height: auto;
+    object-fit: contain;
+}
+
+@media (max-width: 900px) {
+    .grid {
         grid-template-columns: 1fr;
-        gap: 1.5rem;
+        gap: 3rem;
+    }
+    .title {
+        font-size: 1.85rem;
+    }
+    .section {
+        padding: 3.5rem 1rem;
+    }
+    .graphicCard {
+        min-height: 320px;
+        padding: 2rem 1rem;
     }
 }

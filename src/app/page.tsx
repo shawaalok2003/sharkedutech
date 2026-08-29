@@ -1,9 +1,13 @@
 import { HeroSection } from "@/components/landing/HeroSection";
 import { LogoCarousel } from "@/components/landing/LogoCarousel";
+import { WhoWeAreSection } from "@/components/landing/WhoWeAreSection";
+import { BrowseCategories } from "@/components/landing/BrowseCategories";
 import { JobCarousel } from "@/components/landing/JobCarousel";
+import { TalentPoolSection } from "@/components/landing/TalentPoolSection";
+import { CareerMilestoneSection } from "@/components/landing/CareerMilestoneSection";
+import { DreamCareerTestimonials } from "@/components/landing/DreamCareerTestimonials";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { Benefits } from "@/components/landing/Benefits";
-import { Testimonials } from "@/components/landing/Testimonials";
 import { Footer } from "@/components/layout/Footer";
 
 import { prisma } from "@/lib/prisma";
@@ -38,11 +42,15 @@ export default async function Home() {
   }
 
   return (
-    <main>
+    <main style={{ overflowX: 'hidden' }}>
       <HeroSection />
       <LogoCarousel />
+      <WhoWeAreSection />
+      <BrowseCategories />
       <JobCarousel jobs={topJobs} />
-      <Testimonials />
+      <TalentPoolSection />
+      <CareerMilestoneSection />
+      <DreamCareerTestimonials />
       <HowItWorks />
       <Benefits />
       <Footer />

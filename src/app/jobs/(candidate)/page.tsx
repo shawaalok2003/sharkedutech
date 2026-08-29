@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Space_Grotesk } from "next/font/google";
 
 // Types
@@ -24,7 +24,7 @@ interface Job {
 
 const categories = [
     { name: "Front Office", count: 120, icon: "🛎️" },
-    { name: "Culinary", count: 85, icon: "👨🍳" },
+    { name: "Culinary", count: 85, icon: "👨‍🍳" },
     { name: "Housekeeping", count: 64, icon: "🧹" },
     { name: "Management", count: 42, icon: "💼" },
 ];
@@ -38,9 +38,11 @@ const spaceGrotesk = Space_Grotesk({
 let globalJobsMemoryCache: Job[] | null = null;
 let globalAppliedIdsMemoryCache: Set<string> | null = null;
 
-export default function JobsPage() {
+function JobsContent() {
     const { data: session, status } = useSession();
     const router = useRouter();
+    const searchParams = useSearchParams();
+
     const [jobs, setJobs] = useState<Job[]>(() => globalJobsMemoryCache || []);
     const [loading, setLoading] = useState<boolean>(() => !globalJobsMemoryCache || globalJobsMemoryCache.length === 0);
 
@@ -60,24 +62,39 @@ export default function JobsPage() {
         "Management": "Back Office"
     };
 
+    useEffect(() => {
+        const catParam = searchParams.get("category");
+        const searchParam = searchParams.get("search");
+
+        if (catParam) {
+            setSelectedCategory(catParam);
+        }
+        if (searchParam) {
+            setSearchTerm(searchParam);
+        }
+    }, [searchParams]);
+
     const filteredJobs = jobs.filter(job => {
         const matchesSearch = searchTerm === "" || 
-            job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            job.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (job.title && job.title.toLowerCase().includes(searchTerm.toLowerCase())) ||
+            (job.description && job.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
             (job.companyName && job.companyName.toLowerCase().includes(searchTerm.toLowerCase())) ||
             (job.employer?.name && job.employer.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
         const matchesLocation = searchLocation === "" || 
-            job.location.toLowerCase().includes(searchLocation.toLowerCase());
+            (job.location && job.location.toLowerCase().includes(searchLocation.toLowerCase()));
 
         const matchesCategory = selectedCategory === "" || 
-            job.category === selectedCategory;
+            (job.category && (
+                job.category.toLowerCase().includes(selectedCategory.toLowerCase()) ||
+                selectedCategory.toLowerCase().includes(job.category.toLowerCase())
+            ));
 
-        const matchesRemote = !filterRemote || job.location.toLowerCase().includes("remote");
+        const matchesRemote = !filterRemote || (job.location && job.location.toLowerCase().includes("remote"));
         
         const matchesUrgent = !filterUrgent || 
-            job.title.toLowerCase().includes("urgent") || 
-            job.description.toLowerCase().includes("urgent");
+            (job.title && job.title.toLowerCase().includes("urgent")) || 
+            (job.description && job.description.toLowerCase().includes("urgent"));
 
         return matchesSearch && matchesLocation && matchesCategory && matchesRemote && matchesUrgent;
     });
@@ -1168,3 +1185,12 @@ export default function JobsPage() {
         </>
     );
 }
+
+export default function JobsPage() {
+    return (
+        <Suspense fallback={<div style={{ padding: '4rem', textAlign: 'center', color: '#64748b' }}>Loading Opportunities...</div>}>
+            <JobsContent />
+        </Suspense>
+    );
+}
+
