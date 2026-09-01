@@ -54,7 +54,7 @@ export function Navbar() {
 
     const getDashboardLink = () => {
         if (!session?.user) return '/';
-        const role = (session.user as any).role; // Type assertion if needed, or rely on d.ts
+        const role = (session.user as any).role;
         if (role === 'ADMIN') return '/admin';
         if (role === 'EMPLOYER') return '/jobs/employer';
         if (role === 'COLLEGE') return '/admissions/college';
@@ -79,36 +79,29 @@ export function Navbar() {
                     <span className={`${styles.hamburgerLine} ${isMobileMenuOpen ? styles.hamburgerLineOpen : ''}`}></span>
                 </button>
 
-                {/* Desktop Navigation */}
+                {/* Desktop Navigation (Clean Text Links - No Icons) */}
                 <nav className={styles.navLinks}>
                     <Link href="/" className={`${styles.link} ${isActive('/')}`}>
-                        <svg className={styles.navIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                         <span>Home</span>
                     </Link>
                     <Link href="/about" className={`${styles.link} ${isActive('/about')}`}>
-                        <svg className={styles.navIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
                         <span>About Us</span>
                     </Link>
                     <Link href="/admissions" className={`${styles.link} ${isActive('/admissions')}`}>
-                        <svg className={styles.navIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
                         <span>Admissions</span>
                     </Link>
                     <Link href="/jobs" className={`${styles.link} ${isActive('/jobs')}`}>
-                        <svg className={styles.navIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
                         <span>Jobs</span>
                     </Link>
                     <Link href="/gallery" className={`${styles.link} ${isActive('/gallery')}`}>
-                        <svg className={styles.navIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
                         <span>Gallery</span>
                     </Link>
                     {session?.user && (session.user as any).role === 'ADMIN' && (
                         <>
                             <Link href="/colleges" className={`${styles.link} ${isActive('/colleges')}`}>
-                                <svg className={styles.navIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v8h20v-8a2 2 0 0 0-2-2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg>
                                 <span>Colleges</span>
                             </Link>
                             <Link href="/employers" className={`${styles.link} ${isActive('/employers')}`}>
-                                <svg className={styles.navIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M16 10h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/></svg>
                                 <span>Employers</span>
                             </Link>
                         </>
@@ -134,7 +127,7 @@ export function Navbar() {
                             </Button>
                         </div>
                     ) : (
-                        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
                             <div className={styles.dropdown}>
                                 <div className={styles.dropdownTrigger}>
                                     <Button variant="ghost" size="sm">
@@ -180,84 +173,58 @@ export function Navbar() {
                     </button>
                     <nav className={styles.mobileNav}>
                         <Link href="/" className={`${styles.mobileLink} ${isActive('/')}`}>
-                            <svg className={styles.navIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                             <span>Home</span>
                         </Link>
                         <Link href="/about" className={`${styles.mobileLink} ${isActive('/about')}`}>
-                            <svg className={styles.navIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
                             <span>About Us</span>
                         </Link>
                         <Link href="/admissions" className={`${styles.mobileLink} ${isActive('/admissions')}`}>
-                            <svg className={styles.navIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
                             <span>Admissions</span>
                         </Link>
                         <Link href="/jobs" className={`${styles.mobileLink} ${isActive('/jobs')}`}>
-                            <svg className={styles.navIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
                             <span>Jobs</span>
                         </Link>
                         <Link href="/gallery" className={`${styles.mobileLink} ${isActive('/gallery')}`}>
-                            <svg className={styles.navIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
                             <span>Gallery</span>
                         </Link>
                         {session?.user && (session.user as any).role === 'ADMIN' && (
                             <>
                                 <Link href="/colleges" className={`${styles.mobileLink} ${isActive('/colleges')}`}>
-                                    <svg className={styles.navIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v8h20v-8a2 2 0 0 0-2-2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg>
                                     <span>Colleges</span>
                                 </Link>
                                 <Link href="/employers" className={`${styles.mobileLink} ${isActive('/employers')}`}>
-                                    <svg className={styles.navIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M16 10h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/></svg>
                                     <span>Employers</span>
                                 </Link>
                             </>
                         )}
+                        <div className={styles.mobileActions}>
+                            {session ? (
+                                <>
+                                    <Link href={getDashboardLink()}>
+                                        <Button size="md" variant="primary" style={{ width: '100%' }}>Dashboard</Button>
+                                    </Link>
+                                    <Button
+                                        variant="outline"
+                                        size="md"
+                                        onClick={() => signOut({ callbackUrl: '/' })}
+                                        style={{ width: '100%' }}
+                                    >
+                                        Logout
+                                    </Button>
+                                </>
+                            ) : (
+                                <>
+                                    <Link href="/auth/signin">
+                                        <Button variant="outline" size="md" style={{ width: '100%' }}>Login</Button>
+                                    </Link>
+                                    <Link href="/auth/signup">
+                                        <Button size="md" variant="primary" style={{ width: '100%' }}>Register</Button>
+                                    </Link>
+                                </>
+                            )}
+                        </div>
                     </nav>
-
-                    <div className={styles.mobileActions}>
-                        {session ? (
-                            <>
-                                <div className={styles.mobileUserInfo}>
-                                    Hi, {session.user?.name || 'User'}
-                                </div>
-                                <Link href={getDashboardLink()} style={{ width: '100%' }}>
-                                    <Button size="lg" style={{ width: '100%' }}>Dashboard</Button>
-                                </Link>
-                                <Button
-                                    variant="outline"
-                                    size="lg"
-                                    style={{ width: '100%' }}
-                                    onClick={() => signOut({ callbackUrl: '/' })}
-                                >
-                                    Logout
-                                </Button>
-                            </>
-                        ) : (
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '0.5rem', width: '100%' }}>
-                                <Link href="/auth/signin?type=admin">
-                                    <Button variant="outline" size="lg" style={{ width: '100%' }}>Super Admin Login</Button>
-                                </Link>
-                                <Link href="/admissions/auth/signin">
-                                    <Button variant="outline" size="lg" style={{ width: '100%' }}>College Login</Button>
-                                </Link>
-                                <Link href="/auth/signin?type=employer">
-                                    <Button variant="outline" size="lg" style={{ width: '100%' }}>Employer Login</Button>
-                                </Link>
-                                <Link href="/auth/signin">
-                                    <Button variant="ghost" size="lg" style={{ width: '100%' }}>Login</Button>
-                                </Link>
-                                <Link href="/auth/signup">
-                                    <Button variant="primary" size="lg" style={{ width: '100%' }}>Register</Button>
-                                </Link>
-                            </div>
-                        )}
-                    </div>
                 </div>
-
-                {/* Mobile Overlay */}
-                <div
-                    className={`${styles.overlay} ${isMobileMenuOpen ? styles.overlayVisible : ''}`}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                />
             </div>
         </header>
     );

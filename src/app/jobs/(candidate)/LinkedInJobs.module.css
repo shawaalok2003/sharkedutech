@@ -1,0 +1,602 @@
+.container {
+    max-width: 1380px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #0f172a;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Top Companies Bar */
+.topCompaniesBar {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+}
+
+.topCompaniesHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.85rem;
+}
+
+.topCompaniesTitle {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.topCompaniesGrid {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.topCompaniesGrid::-webkit-scrollbar {
+    display: none;
+}
+
+.companyPill {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    padding: 0.45rem 0.95rem;
+    border-radius: 999px;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.companyPill:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+}
+
+.companyPillActive {
+    background: #2563eb !important;
+    color: #ffffff !important;
+    border-color: #2563eb !important;
+}
+
+.companyLogo {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    object-fit: contain;
+    background: #ffffff;
+    flex-shrink: 0;
+}
+
+.companyPillText {
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.companyBadge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: #f1f5f9;
+    color: #475569;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+}
+
+.companyPillActive .companyBadge {
+    background: rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+}
+
+/* Search Header & Filter Bar */
+.searchHeader {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+}
+
+.searchGrid {
+    display: grid;
+    grid-template-columns: 1.4fr 1.1fr 1fr auto;
+    gap: 0.85rem;
+    align-items: center;
+}
+
+.searchInputGroup {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.searchIcon {
+    position: absolute;
+    left: 0.85rem;
+    color: #64748b;
+    font-size: 0.95rem;
+    pointer-events: none;
+}
+
+.searchInput {
+    width: 100%;
+    padding: 0.7rem 1rem 0.7rem 2.4rem;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    font-size: 0.875rem;
+    outline: none;
+    transition: border-color 0.2s ease;
+    color: #0f172a;
+    font-weight: 400;
+}
+
+.searchInput:focus {
+    border-color: #2563eb;
+}
+
+.selectInput {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    font-size: 0.875rem;
+    outline: none;
+    background: #ffffff;
+    cursor: pointer;
+    color: #0f172a;
+    font-weight: 400;
+}
+
+.searchBtn {
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+    padding: 0.7rem 1.25rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.searchBtn:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+/* Filter Pills Bar */
+.filterPillsBar {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.filterPillsBar::-webkit-scrollbar {
+    display: none;
+}
+
+.filterPill {
+    background: #f8fafc;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+    font-size: 0.825rem;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.filterPill:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+}
+
+.filterPillActive {
+    background: #0f172a !important;
+    color: #ffffff !important;
+    border-color: #0f172a !important;
+}
+
+.savedPillActive {
+    background: #2563eb !important;
+    color: #ffffff !important;
+    border-color: #2563eb !important;
+}
+
+/* Main Split View Container */
+.splitLayout {
+    display: grid;
+    grid-template-columns: 420px 1fr;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+/* Left Column: Job Cards List */
+.jobsListPane {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+    max-height: 820px;
+    display: flex;
+    flex-direction: column;
+}
+
+.listHeader {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid #e2e8f0;
+    background: #f8fafc;
+}
+
+.listTitle {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #0f172a;
+    margin: 0;
+}
+
+.listSubtitle {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-top: 0.2rem;
+    font-weight: 400;
+}
+
+.scrollableList {
+    overflow-y: auto;
+    flex: 1;
+    padding: 0;
+}
+
+.jobCardItem {
+    padding: 1.15rem 1.25rem;
+    border-bottom: 1px solid #f1f5f9;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    display: flex;
+    gap: 0.85rem;
+    align-items: flex-start;
+    position: relative;
+    border-left: 3px solid transparent;
+}
+
+.jobCardItem:hover {
+    background: #f8fafc;
+}
+
+.jobCardActive {
+    background: #eff6ff !important;
+    border-left-color: #2563eb !important;
+}
+
+.companyCardLogo {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid #e2e8f0;
+    flex-shrink: 0;
+    background: #ffffff;
+}
+
+.jobCardContent {
+    flex: 1;
+    min-width: 0;
+}
+
+.jobTitleRow {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-bottom: 0.2rem;
+}
+
+.jobCardTitle {
+    font-size: 0.925rem;
+    font-weight: 600;
+    color: #1e40af;
+    margin: 0;
+    line-height: 1.35;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.verifiedBadge {
+    color: #2563eb;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+}
+
+.companyNameText {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #334155;
+    margin-bottom: 0.2rem;
+}
+
+.locationText {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-bottom: 0.4rem;
+    font-weight: 400;
+}
+
+.cardMetaRow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: #64748b;
+    font-weight: 400;
+}
+
+.earlyApplicantBadge {
+    color: #1e40af;
+    background: #eff6ff;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+/* Right Column: Detailed Job View Pane */
+.jobDetailPane {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.02);
+    position: sticky;
+    top: 90px;
+    max-height: 820px;
+    overflow-y: auto;
+}
+
+.detailHeader {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.detailLogo {
+    width: 64px;
+    height: 64px;
+    border-radius: 10px;
+    object-fit: cover;
+    border: 1px solid #e2e8f0;
+}
+
+.detailTitle {
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 0.35rem 0;
+    line-height: 1.3;
+}
+
+.detailCompany {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2563eb;
+    margin-bottom: 0.35rem;
+}
+
+.detailLocation {
+    font-size: 0.875rem;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 400;
+}
+
+/* Badges Row */
+.detailBadgesRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.typeBadge {
+    background: #f8fafc;
+    color: #334155;
+    border: 1px solid #e2e8f0;
+    padding: 0.35rem 0.8rem;
+    border-radius: 999px;
+    font-size: 0.825rem;
+    font-weight: 500;
+}
+
+.salaryBadge {
+    background: #f0fdf4;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+    padding: 0.35rem 0.8rem;
+    border-radius: 999px;
+    font-size: 0.825rem;
+    font-weight: 600;
+}
+
+.categoryBadge {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+    padding: 0.35rem 0.8rem;
+    border-radius: 999px;
+    font-size: 0.825rem;
+    font-weight: 500;
+}
+
+/* CTA Action Buttons */
+.detailActions {
+    display: flex;
+    gap: 0.85rem;
+    margin-bottom: 1.75rem;
+}
+
+.applyBtn {
+    background: #2563eb;
+    color: #ffffff;
+    padding: 0.75rem 2rem;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    text-decoration: none;
+}
+
+.applyBtn:hover {
+    background: #1d4ed8;
+}
+
+.saveBtn {
+    background: #ffffff;
+    color: #2563eb;
+    border: 1.5px solid #2563eb;
+    padding: 0.75rem 1.75rem;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.saveBtn:hover {
+    background: #eff6ff;
+}
+
+.savedBtnActive {
+    background: #f0fdf4 !important;
+    color: #166534 !important;
+    border-color: #166534 !important;
+}
+
+/* Functional Resume Skill Matcher Card */
+.matchCard {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.85rem;
+    padding: 1.25rem;
+    margin-bottom: 1.75rem;
+}
+
+.matchHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.65rem;
+}
+
+.matchTitle {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.matchBtn {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #2563eb;
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.matchDetailsBox {
+    margin-top: 0.85rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+.skillPillsGroup {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+}
+
+.matchedSkillPill {
+    background: #dbeafe;
+    color: #1e40af;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.775rem;
+    font-weight: 600;
+}
+
+.missingSkillPill {
+    background: #f1f5f9;
+    color: #64748b;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.775rem;
+    font-weight: 500;
+}
+
+/* Job Description Content */
+.descriptionSection {
+    font-size: 0.925rem;
+    color: #334155;
+    line-height: 1.65;
+    font-weight: 400;
+}
+
+.sectionHeading {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 1.25rem 0 0.5rem 0;
+}
+
+@media (max-width: 1024px) {
+    .splitLayout {
+        grid-template-columns: 1fr;
+    }
+    .jobDetailPane {
+        position: static;
+        max-height: none;
+    }
+    .searchGrid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .searchGrid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -10,7 +10,7 @@
     margin: 0 auto;
 }
 
-/* Top Pill Toggle Switch */
+/* Top 3-Pill Toggle Switch */
 .toggleContainer {
     display: flex;
     justify-content: center;
@@ -26,7 +26,7 @@
 }
 
 .toggleBtn {
-    padding: 0.65rem 2rem;
+    padding: 0.65rem 1.8rem;
     border-radius: 999px;
     font-size: 0.95rem;
     font-weight: 700;
@@ -38,9 +38,9 @@
 }
 
 .toggleBtnActive {
-    background: #3b82f6;
+    background: #2563eb;
     color: #ffffff;
-    box-shadow: 0 4px 14px rgba(59, 130, 246, 0.35);
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
 }
 
 .grid {
@@ -59,7 +59,7 @@
 }
 
 .titleHighlight {
-    color: #3b82f6;
+    color: #2563eb;
 }
 
 .subtitle {
@@ -95,6 +95,13 @@
     position: relative;
     z-index: 5;
     cursor: pointer;
+    padding: 0.85rem;
+    border-radius: 12px;
+    transition: background-color 0.25s ease;
+}
+
+.stepItem:hover {
+    background: #f8fafc;
 }
 
 .stepCircle {
@@ -114,14 +121,14 @@
 }
 
 .stepCircleActive {
-    background: #3b82f6;
+    background: #2563eb;
     color: #ffffff;
-    border-color: #3b82f6;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    border-color: #2563eb;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
 }
 
 .stepTitle {
-    font-size: 1.2rem;
+    font-size: 1.15rem;
     font-weight: 800;
     color: #0f172a;
     margin-bottom: 0.35rem;
@@ -133,37 +140,69 @@
 }
 
 .stepDesc {
-    font-size: 0.975rem;
+    font-size: 0.95rem;
     color: #64748b;
     line-height: 1.6;
 }
 
+/* Image Card Container */
 .graphicCard {
-    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-    border-radius: 1.75rem;
-    padding: 3rem 2rem;
-    border: 1px solid #bae6fd;
-    box-shadow: 0 20px 45px rgba(2, 132, 199, 0.1);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 420px;
     position: relative;
+    border-radius: 1.75rem;
     overflow: hidden;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.12);
+    border: 1px solid #e2e8f0;
+    background: #000c1e;
+    min-height: 420px;
 }
 
-.graphicImage {
+.stepImage {
     width: 100%;
-    max-width: 440px;
-    height: auto;
-    object-fit: contain;
+    height: 440px;
+    object-fit: cover;
+    display: block;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.imageOverlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1.75rem;
+    background: linear-gradient(to top, rgba(0, 12, 30, 0.9) 0%, rgba(0, 12, 30, 0.4) 60%, transparent 100%);
+    color: #ffffff;
+}
+
+.imageStepBadge {
+    background: #2563eb;
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+}
+
+.imageTitle {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 0.25rem;
+}
+
+.imageCaption {
+    font-size: 0.85rem;
+    color: #cbd5e1;
 }
 
 @media (max-width: 900px) {
     .grid {
         grid-template-columns: 1fr;
-        gap: 3rem;
+        gap: 2.5rem;
     }
     .title {
         font-size: 1.85rem;
@@ -171,8 +210,7 @@
     .section {
         padding: 3.5rem 1rem;
     }
-    .graphicCard {
-        min-height: 320px;
-        padding: 2rem 1rem;
+    .stepImage {
+        height: 320px;
     }
 }
