@@ -683,7 +683,7 @@ function JobsContent() {
 
                     {/* Mobile Fixed CTA Footer */}
                     <div className={styles.mobileFixedFooter}>
-                        <Link href={`/jobs/apply/${activeJob.id}`} className={styles.applyBtn} style={{ flex: 1, justifyCenter: 'center', textAlign: 'center' }}>
+                        <Link href={`/jobs/apply/${activeJob.id}`} className={styles.applyBtn} style={{ flex: 1, justifyContent: 'center', textAlign: 'center' }}>
                             Apply Now ↗
                         </Link>
                         <button 
