@@ -1,0 +1,292 @@
+.container {
+    max-width: 1380px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #0f172a;
+}
+
+.heroHeader {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: #ffffff;
+    border-radius: 1.5rem;
+    padding: 2.5rem 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.heroBadge {
+    background: #2563eb;
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    display: inline-block;
+    margin-bottom: 1rem;
+}
+
+.heroTitle {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 0.75rem;
+    line-height: 1.25;
+}
+
+.heroSubtitle {
+    font-size: 1rem;
+    color: #cbd5e1;
+    max-width: 850px;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.highlightsBar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #93c5fd;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 1.25rem;
+}
+
+/* Split Layout */
+.splitLayout {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 1.75rem;
+    align-items: start;
+}
+
+.filterPane {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 1.25rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+    position: sticky;
+    top: 90px;
+}
+
+.filterPaneTitle {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.filterGroup {
+    margin-bottom: 1.25rem;
+}
+
+.filterLabel {
+    display: block;
+    font-size: 0.825rem;
+    font-weight: 700;
+    color: #475569;
+    margin-bottom: 0.4rem;
+}
+
+.filterInput {
+    width: 100%;
+    padding: 0.7rem 0.85rem;
+    border-radius: 8px;
+    border: 1.5px solid #cbd5e1;
+    font-size: 0.875rem;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.filterInput:focus {
+    border-color: #2563eb;
+}
+
+.filterSelect {
+    width: 100%;
+    padding: 0.7rem 0.85rem;
+    border-radius: 8px;
+    border: 1.5px solid #cbd5e1;
+    font-size: 0.875rem;
+    outline: none;
+    background: #ffffff;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.resetBtn {
+    width: 100%;
+    background: #f1f5f9;
+    color: #334155;
+    border: 1px solid #cbd5e1;
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.resetBtn:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+/* Listings Pane */
+.listingsPane {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.listingsHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 1.25rem 1.5rem;
+}
+
+.listingsTitle {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+}
+
+.listingsCount {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #2563eb;
+    background: #eff6ff;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+}
+
+.coursesGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.courseCard {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 1.25rem;
+    padding: 1.75rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.courseCard:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+    border-color: #bfdbfe;
+}
+
+.cardHeaderRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.65rem;
+}
+
+.accreditationBadge {
+    background: #dcfce7;
+    color: #15803d;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    display: inline-block;
+    margin-bottom: 0.4rem;
+}
+
+.courseTitle {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 0.25rem 0;
+}
+
+.collegeNameText {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #2563eb;
+}
+
+.cardMetaRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #64748b;
+    margin-bottom: 1rem;
+    padding-bottom: 0.85rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.courseDesc {
+    font-size: 0.925rem;
+    color: #334155;
+    line-height: 1.6;
+    margin-bottom: 1.25rem;
+}
+
+.cardPerksRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: 1.5rem;
+}
+
+.cardPerksRow span {
+    background: #f8fafc;
+    color: #334155;
+    border: 1px solid #e2e8f0;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.3rem 0.7rem;
+    border-radius: 6px;
+}
+
+.cardFooterRow {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.viewDetailBtn {
+    background: #2563eb;
+    color: #ffffff;
+    padding: 0.75rem 1.75rem;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 800;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.viewDetailBtn:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+}
+
+@media (max-width: 900px) {
+    .splitLayout {
+        grid-template-columns: 1fr;
+    }
+    .filterPane {
+        position: static;
+    }
+}

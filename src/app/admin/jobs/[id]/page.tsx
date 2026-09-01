@@ -204,7 +204,7 @@ export default async function EditJobPage(props: { params: Promise<{ id: string 
                             <tbody>
                                 {job.applications.map((app) => (
                                     <tr key={app.id} style={{ borderBottom: "1px solid #eee" }}>
-                                        <td style={{ padding: "1rem", fontWeight: 600 }}>{app.candidateId || app.id}</td>
+                                        <td style={{ padding: "1rem", fontWeight: 600 }}>{app.name || app.applicantId || app.id}</td>
                                         <td style={{ padding: "1rem" }}>
                                             <span style={{ padding: "0.2rem 0.5rem", borderRadius: "4px", backgroundColor: "#dbeafe", color: "#1e40af", fontSize: "0.85rem" }}>
                                                 {app.status}

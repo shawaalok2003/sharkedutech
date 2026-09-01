@@ -3,54 +3,31 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { Space_Grotesk } from "next/font/google";
 import Link from "next/link";
+import styles from "./AdmissionsExplorer.module.css";
 
-const spaceGrotesk = Space_Grotesk({
-    subsets: ["latin"],
-    weight: ["300", "400", "500", "600", "700"],
-});
+let globalCoursesCache: any[] | null = null;
+let globalCollegesCache: any[] | null = null;
 
-// Global in-memory cache for instant client navigation across routes
-let globalAdmissionsCoursesCache: any[] | null = null;
-let globalAdmissionsCollegesCache: any[] | null = null;
+const accreditationFilters = ["All Accreditations", "NCHMCT", "UGC Approved", "AICTE", "NAAC A+"];
+const courseLevelFilters = ["All Courses", "Bachelor Degree", "Diploma", "Master Degree", "Certification"];
 
-export default function AdmissionsCourseListingPage() {
+export default function AdmissionsExplorerPage() {
     const { data: session } = useSession();
     const router = useRouter();
-    const [courses, setCourses] = useState<any[]>(() => globalAdmissionsCoursesCache || []);
-    const [colleges, setColleges] = useState<any[]>(() => globalAdmissionsCollegesCache || []);
-    const [loading, setLoading] = useState<boolean>(() => !globalAdmissionsCoursesCache || globalAdmissionsCoursesCache.length === 0);
+    const [courses, setCourses] = useState<any[]>(() => globalCoursesCache || []);
+    const [colleges, setColleges] = useState<any[]>(() => globalCollegesCache || []);
+    const [loading, setLoading] = useState<boolean>(() => !globalCoursesCache || globalCoursesCache.length === 0);
+
+    // Filters
     const [searchTerm, setSearchTerm] = useState("");
     const [locationTerm, setLocationTerm] = useState("");
+    const [selectedAccreditation, setSelectedAccreditation] = useState("All Accreditations");
+    const [selectedLevel, setSelectedLevel] = useState("All Courses");
 
     useEffect(() => {
         let isMounted = true;
 
-        // 1. Instant load from sessionStorage if in-memory cache is empty
-        if (!globalAdmissionsCoursesCache || globalAdmissionsCoursesCache.length === 0) {
-            try {
-                const storedCourses = sessionStorage.getItem('shark_admissions_courses_v2');
-                const storedColleges = sessionStorage.getItem('shark_admissions_colleges_v2');
-                if (storedCourses) {
-                    const parsed = JSON.parse(storedCourses);
-                    if (Array.isArray(parsed) && parsed.length > 0) {
-                        globalAdmissionsCoursesCache = parsed;
-                        setCourses(parsed);
-                        setLoading(false);
-                    }
-                }
-                if (storedColleges) {
-                    const parsedColleges = JSON.parse(storedColleges);
-                    if (Array.isArray(parsedColleges) && parsedColleges.length > 0) {
-                        globalAdmissionsCollegesCache = parsedColleges;
-                        setColleges(parsedColleges);
-                    }
-                }
-            } catch (e) {}
-        }
-
-        // 2. Fetch/Revalidate in background (SWR pattern)
         async function fetchData() {
             try {
                 const [coursesRes, collegesRes] = await Promise.all([
@@ -62,21 +39,15 @@ export default function AdmissionsCourseListingPage() {
                     const data = await coursesRes.json();
                     const validData = Array.isArray(data) ? data.filter(c => c.title && c.title.trim().length > 2) : [];
                     if (isMounted) {
-                        globalAdmissionsCoursesCache = validData;
+                        globalCoursesCache = validData;
                         setCourses(validData);
-                        try {
-                            sessionStorage.setItem('shark_admissions_courses_v2', JSON.stringify(validData));
-                        } catch (e) {}
                     }
                 }
                 if (collegesRes.ok) {
                     const collegesData = await collegesRes.json();
                     if (isMounted) {
-                        globalAdmissionsCollegesCache = collegesData;
+                        globalCollegesCache = collegesData;
                         setColleges(collegesData);
-                        try {
-                            sessionStorage.setItem('shark_admissions_colleges_v2', JSON.stringify(collegesData));
-                        } catch (e) {}
                     }
                 }
             } catch (error) {
@@ -95,533 +66,180 @@ export default function AdmissionsCourseListingPage() {
         };
     }, []);
 
-    // Purely database-driven list from Admin Panel
+    // Filter courses & colleges
     const filteredCourses = courses.filter(course => {
-        const college = colleges.find(c => c.id === course.collegeId) || course.college;
-        const collegeName = college?.name || course.collegeName || "";
-        const location = college?.location || course.location || "";
-        const matchesSearch = course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            collegeName.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesLocation = location.toLowerCase().includes(locationTerm.toLowerCase());
-        return matchesSearch && matchesLocation;
+        const college = colleges.find(c => c.id === course.collegeId) || course.college || {};
+        const titleLower = (course.title || "").toLowerCase();
+        const collegeNameLower = (college.name || course.collegeName || "").toLowerCase();
+        const locLower = (college.city || college.state || course.location || "").toLowerCase();
+
+        const matchesSearch = searchTerm === "" || 
+            titleLower.includes(searchTerm.toLowerCase()) ||
+            collegeNameLower.includes(searchTerm.toLowerCase());
+
+        const matchesLocation = locationTerm === "" || 
+            locLower.includes(locationTerm.toLowerCase());
+
+        const matchesAccreditation = selectedAccreditation === "All Accreditations" ||
+            (college.accreditation && college.accreditation.toLowerCase().includes(selectedAccreditation.toLowerCase())) ||
+            (course.description && course.description.toLowerCase().includes(selectedAccreditation.toLowerCase()));
+
+        const matchesLevel = selectedLevel === "All Courses" ||
+            titleLower.includes(selectedLevel.toLowerCase()) ||
+            (course.degreeType && course.degreeType.toLowerCase().includes(selectedLevel.toLowerCase()));
+
+        return matchesSearch && matchesLocation && matchesAccreditation && matchesLevel;
     });
 
     return (
-        <>
-            <style jsx>{`
-                :global(body) {
-                    background: #ffffff;
-                }
+        <div className={styles.container}>
+            {/* Header Banner */}
+            <div className={styles.heroHeader}>
+                <div className={styles.heroBadge}>🎓 SHARK EDUTECH ADMISSIONS PORTAL</div>
+                <h1 className={styles.heroTitle}>
+                    Direct Admission into Top UGC &amp; NCHMCT Recognized Colleges
+                </h1>
+                <p className={styles.heroSubtitle}>
+                    100% Assured Placement Assistance in 5-Star Hotel Properties, 0% Interest Education Loan Support &amp; Lifetime Career Support.
+                </p>
+                
+                <div className={styles.highlightsBar}>
+                    <span>✅ 100% Assured Placement</span>
+                    <span>✅ Taj, Marriott &amp; Hyatt Tie-ups</span>
+                    <span>✅ 0% Interest Loan Support</span>
+                    <span>✅ Lifetime Placement Support</span>
+                </div>
+            </div>
 
-                .page {
-                    color: #0f172a;
-                    padding-bottom: 4rem;
-                }
-
-                .hero {
-                    position: relative;
-                    overflow: hidden;
-                    padding: 3rem 1.5rem 2rem;
-                    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
-                    border-bottom: 1px solid #f1f5f9;
-                }
-
-                .hero-pattern {
-                    position: absolute;
-                    inset: 0;
-                    background-image: radial-gradient(var(--primary) 0.5px, transparent 0.5px);
-                    background-size: 32px 32px;
-                    opacity: 0.05;
-                    pointer-events: none;
-                }
-
-                .hero-inner {
-                    max-width: 72rem;
-                    margin: 0 auto;
-                    text-align: center;
-                    position: relative;
-                    z-index: 1;
-                    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-                }
-
-                .hero-top {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    margin-bottom: 1.5rem;
-                }
-
-                .hero-badge {
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 0.5rem;
-                    padding: 0.4rem 1.1rem;
-                    border-radius: 9999px;
-                    background: #ffffff;
-                    border: 1px solid #cbd5e1;
-                    font-size: 0.75rem;
-                    font-weight: 700;
-                    letter-spacing: 0.12em;
-                    text-transform: uppercase;
-                    color: #001736;
-                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-                }
-
-                .hero-title {
-                    font-size: 3rem;
-                    font-weight: 800;
-                    line-height: 1.15;
-                    letter-spacing: -0.03em;
-                    margin-bottom: 1rem;
-                    color: #001736;
-                }
-
-                .hero-subtitle {
-                    font-size: 1.1rem;
-                    color: #64748b;
-                    max-width: 44rem;
-                    margin: 0 auto 1.75rem;
-                    line-height: 1.6;
-                    font-weight: 500;
-                }
-
-                .profile-btn {
-                    padding: 0.6rem 1.25rem;
-                    background: #001736;
-                    color: #ffffff;
-                    border-radius: 12px;
-                    font-weight: 700;
-                    font-size: 0.88rem;
-                    text-decoration: none;
-                    display: flex;
-                    align-items: center;
-                    gap: 0.5rem;
-                    transition: all 0.3s ease;
-                    box-shadow: 0 4px 10px rgba(0, 23, 54, 0.15);
-                }
-
-                .profile-btn:hover {
-                    transform: translateY(-2px);
-                    background: #0f2b5c;
-                    box-shadow: 0 10px 18px rgba(0, 23, 54, 0.2);
-                }
-
-                .search-shell {
-                    max-width: 56rem;
-                    margin: 0 auto;
-                    background: rgba(255, 255, 255, 0.9);
-                    backdrop-filter: blur(20px);
-                    border: 1px solid #cbd5e1;
-                    border-radius: 20px;
-                    box-shadow: 0 15px 30px -10px rgba(15, 23, 42, 0.1);
-                    padding: 0.4rem;
-                }
-
-                .search-row {
-                    display: flex;
-                    flex-wrap: wrap;
-                    align-items: center;
-                    gap: 0.25rem;
-                }
-
-                .search-field {
-                    flex: 1;
-                    display: flex;
-                    align-items: center;
-                    gap: 0.75rem;
-                    padding: 0.6rem 1rem;
-                    background: white;
-                    border-radius: 14px;
-                    margin: 0.25rem;
-                }
-
-                .search-field input {
-                    width: 100%;
-                    border: none;
-                    outline: none;
-                    font-size: 1rem;
-                    font-family: inherit;
-                    color: #001736;
-                    font-weight: 500;
-                }
-
-                .search-divider {
-                    width: 1px;
-                    height: 2rem;
-                    background: #cbd5e1;
-                    margin: 0 0.5rem;
-                }
-
-                .section {
-                    max-width: 72rem;
-                    margin: 0 auto;
-                    padding: 3rem 1.5rem;
-                }
-
-                .job-list {
-                    display: grid;
-                    gap: 1.5rem;
-                }
-
-                .job-card {
-                    background: #ffffff;
-                    border: 1px solid #e2e8f0;
-                    border-radius: 1.25rem;
-                    padding: 1.5rem 1.75rem;
-                    display: flex;
-                    align-items: center;
-                    gap: 1.75rem;
-                    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-                    box-shadow: 0 4px 15px rgba(0, 23, 54, 0.03);
-                }
-
-                .job-card:hover {
-                    border-color: #cbd5e1;
-                    box-shadow: 0 16px 35px rgba(0, 23, 54, 0.09);
-                    transform: translateY(-4px);
-                }
-
-                .job-logo {
-                    width: 5.5rem;
-                    height: 5.5rem;
-                    border-radius: 1rem;
-                    background: #001736;
-                    border: 1px solid #e2e8f0;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 1.75rem;
-                    font-weight: 800;
-                    color: #ffffff;
-                    flex-shrink: 0;
-                    overflow: hidden;
-                    box-shadow: 0 6px 12px rgba(0, 23, 54, 0.1);
-                }
-
-                .job-logo img {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                }
-
-                .job-info {
-                    flex: 1;
-                }
-
-                .job-title {
-                    font-size: 1.35rem;
-                    font-weight: 800;
-                    margin-bottom: 0.4rem;
-                    color: #001736;
-                    letter-spacing: -0.02em;
-                }
-
-                .job-meta {
-                    display: flex;
-                    flex-wrap: wrap;
-                    gap: 1.25rem;
-                    font-size: 0.88rem;
-                    color: #64748b;
-                    font-weight: 600;
-                    margin-bottom: 0.6rem;
-                }
-
-                .job-tags {
-                    display: flex;
-                    flex-wrap: wrap;
-                    gap: 0.4rem;
-                }
-
-                .job-badge {
-                    padding: 0.3rem 0.75rem;
-                    border-radius: 9999px;
-                    font-size: 0.7rem;
-                    font-weight: 700;
-                    text-transform: uppercase;
-                    letter-spacing: 0.08em;
-                    background: #f1f5f9;
-                    color: #001736;
-                    border: 1px solid #cbd5e1;
-                }
-
-                .job-right {
-                    text-align: right;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 0.75rem;
-                    align-items: flex-end;
-                    flex-shrink: 0;
-                }
-
-                .job-salary {
-                    font-size: 1.4rem;
-                    font-weight: 800;
-                    color: #001736;
-                    letter-spacing: -0.02em;
-                }
-
-                .job-action {
-                    padding: 0.8rem 1.8rem;
-                    background: #001736;
-                    color: #ffffff;
-                    border-radius: 0.75rem;
-                    border: none;
-                    font-weight: 700;
-                    font-size: 0.95rem;
-                    cursor: pointer;
-                    transition: all 0.2s ease;
-                    box-shadow: 0 4px 10px rgba(0, 23, 54, 0.15);
-                }
-
-                .job-action:hover {
-                    background: #0f2b5c;
-                    transform: translateY(-2px);
-                    box-shadow: 0 8px 18px rgba(0, 23, 54, 0.25);
-                }
-
-                .loading-shell {
-                    padding: 6rem 0;
-                    text-align: center;
-                    color: #64748b;
-                }
-
-                @media (max-width: 768px) {
-                    .hero { padding: 3rem 1.25rem; }
-                    .hero-title { font-size: 2.25rem; margin-bottom: 1rem; }
-                    .hero-subtitle { font-size: 1rem; margin-bottom: 1.5rem; }
-                    .hero-top { flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; }
-                    .hero-badge, .profile-btn { width: 100%; justify-content: center; }
+            {/* Split Explorer View */}
+            <div className={styles.splitLayout}>
+                {/* Left Column: Filter Controls */}
+                <div className={styles.filterPane}>
+                    <h3 className={styles.filterPaneTitle}>🔍 Filter Admissions</h3>
                     
-                    .search-shell { background: transparent; border: none; box-shadow: none; padding: 0; }
-                    .search-field { margin: 0 0 0.5rem 0; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-                    .search-divider { display: none; }
-                    
-                    .job-card { flex-direction: column; align-items: flex-start; text-align: left; padding: 1.5rem; }
-                    .job-right { align-items: flex-start; text-align: left; width: 100%; border-top: 1px solid #e2e8f0; padding-top: 1rem; }
-                }
-
-                .benefits-section {
-                    background: #f8fafc;
-                    border-bottom: 1px solid #e2e8f0;
-                    padding: 3rem 1.5rem;
-                }
-                .benefits-header {
-                    text-align: center;
-                    margin-bottom: 2rem;
-                }
-                .benefits-title {
-                    font-size: 2rem;
-                    font-weight: 800;
-                    color: #001736;
-                    margin-bottom: 0.5rem;
-                }
-                .benefits-subtitle {
-                    color: #64748b;
-                    font-size: 1.05rem;
-                }
-                .benefits-grid {
-                    display: grid;
-                    grid-template-columns: 1fr 1fr;
-                    gap: 2rem;
-                    max-width: 72rem;
-                    margin: 0 auto;
-                }
-                @media (max-width: 768px) {
-                    .benefits-grid { grid-template-columns: 1fr; }
-                }
-                .benefits-group {
-                    background: #ffffff;
-                    padding: 2rem;
-                    border-radius: 1.25rem;
-                    border: 1px solid #e2e8f0;
-                    box-shadow: 0 4px 15px rgba(0, 23, 54, 0.02);
-                }
-                .group-title {
-                    font-size: 1.25rem;
-                    font-weight: 800;
-                    color: #001736;
-                    margin-bottom: 1.25rem;
-                    border-bottom: 2px solid #f1f5f9;
-                    padding-bottom: 0.75rem;
-                }
-                .benefits-list {
-                    list-style: none;
-                    padding: 0;
-                    margin: 0;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 0.85rem;
-                }
-                .benefits-list li {
-                    display: flex;
-                    align-items: center;
-                    gap: 0.75rem;
-                    font-size: 0.95rem;
-                    color: #334155;
-                    font-weight: 500;
-                }
-                .benefits-list li::before {
-                    content: "✓";
-                    color: #166534;
-                    font-weight: 800;
-                    font-size: 1.1rem;
-                }
-            `}</style>
-
-            <div className={`page ${spaceGrotesk.className}`}>
-                <header className="hero">
-                    <div className="hero-pattern"></div>
-                    <div className="hero-inner">
-                        <div className="hero-top">
-                            <div className="hero-badge">Shark Edutech Admissions</div>
-                            <Link href="/admissions/dashboard" className="profile-btn">
-                                👤 My Profile
-                            </Link>
-                        </div>
-
-                        <h1 className="hero-title">
-                            Discover Your Future in <br />
-                            <span style={{ color: "#94a3b8" }}>Luxury Hospitality</span>
-                        </h1>
-                        <p className="hero-subtitle">
-                            Explore world-class courses from top hospitality colleges. Start your journey toward global excellence today.
-                        </p>
-
-                        <div className="search-shell">
-                            <div className="search-row">
-                                <div className="search-field">
-                                    <span style={{ color: "#94a3b8" }}>Search</span>
-                                    <input
-                                        placeholder="Course title or college name..."
-                                        value={searchTerm}
-                                        onChange={(e) => setSearchTerm(e.target.value)}
-                                    />
-                                </div>
-                                <div className="search-divider"></div>
-                                <div className="search-field">
-                                    <span style={{ color: "#94a3b8" }}>Location</span>
-                                    <input
-                                        placeholder="City or state..."
-                                        value={locationTerm}
-                                        onChange={(e) => setLocationTerm(e.target.value)}
-                                    />
-                                </div>
-                            </div>
-                        </div>
+                    <div className={styles.filterGroup}>
+                        <label className={styles.filterLabel}>College or Course Name</label>
+                        <input 
+                            type="text" 
+                            placeholder="e.g. B.Sc. Hotel Management, IHM"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className={styles.filterInput}
+                        />
                     </div>
-                </header>
 
-                <section className="benefits-section">
-                    <div className="benefits-header">
-                        <h2 className="benefits-title">Why Choose Shark Edutech Admissions?</h2>
-                        <p className="benefits-subtitle">We don't just provide admission; we build lifetime hospitality careers.</p>
+                    <div className={styles.filterGroup}>
+                        <label className={styles.filterLabel}>City / Location</label>
+                        <input 
+                            type="text" 
+                            placeholder="e.g. Kolkata, Delhi, Bengaluru"
+                            value={locationTerm}
+                            onChange={(e) => setLocationTerm(e.target.value)}
+                            className={styles.filterInput}
+                        />
                     </div>
-                    
-                    <div className="benefits-grid">
-                        <div className="benefits-group">
-                            <h3 className="group-title">Premium Facilities & Training</h3>
-                            <ul className="benefits-list">
-                                <li>Well-equipped Training Kitchen & Bakery</li>
-                                <li>Housekeeping & Front Office Practice Labs</li>
-                                <li>Grooming & personality development sessions</li>
-                                <li>Industry visits, workshops & seminars</li>
-                                <li>Internship & placement support through SHARK lifetime</li>
-                                <li>Education Loan at 0% interest support</li>
-                                <li>Health insurance across leading hospitals in India</li>
-                            </ul>
-                        </div>
-                        <div className="benefits-group">
-                            <h3 className="group-title">Our Career Achievements</h3>
-                            <ul className="benefits-list">
-                                <li>100% assured placement assistance in 5-star properties</li>
-                                <li>Direct admission into top UGC & NCHMCT recognized colleges</li>
-                                <li>Strong industry collaborations with Taj, Marriott, Hyatt & Oberoi</li>
-                                <li>Industrial Training & Apprenticeship stipends</li>
-                                <li>Positive global recognition from hospitality partners</li>
-                            </ul>
-                        </div>
-                    </div>
-                </section>
 
-                <main className="section">
-                    <div style={{ marginBottom: "2rem" }}>
-                        <h2 style={{ fontSize: "1.75rem", fontWeight: 800, color: "#001736", marginBottom: "0.4rem" }}>
-                            Top Hospitality Colleges &amp; Courses ({filteredCourses.length})
-                        </h2>
-                        <p style={{ color: "#64748b", fontSize: "0.95rem" }}>
-                            Apply to premier institutes with a single unified application directly managed by Admin.
-                        </p>
+                    <div className={styles.filterGroup}>
+                        <label className={styles.filterLabel}>Accreditation &amp; Affiliation</label>
+                        <select 
+                            value={selectedAccreditation}
+                            onChange={(e) => setSelectedAccreditation(e.target.value)}
+                            className={styles.filterSelect}
+                        >
+                            {accreditationFilters.map(a => (
+                                <option key={a} value={a}>{a}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className={styles.filterGroup}>
+                        <label className={styles.filterLabel}>Course Level</label>
+                        <select 
+                            value={selectedLevel}
+                            onChange={(e) => setSelectedLevel(e.target.value)}
+                            className={styles.filterSelect}
+                        >
+                            {courseLevelFilters.map(l => (
+                                <option key={l} value={l}>{l}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <button 
+                        onClick={() => {
+                            setSearchTerm("");
+                            setLocationTerm("");
+                            setSelectedAccreditation("All Accreditations");
+                            setSelectedLevel("All Courses");
+                        }}
+                        className={styles.resetBtn}
+                    >
+                        Reset All Filters
+                    </button>
+                </div>
+
+                {/* Right Column: College Courses Cards List */}
+                <div className={styles.listingsPane}>
+                    <div className={styles.listingsHeader}>
+                        <h2 className={styles.listingsTitle}>Available Hospitality &amp; Hotel Management Programs</h2>
+                        <span className={styles.listingsCount}>{filteredCourses.length} accredited courses found</span>
                     </div>
 
                     {loading ? (
-                        <div className="loading-shell">
-                            <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Fetching latest college admissions...</h2>
+                        <div style={{ padding: '3rem', textAlign: 'center', color: '#64748b' }}>
+                            ⏳ Loading accredited college courses...
+                        </div>
+                    ) : filteredCourses.length === 0 ? (
+                        <div style={{ padding: '3rem', textAlign: 'center', color: '#64748b', background: '#ffffff', borderRadius: '1rem', border: '1px solid #e2e8f0' }}>
+                            No courses match your search criteria. Click <strong>Reset All Filters</strong> to view all programs.
                         </div>
                     ) : (
-                        <div className="job-list">
-                            {filteredCourses.length > 0 ? (
-                                filteredCourses.map((course: any) => {
-                                    const college = colleges.find(c => c.id === course.collegeId) || course.college;
-                                    const collegeName = college?.name || course.collegeName || "Premier Hospitality Institute";
-                                    const location = college?.location || course.location || "India";
-                                    const logo = college?.logoUrl || college?.coverImageUrl || course.logoUrl;
-                                    const feeVal = course.fee ? (typeof course.fee === 'number' ? course.fee.toLocaleString() : course.fee) : "1,85,000";
-                                    const targetCollegeId = college?.id || course.collegeId || "gims-kolkata";
+                        <div className={styles.coursesGrid}>
+                            {filteredCourses.map((course) => {
+                                const college = colleges.find(c => c.id === course.collegeId) || course.college || {};
+                                const collegeName = college.name || course.collegeName || "Accredited Hospitality Institute";
+                                const location = college.city ? `${college.city}, ${college.state}` : (course.location || "Pan India");
 
-                                    return (
-                                        <div key={course.id} className="job-card">
-                                            <div className="job-logo">
-                                                {logo ? (
-                                                    <img src={logo} alt={collegeName} />
-                                                ) : (
-                                                    <span>🎓</span>
-                                                )}
-                                            </div>
-
-                                            <div className="job-info">
-                                                <h3 className="job-title">{course.title}</h3>
-                                                <div className="job-meta">
-                                                    <span style={{ color: "#001736", fontWeight: 800 }}>🏢 {collegeName}</span>
-                                                    <span>📍 {location}</span>
-                                                    <span>🕒 {course.duration || "3 Years"}</span>
-                                                </div>
-                                                <div className="job-tags">
-                                                    <span className="job-badge">{course.level || "Degree"}</span>
-                                                    <span className="job-badge">{course.mode || "Full Time"}</span>
-                                                    {(course.scholarshipAvailable || course.scholarship) && (
-                                                        <span className="job-badge" style={{ background: '#ecfdf5', color: '#047857', borderColor: '#a7f3d0' }}>
-                                                            Scholarship Available
-                                                        </span>
-                                                    )}
-                                                </div>
-                                            </div>
-
-                                            <div className="job-right">
-                                                <div className="job-salary">
-                                                    ₹{feeVal}
-                                                    <span style={{ fontSize: '0.8rem', color: '#64748b', marginLeft: '0.5rem', fontWeight: 600 }}>
-                                                        Total Fee
-                                                    </span>
-                                                </div>
-                                                <button
-                                                    className="job-action"
-                                                    onClick={() => router.push(`/admissions/colleges/${targetCollegeId}#apply`)}
-                                                >
-                                                    Apply with One Click →
-                                                </button>
+                                return (
+                                    <div key={course.id} className={styles.courseCard}>
+                                        <div className={styles.cardHeaderRow}>
+                                            <div>
+                                                <span className={styles.accreditationBadge}>
+                                                    {college.accreditation || "UGC & NCHMCT Recognized"}
+                                                </span>
+                                                <h3 className={styles.courseTitle}>{course.title}</h3>
+                                                <div className={styles.collegeNameText}>🎓 {collegeName}</div>
                                             </div>
                                         </div>
-                                    );
-                                })
-                            ) : (
-                                <div style={{ textAlign: 'center', padding: '4rem', color: '#64748b' }}>
-                                    No college courses found matching your criteria.
-                                </div>
-                            )}
+
+                                        <div className={styles.cardMetaRow}>
+                                            <span>📍 {location}</span>
+                                            <span>⏱️ {course.duration || '3 Years'}</span>
+                                            <span>💰 {course.fee ? `₹${Number(course.fee).toLocaleString()} Total` : 'Stipend / Loan Available'}</span>
+                                        </div>
+
+                                        <p className={styles.courseDesc}>
+                                            {course.description || "Comprehensive degree/diploma program covering Front Office, F&B Service, Food Production, Housekeeping, and 5-Star Hotel Internship."}
+                                        </p>
+
+                                        <div className={styles.cardPerksRow}>
+                                            <span>🍳 Training Kitchen Lab</span>
+                                            <span>💳 0% Interest Loan</span>
+                                            <span>⭐ 100% Placement Support</span>
+                                        </div>
+
+                                        <div className={styles.cardFooterRow}>
+                                            <Link href={`/admissions/colleges/${college.id || course.collegeId || '1'}`} className={styles.viewDetailBtn}>
+                                                View College Details &amp; Apply ↗
+                                            </Link>
+                                        </div>
+                                    </div>
+                                );
+                            })}
                         </div>
                     )}
-                </main>
+                </div>
             </div>
-        </>
+        </div>
     );
 }

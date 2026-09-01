@@ -175,8 +175,6 @@ const categories = [
 ];
 
 export function BrowseCategories() {
-    const [showToast, setShowToast] = useState(true);
-
     const scrollToTop = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
@@ -204,26 +202,6 @@ export function BrowseCategories() {
                     ))}
                 </div>
             </div>
-
-            {/* Floating Toast Notification */}
-            {showToast && (
-                <div className={styles.toast}>
-                    <div className={styles.toastIcon}>🏢</div>
-                    <div>
-                        <div className={styles.toastTitle}>New Employer &bull; Verified</div>
-                        <div className={styles.toastDesc}>
-                            5+ verified luxury hotels just registered their hiring profiles.
-                        </div>
-                    </div>
-                    <button 
-                        onClick={() => setShowToast(false)} 
-                        className={styles.toastClose}
-                        aria-label="Close notification"
-                    >
-                        ✕
-                    </button>
-                </div>
-            )}
 
             {/* Floating Action Buttons */}
             <div className={styles.fabGroup}>

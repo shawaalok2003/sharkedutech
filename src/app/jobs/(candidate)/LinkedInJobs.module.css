@@ -582,21 +582,89 @@
     margin: 1.25rem 0 0.5rem 0;
 }
 
+/* Mobile Full-Screen Dedicated Job View Sheet */
+.mobileDetailOverlay {
+    display: none;
+}
+
 @media (max-width: 1024px) {
     .splitLayout {
         grid-template-columns: 1fr;
     }
     .jobDetailPane {
-        position: static;
-        max-height: none;
+        display: none; /* Hidden on mobile split view */
     }
     .searchGrid {
         grid-template-columns: 1fr 1fr;
     }
+
+    /* Mobile Dedicated Full Sheet Modal */
+    .mobileDetailOverlay {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: #ffffff;
+        overflow-y: auto;
+        animation: slideUp 0.25s ease-out;
+    }
+
+    .mobileDetailHeaderBar {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: #ffffff;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 0.85rem 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .mobileBackBtn {
+        background: #f1f5f9;
+        color: #0f172a;
+        border: 1px solid #cbd5e1;
+        padding: 0.45rem 1rem;
+        border-radius: 999px;
+        font-size: 0.875rem;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .mobileDetailContent {
+        padding: 1.25rem 1rem 5rem 1rem;
+    }
+
+    .mobileFixedFooter {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #ffffff;
+        border-top: 1px solid #e2e8f0;
+        padding: 0.85rem 1rem;
+        display: flex;
+        gap: 0.75rem;
+        z-index: 100;
+        box-shadow: 0 -4px 15px rgba(0,0,0,0.08);
+    }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
 }
 
 @media (max-width: 600px) {
     .searchGrid {
         grid-template-columns: 1fr;
+    }
+    .container {
+        padding: 1rem 0.85rem;
     }
 }

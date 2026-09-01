@@ -162,6 +162,7 @@ function JobsContent() {
 
     const [jobs, setJobs] = useState<Job[]>(() => globalJobsCache || REAL_HOTEL_JOBS);
     const [selectedJob, setSelectedJob] = useState<Job | null>(() => (globalJobsCache && globalJobsCache.length > 0) ? globalJobsCache[0] : REAL_HOTEL_JOBS[0]);
+    const [showMobileDetail, setShowMobileDetail] = useState(false);
 
     // Saved Jobs State (Persisted in localStorage)
     const [savedJobIds, setSavedJobIds] = useState<string[]>([]);
@@ -303,6 +304,11 @@ function JobsContent() {
     const activeReqs = (activeJob?.requirements || activeJob?.description || "").toLowerCase();
     const candidateSkillsList = candidateSkills.split(',').map(s => s.trim()).filter(Boolean);
     const matchedSkills = candidateSkillsList.filter(s => activeReqs.includes(s.toLowerCase()));
+
+    const handleSelectJob = (job: Job) => {
+        setSelectedJob(job);
+        setShowMobileDetail(true);
+    };
 
     return (
         <div className={styles.container}>
@@ -448,7 +454,7 @@ function JobsContent() {
                                 return (
                                     <div 
                                         key={job.id} 
-                                        onClick={() => setSelectedJob(job)}
+                                        onClick={() => handleSelectJob(job)}
                                         className={`${styles.jobCardItem} ${isSelected ? styles.jobCardActive : ''}`}
                                     >
                                         <img 
@@ -481,7 +487,7 @@ function JobsContent() {
                     </div>
                 </div>
 
-                {/* Right Column: LinkedIn-Style Comprehensive Job Detail Pane */}
+                {/* Right Column: LinkedIn-Style Desktop Job Detail Pane */}
                 {activeJob && (
                     <div className={styles.jobDetailPane}>
                         <div className={styles.detailHeader}>
@@ -592,6 +598,103 @@ function JobsContent() {
                     </div>
                 )}
             </div>
+
+            {/* Dedicated Mobile Full Page Sheet Overlay */}
+            {showMobileDetail && activeJob && (
+                <div className={styles.mobileDetailOverlay}>
+                    {/* Mobile Header Bar */}
+                    <div className={styles.mobileDetailHeaderBar}>
+                        <button onClick={() => setShowMobileDetail(false)} className={styles.mobileBackBtn}>
+                            &larr; Back to Jobs List
+                        </button>
+                        <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#2563eb' }}>
+                            Job Overview
+                        </span>
+                    </div>
+
+                    <div className={styles.mobileDetailContent}>
+                        <div className={styles.detailHeader}>
+                            <img 
+                                src={activeJob.posterUrl || "/images/shark_edu_tech_logo-removebg-preview.png"} 
+                                alt={activeJob.companyName || activeJob.employer?.name} 
+                                className={styles.detailLogo}
+                                onError={(e) => {
+                                    (e.target as HTMLImageElement).src = "/images/shark_edu_tech_logo-removebg-preview.png";
+                                }}
+                            />
+                            <div>
+                                <h1 className={styles.detailTitle}>{activeJob.title}</h1>
+                                <div className={styles.detailCompany}>
+                                    {activeJob.companyName || activeJob.employer?.name || "Luxury Hotel Partner"} ☑️
+                                </div>
+                                <div className={styles.detailLocation}>
+                                    <span>📍 {activeJob.location}</span>
+                                    <span>&bull; Reposted recently</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Badges Row */}
+                        <div className={styles.detailBadgesRow}>
+                            <span className={styles.typeBadge}>💼 {activeJob.type || 'Full-time'}</span>
+                            <span className={styles.categoryBadge}>🏷️ {activeJob.category}</span>
+                        </div>
+
+                        {/* Skill Match Card */}
+                        <div className={styles.matchCard}>
+                            <div style={{ flex: 1 }}>
+                                <div className={styles.matchHeader}>
+                                    <div className={styles.matchTitle}>
+                                        ✨ Skill Match ({matchedSkills.length} matched)
+                                    </div>
+                                    <button 
+                                        onClick={() => setShowMatchDetails(!showMatchDetails)}
+                                        className={styles.matchBtn}
+                                    >
+                                        {showMatchDetails ? 'Hide' : 'Details'}
+                                    </button>
+                                </div>
+                                <div style={{ fontSize: '0.8rem', color: '#64748b' }}>
+                                    Skills matched: {matchedSkills.length > 0 ? matchedSkills.join(', ') : 'None matched yet'}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* About the Job */}
+                        <div className={styles.descriptionSection}>
+                            <h3 className={styles.sectionHeading}>About the job</h3>
+                            <div style={{ whiteSpace: 'pre-line' }}>{activeJob.description}</div>
+
+                            {activeJob.requirements && (
+                                <>
+                                    <h3 className={styles.sectionHeading}>Key Responsibilities &amp; Requirements</h3>
+                                    <div style={{ whiteSpace: 'pre-line' }}>{activeJob.requirements}</div>
+                                </>
+                            )}
+
+                            <h3 className={styles.sectionHeading}>Benefits &amp; Perks</h3>
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginTop: '0.5rem' }}>
+                                <span style={{ background: '#f1f5f9', padding: '0.4rem 0.8rem', borderRadius: '6px', fontSize: '0.85rem' }}>🏨 Duty Meals</span>
+                                <span style={{ background: '#f1f5f9', padding: '0.4rem 0.8rem', borderRadius: '6px', fontSize: '0.85rem' }}>🏥 Health Insurance</span>
+                                <span style={{ background: '#f1f5f9', padding: '0.4rem 0.8rem', borderRadius: '6px', fontSize: '0.85rem' }}>✈️ Relocation Support</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Mobile Fixed CTA Footer */}
+                    <div className={styles.mobileFixedFooter}>
+                        <Link href={`/jobs/apply/${activeJob.id}`} className={styles.applyBtn} style={{ flex: 1, justifyCenter: 'center', textAlign: 'center' }}>
+                            Apply Now ↗
+                        </Link>
+                        <button 
+                            onClick={() => toggleSaveJob(activeJob.id)}
+                            className={`${styles.saveBtn} ${savedJobIds.includes(activeJob.id) ? styles.savedBtnActive : ''}`}
+                        >
+                            {savedJobIds.includes(activeJob.id) ? 'Saved ✓' : 'Save'}
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
