@@ -355,3 +355,285 @@ export async function sendAdminInviteEmail(
         return false;
     }
 }
+
+interface ConsentSubmissionEmailParams {
+    candidateName: string;
+    candidateEmail: string;
+    candidatePhone: string;
+    qualification: string;
+    amountPaid?: string | null;
+    receiptNumber?: string | null;
+    referenceCode: string;
+}
+
+export async function sendConsentFormSubmissionEmail(params: ConsentSubmissionEmailParams): Promise<boolean> {
+    try {
+        const transporter = getTransporter();
+        const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
+        const pdfUrl = `${baseUrl}/Candidate_Consent_Form.pdf`;
+
+        await transporter.sendMail({
+            from: getFromAddress(),
+            to: params.candidateEmail,
+            subject: `📄 Registration & Consent Form Received [${params.referenceCode}] — Shark Edutech`,
+            html: `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="utf-8" />
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                    <style>
+                        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f1f5f9; margin: 0; padding: 0; color: #1e293b; }
+                        .container { max-width: 620px; margin: 25px auto; background: #ffffff; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 33, 71, 0.08); border: 1px solid #e2e8f0; }
+                        .header { background: linear-gradient(135deg, #002147 0%, #001229 100%); padding: 32px 24px; text-align: center; }
+                        .brand-title { color: #ffffff; font-size: 24px; font-weight: 900; letter-spacing: 1.5px; margin: 0; text-transform: uppercase; }
+                        .brand-sub { color: #ffd700; font-size: 13px; font-weight: 700; margin-top: 6px; letter-spacing: 1px; text-transform: uppercase; }
+                        .badge { display: inline-block; background: #002147; color: #ffd700; border: 1px solid #ffd700; padding: 6px 14px; border-radius: 20px; font-weight: 800; font-size: 13px; margin-top: 15px; }
+                        .content { padding: 32px 28px; line-height: 1.65; }
+                        .greeting { font-size: 18px; font-weight: 700; color: #002147; margin-top: 0; }
+                        .info-table { width: 100%; border-collapse: collapse; margin: 20px 0; background: #f8fafc; border-radius: 10px; overflow: hidden; border: 1px solid #e2e8f0; }
+                        .info-table td { padding: 12px 16px; font-size: 14px; border-bottom: 1px solid #e2e8f0; }
+                        .info-table td.label { font-weight: 700; color: #475569; width: 38%; }
+                        .info-table td.value { color: #0f172a; font-weight: 600; }
+                        .guarantee-box { background: #f0fdf4; border: 1px solid #86efac; border-left: 5px solid #16a34a; border-radius: 8px; padding: 16px 18px; margin: 22px 0; }
+                        .guarantee-title { color: #15803d; font-weight: 800; font-size: 14px; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+                        .guarantee-text { font-size: 13px; color: #166534; margin: 0; line-height: 1.5; }
+                        .policy-box { background: #eff6ff; border: 1px solid #bfdbfe; border-left: 5px solid #2563eb; border-radius: 8px; padding: 16px 18px; margin: 20px 0; }
+                        .policy-title { color: #1d4ed8; font-weight: 800; font-size: 14px; margin-bottom: 4px; }
+                        .policy-text { font-size: 13px; color: #1e40af; margin: 0; line-height: 1.5; }
+                        .btn { display: inline-block; background: linear-gradient(135deg, #002147 0%, #003875 100%); color: #ffffff !important; text-decoration: none; padding: 13px 28px; border-radius: 8px; font-weight: 800; font-size: 14px; box-shadow: 0 4px 12px rgba(0, 33, 71, 0.25); text-align: center; }
+                        .footer { background: #f8fafc; border-top: 1px solid #e2e8f0; padding: 22px; text-align: center; font-size: 12px; color: #64748b; line-height: 1.6; }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <div class="header">
+                            <div class="brand-title">SHARK EDUTECH</div>
+                            <div class="brand-sub">Hospitality Education & Placement Services</div>
+                            <div class="badge">Reference ID: ${params.referenceCode}</div>
+                        </div>
+                        <div class="content">
+                            <p class="greeting">Dear ${params.candidateName},</p>
+                            <p>Thank you for submitting your official <strong>Candidate Registration &amp; Consent Form</strong> with Shark Edutech. Your submission has been successfully recorded in our central placement portal.</p>
+                            
+                            <table class="info-table">
+                                <tr>
+                                    <td class="label">Reference Number:</td>
+                                    <td class="value">${params.referenceCode}</td>
+                                </tr>
+                                <tr>
+                                    <td class="label">Candidate Name:</td>
+                                    <td class="value">${params.candidateName}</td>
+                                </tr>
+                                <tr>
+                                    <td class="label">Qualification:</td>
+                                    <td class="value">${params.qualification || 'As per submission'}</td>
+                                </tr>
+                                <tr>
+                                    <td class="label">Registered Phone:</td>
+                                    <td class="value">${params.candidatePhone}</td>
+                                </tr>
+                                ${params.amountPaid ? `
+                                <tr>
+                                    <td class="label">Registration Fee Paid:</td>
+                                    <td class="value">₹${params.amountPaid}</td>
+                                </tr>` : ''}
+                                ${params.receiptNumber ? `
+                                <tr>
+                                    <td class="label">Receipt / Transaction ID:</td>
+                                    <td class="value">${params.receiptNumber}</td>
+                                </tr>` : ''}
+                                <tr>
+                                    <td class="label">Status:</td>
+                                    <td class="value" style="color: #b45309; font-weight: 800;">Pending Verification</td>
+                                </tr>
+                            </table>
+
+                            <div class="guarantee-box">
+                                <div class="guarantee-title">🛡️ 100% Refund Guarantee (Clause 4 &amp; 5)</div>
+                                <p class="guarantee-text">
+                                    If Shark Edutech is unable to schedule a valid placement interview within <strong>3 months</strong> from your registration date, 100% of the registration fee will be refunded back to you upon your formal request.
+                                </p>
+                            </div>
+
+                            <div class="policy-box">
+                                <div class="policy-title">📌 Training &amp; Readiness Commitment (Clause 7)</div>
+                                <p class="policy-text">
+                                    Candidates are required to attend mandatory grooming, behavioral readiness, and interview preparation sessions assigned by Shark Edutech mentors to maximize interview selection rates at luxury properties.
+                                </p>
+                            </div>
+
+                            <p style="font-weight: 600; color: #002147; margin-top: 25px;">What happens next?</p>
+                            <ol style="padding-left: 20px; font-size: 14px; color: #334155; line-height: 1.7;">
+                                <li>Our placement verification team is reviewing your profile and submitted credentials.</li>
+                                <li>Once verified, your profile will be matched with our 4-Star & 5-Star luxury hospitality partners.</li>
+                                <li>You will receive an official approval email and our team will contact you for interview alignment.</li>
+                            </ol>
+
+                            <div style="text-align: center; margin: 30px 0 15px;">
+                                <a href="${pdfUrl}" target="_blank" class="btn">
+                                    📄 Download Official Consent Form (PDF)
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="footer">
+                            <p style="margin: 0 0 6px;"><strong>Shark International Edutech Pvt. Ltd.</strong></p>
+                            <p style="margin: 0 0 6px;">Assam / Kolkata / Bengaluru / Mumbai / Delhi</p>
+                            <p style="margin: 0;">Support: <a href="mailto:sharkedutechinternational@gmail.com" style="color: #002147; font-weight: 600;">sharkedutechinternational@gmail.com</a> | <a href="https://www.sharkedutech.com" style="color: #002147; font-weight: 600;">www.sharkedutech.com</a></p>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `
+        });
+        console.log(`✅ Candidate consent form confirmation email sent to ${params.candidateEmail}`);
+        return true;
+    } catch (e) {
+        console.error("❌ Candidate consent form submission email error:", e);
+        return false;
+    }
+}
+
+interface ConsentStatusEmailParams {
+    candidateName: string;
+    candidateEmail: string;
+    referenceCode: string;
+    status: 'Approved' | 'Conditional (Training Req.)' | 'Pending';
+    adminRemarks?: string | null;
+}
+
+export async function sendConsentFormStatusEmail(params: ConsentStatusEmailParams): Promise<boolean> {
+    try {
+        const transporter = getTransporter();
+        const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
+
+        const isApproved = params.status === 'Approved';
+        const isConditional = params.status === 'Conditional (Training Req.)';
+
+        const subject = isApproved
+            ? `🎉 Congratulations! Your Candidate Consent & Registration is APPROVED [${params.referenceCode}] — Shark Edutech`
+            : isConditional
+            ? `📋 Action Notice: Conditional Registration & Training Required [${params.referenceCode}] — Shark Edutech`
+            : `ℹ️ Status Update for Candidate Registration [${params.referenceCode}] — Shark Edutech`;
+
+        const statusBadgeBg = isApproved ? '#dcfce7' : isConditional ? '#dbeafe' : '#fef3c7';
+        const statusBadgeColor = isApproved ? '#15803d' : isConditional ? '#1d4ed8' : '#b45309';
+        const statusBadgeBorder = isApproved ? '#86efac' : isConditional ? '#93c5fd' : '#fde68a';
+
+        const bodyContent = isApproved ? `
+            <div style="background: #f0fdf4; border: 1px solid #86efac; border-radius: 10px; padding: 20px; margin: 20px 0;">
+                <h3 style="color: #166534; margin: 0 0 8px; font-size: 16px;">🌟 Your Profile Has Been Verified &amp; Approved!</h3>
+                <p style="color: #15803d; font-size: 14px; margin: 0; line-height: 1.6;">
+                    We are pleased to inform you that your registration and consent documentation have met all eligibility criteria. Your candidate file has been cleared for luxury hospitality job allocations.
+                </p>
+            </div>
+
+            <p style="font-size: 14px; color: #1e293b; line-height: 1.65;">
+                Our corporate recruitment relations desk will now actively pitch your profile to our network of premier 4-Star & 5-Star partner properties across India (including Marriott, Taj, Hyatt, Radisson, Lemon Tree, and Fairfield).
+            </p>
+
+            <div style="background: #f8fafc; border-radius: 8px; padding: 16px; border: 1px solid #e2e8f0; margin: 20px 0;">
+                <p style="margin: 0 0 6px; font-weight: 700; color: #002147; font-size: 14px;">Next Immediate Steps:</p>
+                <ul style="margin: 0; padding-left: 20px; font-size: 13.5px; color: #475569; line-height: 1.7;">
+                    <li>Keep your registered phone and WhatsApp active for incoming interview calls.</li>
+                    <li>Ensure your professional CV and grooming comply with five-star hotel standards.</li>
+                    <li>Check your inbox regularly for scheduled interview invites and venue/video link details.</li>
+                </ul>
+            </div>
+        ` : isConditional ? `
+            <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; padding: 20px; margin: 20px 0;">
+                <h3 style="color: #1e40af; margin: 0 0 8px; font-size: 16px;">📋 Conditional Status: Skill Enhancement / Grooming Training Required</h3>
+                <p style="color: #1d4ed8; font-size: 14px; margin: 0; line-height: 1.6;">
+                    Your registration has been accepted conditionally under Clause 7 of the Candidate Agreement. Prior to luxury hotel interviews, participation in designated grooming and communication enhancement modules is mandatory.
+                </p>
+            </div>
+
+            <p style="font-size: 14px; color: #1e293b; line-height: 1.65;">
+                This short-term preparatory phase ensures you possess the required presentation and technical acumen demanded by top hospitality recruiters, substantially increasing your selection probability.
+            </p>
+
+            <div style="background: #f8fafc; border-radius: 8px; padding: 16px; border: 1px solid #e2e8f0; margin: 20px 0;">
+                <p style="margin: 0 0 6px; font-weight: 700; color: #002147; font-size: 14px;">Training Alignment:</p>
+                <p style="margin: 0; font-size: 13.5px; color: #475569; line-height: 1.6;">
+                    Our training coordinator will reach out to you within 24-48 business hours with your orientation schedule and curriculum overview.
+                </p>
+            </div>
+        ` : `
+            <p style="font-size: 14px; color: #1e293b; line-height: 1.65;">
+                Your Candidate Registration &amp; Consent Form is currently under review by our operations team. We will notify you as soon as the evaluation is finalized.
+            </p>
+        `;
+
+        await transporter.sendMail({
+            from: getFromAddress(),
+            to: params.candidateEmail,
+            subject,
+            html: `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="utf-8" />
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                    <style>
+                        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f1f5f9; margin: 0; padding: 0; color: #1e293b; }
+                        .container { max-width: 620px; margin: 25px auto; background: #ffffff; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 33, 71, 0.08); border: 1px solid #e2e8f0; }
+                        .header { background: linear-gradient(135deg, #002147 0%, #001229 100%); padding: 32px 24px; text-align: center; }
+                        .brand-title { color: #ffffff; font-size: 24px; font-weight: 900; letter-spacing: 1.5px; margin: 0; text-transform: uppercase; }
+                        .brand-sub { color: #ffd700; font-size: 13px; font-weight: 700; margin-top: 6px; letter-spacing: 1px; text-transform: uppercase; }
+                        .content { padding: 32px 28px; line-height: 1.65; }
+                        .greeting { font-size: 18px; font-weight: 700; color: #002147; margin-top: 0; }
+                        .status-pill { display: inline-block; background: ${statusBadgeBg}; color: ${statusBadgeColor}; border: 1px solid ${statusBadgeBorder}; padding: 6px 16px; border-radius: 20px; font-weight: 800; font-size: 14px; margin-bottom: 18px; }
+                        .remarks-box { background: #fffbeb; border: 1px solid #fde68a; border-left: 5px solid #d97706; border-radius: 8px; padding: 14px 18px; margin: 20px 0; }
+                        .footer { background: #f8fafc; border-top: 1px solid #e2e8f0; padding: 22px; text-align: center; font-size: 12px; color: #64748b; line-height: 1.6; }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <div class="header">
+                            <div class="brand-title">SHARK EDUTECH</div>
+                            <div class="brand-sub">Hospitality Education & Placement Services</div>
+                        </div>
+                        <div class="content">
+                            <p class="greeting">Dear ${params.candidateName},</p>
+                            
+                            <p style="margin-bottom: 8px; color: #64748b; font-size: 13px; font-weight: 600;">Application Reference: <strong>${params.referenceCode}</strong></p>
+                            
+                            <div class="status-pill">
+                                Current Status: ${params.status}
+                            </div>
+
+                            ${bodyContent}
+
+                            ${params.adminRemarks ? `
+                                <div class="remarks-box">
+                                    <div style="font-weight: 800; font-size: 13.5px; color: #92400e; margin-bottom: 4px;">📝 Note from Shark Edutech Administration:</div>
+                                    <div style="font-size: 13.5px; color: #78350f; font-weight: 500; white-space: pre-wrap;">${params.adminRemarks}</div>
+                                </div>
+                            ` : ''}
+
+                            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0; text-align: center;">
+                                <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">Need assistance or have questions regarding your application?</p>
+                                <a href="mailto:sharkedutechinternational@gmail.com" style="display: inline-block; background: #002147; color: #ffffff !important; text-decoration: none; padding: 10px 22px; border-radius: 8px; font-weight: 700; font-size: 13px;">
+                                    Contact Placement Support &rarr;
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="footer">
+                            <p style="margin: 0 0 6px;"><strong>Shark International Edutech Pvt. Ltd.</strong></p>
+                            <p style="margin: 0;">Support: <a href="mailto:sharkedutechinternational@gmail.com" style="color: #002147; font-weight: 600;">sharkedutechinternational@gmail.com</a> | <a href="https://www.sharkedutech.com" style="color: #002147; font-weight: 600;">www.sharkedutech.com</a></p>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `
+        });
+        console.log(`✅ Candidate consent form status email (${params.status}) sent to ${params.candidateEmail}`);
+        return true;
+    } catch (e) {
+        console.error("❌ Candidate consent form status email error:", e);
+        return false;
+    }
+}
+

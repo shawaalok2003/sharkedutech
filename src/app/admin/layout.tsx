@@ -13,6 +13,8 @@ const allAdminSidebarItems = [
     { label: "Manage Jobs", href: "/admin/jobs", perm: "manage_jobs" },
     { label: "Job Applications", href: "/admin/applications", perm: "manage_jobs" },
     { label: "Application Approvals", href: "/admin/approvals", perm: "manage_jobs" },
+    { label: "📄 Candidate Consent Forms", href: "/admin/consent-forms", perm: "manage_jobs" },
+    { label: "📺 Live Streams & Videos", href: "/admin/live-videos", perm: null },
     { label: "Manage Colleges & Courses", href: "/admin/colleges", perm: "manage_colleges" },
     { label: "College Inquiries", href: "/admin/college-inquiries", perm: "manage_colleges" },
     { label: "Manage Admissions", href: "/admin/admissions", perm: "manage_admissions" },
@@ -30,7 +32,7 @@ export default function AdminLayout({
 
     const user = session?.user as any;
     const role = user?.role;
-    const isSuper = role === "SUPER_ADMIN";
+    const isSuper = role === "SUPER_ADMIN" || user?.email === "admin@shark.com";
 
     // Auto-refresh session permissions for existing active sessions
     useEffect(() => {
@@ -49,17 +51,20 @@ export default function AdminLayout({
     const activePermStr = user?.adminPermissions || clientPermissions || "";
     const userPerms: string[] = activePermStr ? activePermStr.split(',') : [];
 
+    // Only explicitly invited sub-admins with partial permissions are restricted
+    const isRestrictedSubAdmin = role === "ADMIN" && user?.email !== "admin@shark.com" && Boolean(activePermStr && activePermStr.trim() !== "");
+
     // Filter sidebar navigation items based on assigned sub-admin permissions
     const filteredSidebarItems = allAdminSidebarItems.filter(item => {
-        if (!item.perm) return true; // Overview is accessible
+        if (!item.perm) return true; // Accessible to all
         if (isSuper) return true; // Super admin sees all items
-        if (role === "ADMIN" && !activePermStr) return true; // Safe fallback while loading
+        if (!isRestrictedSubAdmin) return true; // Full admins see all items
         return userPerms.includes(item.perm);
     });
 
     // Check if sub-admin is attempting to open an unpermitted route
     const currentItem = allAdminSidebarItems.find(item => item.href === pathname);
-    const hasPermission = !currentItem || !currentItem.perm || isSuper || !activePermStr || userPerms.includes(currentItem.perm);
+    const hasPermission = !currentItem || !currentItem.perm || isSuper || !isRestrictedSubAdmin || userPerms.includes(currentItem.perm);
 
     return (
         <>

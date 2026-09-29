@@ -17,49 +17,49 @@ const gallerySlides: GallerySlide[] = [
         title: "Four Points by Sheraton - HR Association Meeting",
         location: "Ahmedabad, Gujarat",
         badge: "5-Star Industry MoU",
-        image: "/Ahmedabad/FOUR POINT SHERATON MS. MEGHARANI PADHI (HR ASSOCIATE).jpg"
+        image: "/Ahmedabad/01. Four Point Sheraton - Ms. Mehgarani Padhi (Human Resource Associate).jpg"
     },
     {
         id: 2,
         title: "JW Marriott - Executive Leadership & Placement",
         location: "Goa, India",
         badge: "Luxury Resort Partner",
-        image: "/Goa/JW MARRIOTT GOA MS. RUBY KHAN(DHR) MR. PRIYABRATA DASH (TRAINING MANAGER).jpg"
+        image: "/Goa/03. JW Marriott Goa - Ms. Ruby Khan (Director Human Resources), Mr. Priyabrata Dash (Training Manager).jpg"
     },
     {
         id: 3,
         title: "Renaissance Ahmedabad - Cluster GM Partnership",
         location: "Ahmedabad, Gujarat",
         badge: "Star Hotel Tie-up",
-        image: "/Ahmedabad/RENAISSANCE AHMDABAD MR. ROHIT BAJPAI (CLUSTER GM).jpeg"
+        image: "/Ahmedabad/04. Renaissance Hotel Ahmedabad - Mr. Rohit Bajpai (Multi Property General Manager).jpeg"
     },
     {
         id: 4,
         title: "Courtyard & Fairfield by Marriott - Training & Recruitment",
         location: "Bengaluru, Karnataka",
         badge: "Industrial Training Campus",
-        image: "/Bengalore/COURTYARD BY MARRIOTT & FAIRFIELD BY MARRIOTT BANGALORE OUTER RING ROAD & FAIRFIELD BY MARRIOTT RAJAJINAGAR/MR. SUVEER SODHI (CLUSTER GM) MR. PAUL KINGSLY SAMRAJ (HRM).jpeg"
+        image: "/Bangalore/02. Courtyard & Fairfield by Marriott Bangalore Outer Ring Road & Rajajinagar - Mr. Suveer Sodhi (Cluster GM), Mr. Paul Kingsly Samraj (HRM).jpeg"
     },
     {
         id: 5,
         title: "St. Regis - Global Hospitality Standards",
         location: "Goa, India",
         badge: "Premier Hospitality MoU",
-        image: "/Goa/ST. REGIS GOA MS. MUSKAN SONAKAR (AM L&D).jpg"
+        image: "/Goa/02. St. Regis Goa - Mr. Jagdeep Shetty (Director Human Resources), Ms. Muskan Sonkar (Assistant Manager Learning & Development).jpg"
     },
     {
         id: 6,
         title: "Hilton Chennai - Management Collaboration",
         location: "Chennai, Tamil Nadu",
         badge: "Global Hotel Chain",
-        image: "/Chennai/HILTON CHENNAI MR. VINOD RAMAMURTHY (GM).jpg"
+        image: "/Chennai/04. Hilton Chennai - Mr. Vinod Ramamurthy (General Manager).jpg"
     },
     {
         id: 7,
         title: "Radisson Blu Plaza Airport - F&B Industry Exposure",
         location: "New Delhi",
         badge: "5-Star Extended Campus",
-        image: "/delhi/RADISSON BLU PLAZA DELHI AIRPORT Mr. SHASHANK GOYEL (F&B MANAGER).jpeg"
+        image: "/delhi/03. Radisson Blu Plaza - Mr. Shashank Goyel (Food & Beverage Manager).jpeg"
     }
 ];
 

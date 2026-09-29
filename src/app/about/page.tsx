@@ -392,10 +392,10 @@ export default function AboutPage() {
                                     Message from CEO &amp; Founder
                                 </h2>
                                 <div style={{ position: 'relative' }}>
-                                    <p className={styles.bodyLg} style={{ fontStyle: 'italic', color: '#f8fafc', marginBottom: '1.5rem', fontSize: '1.1rem', lineHeight: '1.75' }}>
+                                    <p style={{ fontStyle: 'italic', color: '#f8fafc', marginBottom: '1.25rem', fontSize: '1.05rem', lineHeight: '1.75' }}>
                                         "Success is not given — it is earned with passion, perseverance, and purpose. At SHARK, we are committed to nurturing globally competent hospitality professionals through practical exposure, disciplined training, and industry-integrated learning."
                                     </p>
-                                    <p className={styles.bodyMd} style={{ color: '#cbd5e1', marginBottom: '2rem', lineHeight: '1.65' }}>
+                                    <p style={{ color: '#cbd5e1', marginBottom: '2rem', fontSize: '1.05rem', lineHeight: '1.75' }}>
                                         We encourage every candidate to dream boldly, work relentlessly, and uphold integrity in every endeavor. Our mission is to shape confident individuals prepared for long-term leadership in the global hospitality arena.
                                     </p>
                                 </div>

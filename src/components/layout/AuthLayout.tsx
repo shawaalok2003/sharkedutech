@@ -19,25 +19,25 @@ const carouselSlides = [
         sub: "India's Premier Dedicated Hospitality Career Platform"
     },
     {
-        url: encodeURI("/Ahmedabad/RENAISSANCE AHMDABAD MR. ROHIT BAJPAI (CLUSTER GM).jpeg"),
+        url: encodeURI("/Ahmedabad/04. Renaissance Hotel Ahmedabad - Mr. Rohit Bajpai (Multi Property General Manager).jpeg"),
         badge: "✨ Top 5-Star Placement",
         title: "Renaissance Marriott Placements",
         sub: "Direct Recruitment & Executive Leadership Hiring"
     },
     {
-        url: encodeURI("/Bengalore/CITRUS CLASSIC HOTEL/MR. ANISH KUMAR RANA (GM).jpeg"),
+        url: encodeURI("/Bangalore/01. Citrus Classic Hotel - Mr. Anish Kumar Rana (GM).jpeg"),
         badge: "🏨 Global Luxury Chains",
         title: "Citrus Classic Hotel Partnerships",
         sub: "Signed Industrial Training in 400+ Star Hotels"
     },
     {
-        url: encodeURI("/Ahmedabad/FOUR POINT SHERATON MS. MEGHARANI PADHI (HR ASSOCIATE).jpg"),
+        url: encodeURI("/Ahmedabad/01. Four Point Sheraton - Ms. Mehgarani Padhi (Human Resource Associate).jpg"),
         badge: "🌟 Professional Growth",
         title: "Four Points by Sheraton",
         sub: "Accelerate Your Hospitality Career Worldwide"
     },
     {
-        url: encodeURI("/Ahmedabad/ITC GARDENIA MR. AKSHAY KAVRA (GM) MR. DHANANJAY KULKARNI (HEAD HR).jpeg"),
+        url: encodeURI("/Ahmedabad/03. ITC Gardenia - Mr. Akshay Kavra (General Manager), Mr. Dhananjay Kulkarni (Head Human Resources).jpeg"),
         badge: "👑 Executive Partnerships",
         title: "ITC Gardenia & Luxury Resorts",
         sub: "Connecting Talent with Top Industry Leaders"

@@ -54,8 +54,9 @@ export function Navbar() {
 
     const getDashboardLink = () => {
         if (!session?.user) return '/';
-        const role = (session.user as any).role;
-        if (role === 'ADMIN') return '/admin';
+        const role = (session.user as any)?.role;
+        const email = session.user?.email;
+        if (role === 'ADMIN' || role === 'SUPER_ADMIN' || email === 'admin@shark.com') return '/admin';
         if (role === 'EMPLOYER') return '/jobs/employer';
         if (role === 'COLLEGE') return '/admissions/college';
         return '/candidate/dashboard';
@@ -96,7 +97,7 @@ export function Navbar() {
                     <Link href="/gallery" className={`${styles.link} ${isActive('/gallery')}`}>
                         <span>Gallery</span>
                     </Link>
-                    {session?.user && (session.user as any).role === 'ADMIN' && (
+                    {session?.user && (((session.user as any).role === 'ADMIN') || ((session.user as any).role === 'SUPER_ADMIN')) && (
                         <>
                             <Link href="/colleges" className={`${styles.link} ${isActive('/colleges')}`}>
                                 <span>Colleges</span>
@@ -187,7 +188,7 @@ export function Navbar() {
                         <Link href="/gallery" className={`${styles.mobileLink} ${isActive('/gallery')}`}>
                             <span>Gallery</span>
                         </Link>
-                        {session?.user && (session.user as any).role === 'ADMIN' && (
+                        {session?.user && (((session.user as any).role === 'ADMIN') || ((session.user as any).role === 'SUPER_ADMIN')) && (
                             <>
                                 <Link href="/colleges" className={`${styles.mobileLink} ${isActive('/colleges')}`}>
                                     <span>Colleges</span>

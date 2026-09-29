@@ -47,5 +47,7 @@ prisma/*.db
 *.zip
 *.tar.gz
 cpanel_deploy*/
+check_vps*.js
+deploy_vps*.js
 
 

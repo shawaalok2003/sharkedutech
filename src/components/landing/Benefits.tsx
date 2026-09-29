@@ -101,7 +101,7 @@ export function Benefits() {
             <div className={styles.container}>
                 <div className={styles.header}>
                     <h2 className={styles.title}>
-                        Why Choose <span className={styles.highlight}>Sharkedutech?</span>
+                        Why Choose <span className={styles.highlight}>Shark Edutech?</span>
                     </h2>
                     <p className={styles.subtitle}>
                         Empowering students, colleges, and employers with a seamless hospitality ecosystem.

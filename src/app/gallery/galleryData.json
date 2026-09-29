@@ -2,104 +2,337 @@
   {
     "city": "Ahmedabad",
     "images": [
-      "/Ahmedabad/FOUR POINT SHERATON MS. MEGHARANI PADHI (HR ASSOCIATE).jpg",
-      "/Ahmedabad/HAYATT REGENCY MR. GUNEET SINGH (DFNB) MR. VISHAL KUMAR YADAV (EXECUTIVE CHEF) MR. JAGANNATHAN R (HRD)..jpg",
-      "/Ahmedabad/HAYATT REGENCY MR. GUNEET SINGH (DFNB) MR. VISHAL KUMAR YADAV (EXECUTIVE CHEF) MR. JAGANNATHAN R (HRD).jpg",
-      "/Ahmedabad/HYATT REGENCY MR. GUNEET SINGH (DFNB) MR. VISHAL KUMAR YADAV (EXECUTIVE CHEF) MR. JAGANNATHAN R (HRD)...jpg",
-      "/Ahmedabad/ITC GARDENIA MR. AKSHAY KAVRA (GM) MR. DHANANJAY KULKARNI (HEAD HR)...jpeg",
-      "/Ahmedabad/ITC GARDENIA MR. AKSHAY KAVRA (GM) MR. DHANANJAY KULKARNI (HEAD HR)..jpeg",
-      "/Ahmedabad/ITC GARDENIA MR. AKSHAY KAVRA (GM) MR. DHANANJAY KULKARNI (HEAD HR).jpeg",
-      "/Ahmedabad/MR.ROHIT BAJPAI (CLUSTER GM)..jpeg",
-      "/Ahmedabad/RADDISON KANDLA MR. NAVEEN DOGRA (GM).jpg",
-      "/Ahmedabad/RENAISSANCE AHMDABAD MR. ROHIT BAJPAI (CLUSTER GM).jpeg"
+      "/Ahmedabad/01. Four Point Sheraton - Ms. Mehgarani Padhi (Human Resource Associate).jpg",
+      "/Ahmedabad/02. Hyatt Regency - Mr. Gurneet Singh (Director Food & Director), Mr. Vishal Kumar Yadav (Executive Chef), Mr. R Jagannathan.jpg",
+      "/Ahmedabad/03. ITC Gardenia - Mr. Akshay Kavra (General Manager), Mr. Dhananjay Kulkarni (Head Human Resources).jpeg",
+      "/Ahmedabad/04. Renaissance Hotel Ahmedabad - Mr. Rohit Bajpai (Multi Property General Manager).jpeg",
+      "/Ahmedabad/05. Radisson Resort & Spa Kandla - Mr. Naveen Dogra.jpg"
+    ],
+    "items": [
+      {
+        "src": "/Ahmedabad/01. Four Point Sheraton - Ms. Mehgarani Padhi (Human Resource Associate).jpg",
+        "hotel": "Four Point Sheraton",
+        "person": "Ms. Mehgarani Padhi",
+        "designation": "Human Resource Associate"
+      },
+      {
+        "src": "/Ahmedabad/02. Hyatt Regency - Mr. Gurneet Singh (Director Food & Director), Mr. Vishal Kumar Yadav (Executive Chef), Mr. R Jagannathan.jpg",
+        "hotel": "Hyatt Regency",
+        "person": "Mr. Gurneet Singh, Mr. Vishal Kumar Yadav, Mr. R Jagannathan",
+        "designation": "Director Food & Director, Executive Chef, HRD"
+      },
+      {
+        "src": "/Ahmedabad/03. ITC Gardenia - Mr. Akshay Kavra (General Manager), Mr. Dhananjay Kulkarni (Head Human Resources).jpeg",
+        "hotel": "ITC Gardenia",
+        "person": "Mr. Akshay Kavra, Mr. Dhananjay Kulkarni",
+        "designation": "General Manager, Head Human Resources"
+      },
+      {
+        "src": "/Ahmedabad/04. Renaissance Hotel Ahmedabad - Mr. Rohit Bajpai (Multi Property General Manager).jpeg",
+        "hotel": "Renaissance Hotel Ahmedabad",
+        "person": "Mr. Rohit Bajpai",
+        "designation": "Multi Property General Manager"
+      },
+      {
+        "src": "/Ahmedabad/05. Radisson Resort & Spa Kandla - Mr. Naveen Dogra.jpg",
+        "hotel": "Radisson Resort & Spa Kandla",
+        "person": "Mr. Naveen Dogra",
+        "designation": "General Manager"
+      }
     ]
   },
   {
-    "city": "Bengalore",
+    "city": "Bangalore",
     "images": [
-      "/Bengalore/CITRUS CLASSIC HOTEL/MR. ANISH KUMAR RANA (GM)..jpeg",
-      "/Bengalore/CITRUS CLASSIC HOTEL/MR. ANISH KUMAR RANA (GM).jpeg",
-      "/Bengalore/COURTYARD BY MARRIOTT & FAIRFIELD BY MARRIOTT BANGALORE OUTER RING ROAD & FAIRFIELD BY MARRIOTT RAJAJINAGAR/MR. SUVEER SODHI (CLUSTER GM) MR. PAUL KINGSLY SAMRAJ (HRM)....jpeg",
-      "/Bengalore/COURTYARD BY MARRIOTT & FAIRFIELD BY MARRIOTT BANGALORE OUTER RING ROAD & FAIRFIELD BY MARRIOTT RAJAJINAGAR/MR. SUVEER SODHI (CLUSTER GM) MR. PAUL KINGSLY SAMRAJ (HRM)...jpeg",
-      "/Bengalore/COURTYARD BY MARRIOTT & FAIRFIELD BY MARRIOTT BANGALORE OUTER RING ROAD & FAIRFIELD BY MARRIOTT RAJAJINAGAR/MR. SUVEER SODHI (CLUSTER GM) MR. PAUL KINGSLY SAMRAJ (HRM)..jpeg",
-      "/Bengalore/COURTYARD BY MARRIOTT & FAIRFIELD BY MARRIOTT BANGALORE OUTER RING ROAD & FAIRFIELD BY MARRIOTT RAJAJINAGAR/MR. SUVEER SODHI (CLUSTER GM) MR. PAUL KINGSLY SAMRAJ (HRM).jpeg",
-      "/Bengalore/FAIRFIELD BY MARRIOTT WHITEFIELD/MS. SUKANYA DUTTA (AHRM) MR. DIP BISWAS (ASSISTANT MANAGER L&D).jpeg",
-      "/Bengalore/FAIRFIELD BY MARRIOTT WHITEFIELD/MS. SUKANYA DUTTA (AHRM).jpeg",
-      "/Bengalore/HOLIDAY INN BANGALORE RACECOURSE/MS. SHIVANI SHARMA (L&D Manager)MR. GANESH B (HRM)..jpeg",
-      "/Bengalore/HOLIDAY INN BANGALORE RACECOURSE/MS. SHIVANI SHARMA (L&D Manager)MR. GANESH B (HRM).jpeg",
-      "/Bengalore/KEYS SELECT BY LEMON TREE HOTEL SINGASANDRA/MR. NAVEEN KUMAR  (GM) MR. SANTOSH(HR)..jpeg",
-      "/Bengalore/KEYS SELECT BY LEMON TREE HOTEL SINGASANDRA/MR. NAVEEN KUMAR (GM) Mr. SANTOSH (HR).jpeg",
-      "/Bengalore/KEYS SELECT BY LEMON TREE HOTELS WHITEFIELD/MR. PARAMESHWARAN M (GM) Mr. ADITYA J (HRE).jpeg",
-      "/Bengalore/LEMON TREE HOTEL ELECTRONIC CITY/MR. KUMAR SAURABH (GM) MR. VINOD KUMAR (DEPUTY HRM).jpeg",
-      "/Bengalore/LEMON TREE HOTEL WHITEFIELD/MR. JOHN RAVI KIRAN (GM) .jpeg",
-      "/Bengalore/PALM MEADOWS RESORT/MR. SUDEEP SHETTY (HEAD OF SALES & MARKETING) MR. MANOHAR P B (HRM)..jpeg",
-      "/Bengalore/PALM MEADOWS RESORT/MR. SUDEEP SHETTY (HEAD OF SALES & MARKETING) MR. MANOHAR P B (HRM).jpeg",
-      "/Bengalore/PRIDE HOTEL/MR. SUJIT KUMAR SINGH (AREA GM) MR. SOURABH DEY (ASSISTANT L&D MANAGE...jpeg",
-      "/Bengalore/PRIDE HOTEL/MR. SUJIT KUMAR SINGH (AREA GM) MR. SOURABH DEY (ASSISTANT L&D MANAGE.jpeg",
-      "/Bengalore/PRIDE HOTEL/MR. SUJIT KUMAR SINGH (AREA GM) MR. SOURABH DEY (ASSISTANT L&D MANAGER).jpeg",
-      "/Bengalore/RADISSON INDIVIDUAL NARASAPURA/MR. SURESH KUMAR (ASSISTANT GM) MR. RAJESH SONAWANE (ADHR).jpeg",
-      "/Bengalore/RADISSON INDIVIDUAL NARASAPURA/MR. SURESH KUMAR (ASSISTANT GM).jpeg"
+      "/Bangalore/01. Citrus Classic Hotel - Mr. Anish Kumar Rana (GM).jpeg",
+      "/Bangalore/02. Courtyard & Fairfield by Marriott Bangalore Outer Ring Road & Rajajinagar - Mr. Suveer Sodhi (Cluster GM), Mr. Paul Kingsly Samraj (HRM).jpeg",
+      "/Bangalore/03. Fairfield by Marriott Whitefield - Ms. Sukanya Dutta (AHRM), Mr. Dip Biswas (Assistant Manager L&D).jpeg",
+      "/Bangalore/04. Holiday Inn Bangalore Racecourse - Ms. Shivani Sharma (L&D Manager), Mr. Ganesh B (HRM).jpeg",
+      "/Bangalore/05. Keys Select by Lemon Tree Hotel Singasandra - Mr. Naveen Kumar (GM), Mr. Santosh (HR).jpeg",
+      "/Bangalore/06. Keys Select by Lemon Tree Hotels Whitefield - Mr. Parameshwaran M (GM), Mr. Aditya J (HRE).jpeg",
+      "/Bangalore/07. Lemon Tree Hotel Electronic City - Mr. Kumar Saurabh (GM), Mr. Vinod Kumar (Deputy HRM).jpeg",
+      "/Bangalore/08. Lemon Tree Hotel Whitefield - Mr. John Ravi Kiran (GM).jpeg",
+      "/Bangalore/09. Palm Meadows Resort - Mr. Sudeep Shetty (Head of Sales & Marketing), Mr. Manohar P B (HRM).jpeg",
+      "/Bangalore/10. Pride Hotel - Mr. Sujit Kumar Singh (Area GM), Mr. Sourabh Dey (Assistant L&D Manager).jpeg",
+      "/Bangalore/11. Radisson Individual Narasapura - Mr. Suresh Kumar (Assistant GM), Mr. Rajesh Sonawane (ADHR).jpeg"
+    ],
+    "items": [
+      {
+        "src": "/Bangalore/01. Citrus Classic Hotel - Mr. Anish Kumar Rana (GM).jpeg",
+        "hotel": "Citrus Classic Hotel",
+        "person": "Mr. Anish Kumar Rana",
+        "designation": "General Manager"
+      },
+      {
+        "src": "/Bangalore/02. Courtyard & Fairfield by Marriott Bangalore Outer Ring Road & Rajajinagar - Mr. Suveer Sodhi (Cluster GM), Mr. Paul Kingsly Samraj (HRM).jpeg",
+        "hotel": "Courtyard & Fairfield by Marriott Bangalore Outer Ring Road & Rajajinagar",
+        "person": "Mr. Suveer Sodhi, Mr. Paul Kingsly Samraj",
+        "designation": "Cluster General Manager, Human Resource Manager"
+      },
+      {
+        "src": "/Bangalore/03. Fairfield by Marriott Whitefield - Ms. Sukanya Dutta (AHRM), Mr. Dip Biswas (Assistant Manager L&D).jpeg",
+        "hotel": "Fairfield by Marriott Whitefield",
+        "person": "Ms. Sukanya Dutta, Mr. Dip Biswas",
+        "designation": "Assistant Human Resource Manager, Assistant Manager L&D"
+      },
+      {
+        "src": "/Bangalore/04. Holiday Inn Bangalore Racecourse - Ms. Shivani Sharma (L&D Manager), Mr. Ganesh B (HRM).jpeg",
+        "hotel": "Holiday Inn Bangalore Racecourse",
+        "person": "Ms. Shivani Sharma, Mr. Ganesh B",
+        "designation": "L&D Manager, Human Resource Manager"
+      },
+      {
+        "src": "/Bangalore/05. Keys Select by Lemon Tree Hotel Singasandra - Mr. Naveen Kumar (GM), Mr. Santosh (HR).jpeg",
+        "hotel": "Keys Select by Lemon Tree Hotel Singasandra",
+        "person": "Mr. Naveen Kumar, Mr. Santosh",
+        "designation": "General Manager, Human Resource"
+      },
+      {
+        "src": "/Bangalore/06. Keys Select by Lemon Tree Hotels Whitefield - Mr. Parameshwaran M (GM), Mr. Aditya J (HRE).jpeg",
+        "hotel": "Keys Select by Lemon Tree Hotels Whitefield",
+        "person": "Mr. Parameshwaran M, Mr. Aditya J",
+        "designation": "General Manager, Human Resource Executive"
+      },
+      {
+        "src": "/Bangalore/07. Lemon Tree Hotel Electronic City - Mr. Kumar Saurabh (GM), Mr. Vinod Kumar (Deputy HRM).jpeg",
+        "hotel": "Lemon Tree Hotel Electronic City",
+        "person": "Mr. Kumar Saurabh, Mr. Vinod Kumar",
+        "designation": "General Manager, Deputy Human Resource Manager"
+      },
+      {
+        "src": "/Bangalore/08. Lemon Tree Hotel Whitefield - Mr. John Ravi Kiran (GM).jpeg",
+        "hotel": "Lemon Tree Hotel Whitefield",
+        "person": "Mr. John Ravi Kiran",
+        "designation": "General Manager"
+      },
+      {
+        "src": "/Bangalore/09. Palm Meadows Resort - Mr. Sudeep Shetty (Head of Sales & Marketing), Mr. Manohar P B (HRM).jpeg",
+        "hotel": "Palm Meadows Resort",
+        "person": "Mr. Sudeep Shetty, Mr. Manohar P B",
+        "designation": "Head of Sales & Marketing, Human Resource Manager"
+      },
+      {
+        "src": "/Bangalore/10. Pride Hotel - Mr. Sujit Kumar Singh (Area GM), Mr. Sourabh Dey (Assistant L&D Manager).jpeg",
+        "hotel": "Pride Hotel",
+        "person": "Mr. Sujit Kumar Singh, Mr. Sourabh Dey",
+        "designation": "Area General Manager, Assistant L&D Manager"
+      },
+      {
+        "src": "/Bangalore/11. Radisson Individual Narasapura - Mr. Suresh Kumar (Assistant GM), Mr. Rajesh Sonawane (ADHR).jpeg",
+        "hotel": "Radisson Individual Narasapura",
+        "person": "Mr. Suresh Kumar, Mr. Rajesh Sonawane",
+        "designation": "Assistant General Manager, Assistant Director HR"
+      }
     ]
   },
   {
     "city": "Chennai",
     "images": [
-      "/Chennai/APOLLO SINDOORI HOTELS OLIVEPLUS CHENNAI MR. MURUGESAN A (DGM HR OPTAL) MR. RAGHUBARAN CHELLAPPA S (SENIOR EXECUTIVE HR OPTAL).jpg",
-      "/Chennai/COURTYARD BY MARRIOTT CHENNAI MR. SATISH G (HRM).jpg",
-      "/Chennai/FOUR POINTS BY SHERATON CHENNAI MR. SUJITH CHANDRASEKHARAN (GM) MR. THAMPURAN S (HR MANAGER).jpg",
-      "/Chennai/HILTON CHENNAI MR. VINOD RAMAMURTHY (GM).jpg",
-      "/Chennai/HOLIDAY INN CHENNAI  MR. DIVAKAR SHUKLA (GM) MR. GOUSE SHAIK (DHR).jpg"
+      "/Chennai/01. Apollo Olive Plus Chennai - Mr. Murugesan A (DGM HR Optal), Mr. Raghubaran Chellappa S (Senior Executive HR Optal).jpg",
+      "/Chennai/02. Fairfield By Marriott Sriperumbudur - Mr. Satish G (Human Resource Manager).jpg",
+      "/Chennai/03. Four Points By Sheraton - Mr. Thampuran S (Human Resource Manager), Mr. Sujith Chandrasekharan (General Manager).jpg",
+      "/Chennai/04. Hilton Chennai - Mr. Vinod Ramamurthy (General Manager).jpg",
+      "/Chennai/05. Holiday Inn Chennai - Mr. Divakar Shukla (General Manager), Mr. Gouse Shaik (Director of Human Resource).jpg"
+    ],
+    "items": [
+      {
+        "src": "/Chennai/01. Apollo Olive Plus Chennai - Mr. Murugesan A (DGM HR Optal), Mr. Raghubaran Chellappa S (Senior Executive HR Optal).jpg",
+        "hotel": "Apollo Olive Plus Chennai",
+        "person": "Mr. Murugesan A, Mr. Raghubaran Chellappa S",
+        "designation": "DGM HR Optal, Senior Executive HR Optal"
+      },
+      {
+        "src": "/Chennai/02. Fairfield By Marriott Sriperumbudur - Mr. Satish G (Human Resource Manager).jpg",
+        "hotel": "Fairfield By Marriott Sriperumbudur",
+        "person": "Mr. Satish G",
+        "designation": "Human Resource Manager"
+      },
+      {
+        "src": "/Chennai/03. Four Points By Sheraton - Mr. Thampuran S (Human Resource Manager), Mr. Sujith Chandrasekharan (General Manager).jpg",
+        "hotel": "Four Points By Sheraton",
+        "person": "Mr. Thampuran S, Mr. Sujith Chandrasekharan",
+        "designation": "Human Resource Manager, General Manager"
+      },
+      {
+        "src": "/Chennai/04. Hilton Chennai - Mr. Vinod Ramamurthy (General Manager).jpg",
+        "hotel": "Hilton Chennai",
+        "person": "Mr. Vinod Ramamurthy",
+        "designation": "General Manager"
+      },
+      {
+        "src": "/Chennai/05. Holiday Inn Chennai - Mr. Divakar Shukla (General Manager), Mr. Gouse Shaik (Director of Human Resource).jpg",
+        "hotel": "Holiday Inn Chennai",
+        "person": "Mr. Divakar Shukla, Mr. Gouse Shaik",
+        "designation": "General Manager, Director of Human Resource"
+      }
     ]
   },
   {
     "city": "Goa",
     "images": [
-      "/Goa/FAIRFIELD GOA MR. UTKARSH GUPTA (FRONT DESK MANAGER).jpg",
-      "/Goa/GOA ST. REGIS MR. JAGDEEP SHETTY (DHR) MS. MUSKAN SONKAR (AM L&D).jpg",
-      "/Goa/JW MARRIOTT GOA MS. RUBY KHAN(DHR) MR. PRIYABRATA DASH (TRAINING MANAGER).jpg",
-      "/Goa/LEMON TREE CANDOLIM GOA MR. HANSEL RAJU LAZER (GM) MR. RUBEN DSOUZA (HR SUPERVISOR).jpg",
-      "/Goa/RADISSON GOA MS. KRITTIKA KHAPNE (DHR).jpg",
-      "/Goa/ST. REGIS GOA MS. MUSKAN SONAKAR (AM L&D).jpg",
-      "/Goa/THE ASTOR GOA MR. VAIBHAV GUPTA(GM) MR. AKSHAYA GAUNEKAR (HR MANAGER) .jpg",
-      "/Goa/WESTIN GOA ATUL NAGARKAR HRD.jpg"
+      "/Goa/01. Fairfield by Marriott - Mr. Utkarsh Gupta (Front Desk Manager).jpg",
+      "/Goa/02. St. Regis Goa - Mr. Jagdeep Shetty (Director Human Resources), Ms. Muskan Sonkar (Assistant Manager Learning & Development).jpg",
+      "/Goa/03. JW Marriott Goa - Ms. Ruby Khan (Director Human Resources), Mr. Priyabrata Dash (Training Manager).jpg",
+      "/Goa/04. Lemon Tree Candolim Goa - Mr. Hansel Raju Lazer (General Manager), Mr. Ruben D Souza (Human Resource Supervisor).jpg",
+      "/Goa/05. Radisson Goa - Ms. Krittika Khapne (Director of Human Resources).jpg"
+    ],
+    "items": [
+      {
+        "src": "/Goa/01. Fairfield by Marriott - Mr. Utkarsh Gupta (Front Desk Manager).jpg",
+        "hotel": "Fairfield by Marriott",
+        "person": "Mr. Utkarsh Gupta",
+        "designation": "Front Desk Manager"
+      },
+      {
+        "src": "/Goa/02. St. Regis Goa - Mr. Jagdeep Shetty (Director Human Resources), Ms. Muskan Sonkar (Assistant Manager Learning & Development).jpg",
+        "hotel": "St. Regis Goa",
+        "person": "Mr. Jagdeep Shetty, Ms. Muskan Sonkar",
+        "designation": "Director Human Resources, Assistant Manager Learning & Development"
+      },
+      {
+        "src": "/Goa/03. JW Marriott Goa - Ms. Ruby Khan (Director Human Resources), Mr. Priyabrata Dash (Training Manager).jpg",
+        "hotel": "JW Marriott Goa",
+        "person": "Ms. Ruby Khan, Mr. Priyabrata Dash",
+        "designation": "Director Human Resources, Training Manager"
+      },
+      {
+        "src": "/Goa/04. Lemon Tree Candolim Goa - Mr. Hansel Raju Lazer (General Manager), Mr. Ruben D Souza (Human Resource Supervisor).jpg",
+        "hotel": "Lemon Tree Candolim Goa",
+        "person": "Mr. Hansel Raju Lazer, Mr. Ruben D Souza",
+        "designation": "General Manager, Human Resource Supervisor"
+      },
+      {
+        "src": "/Goa/05. Radisson Goa - Ms. Krittika Khapne (Director of Human Resources).jpg",
+        "hotel": "Radisson Goa",
+        "person": "Ms. Krittika Khapne",
+        "designation": "Director of Human Resources"
+      }
     ]
   },
   {
     "city": "Indore",
     "images": [
-      "/Indore/FAIRFIELD INDORE MR. SUBHENDU ROY (GM) MS. AISHWARYA SHARMA (AHRM) MS. MUSKAN DIXIT (HRE).jpeg",
-      "/Indore/INDORE MARRIOTT MR. JAHEER ABBAS (ADHR) .jpeg",
-      "/Indore/LEMON TREE INDORE MR. RAHUL YESHWANT KOKARE (REGIONAL MANAGER RM & GM) MR. SHAHNAWAZ KHAN (DEPUTY HRM).jpeg",
-      "/Indore/RADDISON INDORE MR. JEETENDRA NIMBALKAR (HRM).jpeg",
-      "/Indore/SHERATON INDORE MR. UTKARSH PANDIT (L&D MANAGER).jpeg"
+      "/Indore/01. Fairfield By Marriott - Ms. Aishwarya Sharma (Assistant Human Resource Manager), Ms. Muskan Dixit (Human Resource Executive).jpeg",
+      "/Indore/02. Indore Marriott Hotel - Mr. Jaheer Abbas (Assistant Director Human Resources).jpeg",
+      "/Indore/03. Lemon Tree Indore - Mr. Rahul Yeshwant Kokare (Regional Manager & General Manager).jpeg",
+      "/Indore/04. Radisson Indore - Mr. Jeetendra Nimbalkar (Human Resource Manager).jpeg",
+      "/Indore/05. Sheraton Indore - Mr. Utkarsh Pandit (Learning & Development Manager).jpeg"
+    ],
+    "items": [
+      {
+        "src": "/Indore/01. Fairfield By Marriott - Ms. Aishwarya Sharma (Assistant Human Resource Manager), Ms. Muskan Dixit (Human Resource Executive).jpeg",
+        "hotel": "Fairfield By Marriott",
+        "person": "Ms. Aishwarya Sharma, Ms. Muskan Dixit",
+        "designation": "Assistant Human Resource Manager, Human Resource Executive"
+      },
+      {
+        "src": "/Indore/02. Indore Marriott Hotel - Mr. Jaheer Abbas (Assistant Director Human Resources).jpeg",
+        "hotel": "Indore Marriott Hotel",
+        "person": "Mr. Jaheer Abbas",
+        "designation": "Assistant Director Human Resources"
+      },
+      {
+        "src": "/Indore/03. Lemon Tree Indore - Mr. Rahul Yeshwant Kokare (Regional Manager & General Manager).jpeg",
+        "hotel": "Lemon Tree Indore",
+        "person": "Mr. Rahul Yeshwant Kokare",
+        "designation": "Regional Manager & General Manager"
+      },
+      {
+        "src": "/Indore/04. Radisson Indore - Mr. Jeetendra Nimbalkar (Human Resource Manager).jpeg",
+        "hotel": "Radisson Indore",
+        "person": "Mr. Jeetendra Nimbalkar",
+        "designation": "Human Resource Manager"
+      },
+      {
+        "src": "/Indore/05. Sheraton Indore - Mr. Utkarsh Pandit (Learning & Development Manager).jpeg",
+        "hotel": "Sheraton Indore",
+        "person": "Mr. Utkarsh Pandit",
+        "designation": "Learning & Development Manager"
+      }
     ]
   },
   {
     "city": "Kochi",
     "images": [
-      "/Kochi/COURTYARD KOCHI MR. NARAYAN THAROOR(CLUSTER GM)..jpeg",
-      "/Kochi/COURTYARD KOCHI MR. NARAYAN THAROOR(CLUSTER GM).jpeg",
-      "/Kochi/GOKULAM GRAND MR. S GOPIMOHAN (GM) MR. R JAIN (HR MANAGER).jpeg",
-      "/Kochi/GOKULAM GRAND MR. S GOPIMOHAN ...jpeg",
-      "/Kochi/GOKULAM GRAND MR. S GOPIMOHAN ...jpg",
-      "/Kochi/GOKULAM GRAND MR. S GOPIMOHAN ..jpeg",
-      "/Kochi/HOLIDAY INN KOCHIN MR. SUGANTHI VIPIN (DIRECTOR OF HR).jpg",
-      "/Kochi/KEY SELECT BY LEMON TREE KOCHIN MR. KIRON A. AIYENKULAM (GM).jpg",
-      "/Kochi/KEYS SELECT MR.AJIT G. WARRIER (GM)...jpg",
-      "/Kochi/KEYS SELECT MR.AJIT G. WARRIER (GM)..jpeg",
-      "/Kochi/KEYS SELECT MR.AJIT G. WARRIER (GM).jpeg"
+      "/Kochi/01. Courtyard By Marriott - Mr. Narayan Tharoor (Cluster General Manager).jpeg",
+      "/Kochi/02. Gokulam Grand Trivandrum - Mr. S Gopimohan (General Manager), Mr. R Jain (HR Manager).jpeg",
+      "/Kochi/03. Holiday Inn Kochi - Mr. Suganthi Vipin (Director of Human Resources).jpg",
+      "/Kochi/04. Keys Select By Lemon Tree - Mr. Kiron A. Aiyenkulam (General Manager).jpg",
+      "/Kochi/05. Keys Select - Mr. Ajith G. Warrier (General Manager).jpeg"
+    ],
+    "items": [
+      {
+        "src": "/Kochi/01. Courtyard By Marriott - Mr. Narayan Tharoor (Cluster General Manager).jpeg",
+        "hotel": "Courtyard By Marriott",
+        "person": "Mr. Narayan Tharoor",
+        "designation": "Cluster General Manager"
+      },
+      {
+        "src": "/Kochi/02. Gokulam Grand Trivandrum - Mr. S Gopimohan (General Manager), Mr. R Jain (HR Manager).jpeg",
+        "hotel": "Gokulam Grand Trivandrum",
+        "person": "Mr. S Gopimohan, Mr. R Jain",
+        "designation": "General Manager, HR Manager"
+      },
+      {
+        "src": "/Kochi/03. Holiday Inn Kochi - Mr. Suganthi Vipin (Director of Human Resources).jpg",
+        "hotel": "Holiday Inn Kochi",
+        "person": "Mr. Suganthi Vipin",
+        "designation": "Director of Human Resources"
+      },
+      {
+        "src": "/Kochi/04. Keys Select By Lemon Tree - Mr. Kiron A. Aiyenkulam (General Manager).jpg",
+        "hotel": "Keys Select By Lemon Tree",
+        "person": "Mr. Kiron A. Aiyenkulam",
+        "designation": "General Manager"
+      },
+      {
+        "src": "/Kochi/05. Keys Select - Mr. Ajith G. Warrier (General Manager).jpeg",
+        "hotel": "Keys Select",
+        "person": "Mr. Ajith G. Warrier",
+        "designation": "General Manager"
+      }
     ]
   },
   {
     "city": "Delhi",
     "images": [
-      "/delhi/BEL LA MONDE MR. PUNEET SHARMA (VP)..jpg",
-      "/delhi/BEL LA MONDE MR. PUNEET SHARMA (VP).jpeg",
-      "/delhi/CYGNETT MR. ANANT CHAUHAN (CORPORATE HR) MR. SACHIN GAUR (ASSISTANT DIRECTOR L&D)..jpeg",
-      "/delhi/CYGNETT MR. ANANT CHAUHAN (CORPORATE HR) MR. SACHIN GAUR (ASSISTANT DIRECTOR L&D).jpeg",
-      "/delhi/RADISSON BLU PLAZA DELHI AIRPORT Mr. SHASHANK GOYEL (F&B MANAGER).jpeg",
-      "/delhi/SVELTE MS. MANISHA BAJPAI (GM) MR. KOMIL VYAS (AHRM).jpg",
-      "/delhi/TIVOLI MR. SANJAY KASAL (CORPORATE GM) MR. NEERAJ KUMAR (AHRM).jpeg"
+      "/delhi/01. Bel La Monde - Mr. Puneet Sharma (Vice President).jpeg",
+      "/delhi/02. Cygnet Hotel & Resort - Mr. Anant Chouhan (Corporate HR), Mr. Sachin Gaur (Assistant Director Learning & Development).jpeg",
+      "/delhi/03. Radisson Blu Plaza - Mr. Shashank Goyel (Food & Beverage Manager).jpeg",
+      "/delhi/04. Svelte Delhi - Ms. Manisha Bajpai (General Manager), Mr. Komil Vyas (Assistant Human Resources Manager).jpg",
+      "/delhi/05. The Tivoli New Delhi - Mr. Sanjay Kasal (Corporate General Manager), Mr. Neeraj Kumar (Assistant Human Resource Manager).jpeg"
+    ],
+    "items": [
+      {
+        "src": "/delhi/01. Bel La Monde - Mr. Puneet Sharma (Vice President).jpeg",
+        "hotel": "Bel La Monde",
+        "person": "Mr. Puneet Sharma",
+        "designation": "Vice President"
+      },
+      {
+        "src": "/delhi/02. Cygnet Hotel & Resort - Mr. Anant Chouhan (Corporate HR), Mr. Sachin Gaur (Assistant Director Learning & Development).jpeg",
+        "hotel": "Cygnet Hotel & Resort",
+        "person": "Mr. Anant Chouhan, Mr. Sachin Gaur",
+        "designation": "Corporate HR, Assistant Director Learning & Development"
+      },
+      {
+        "src": "/delhi/03. Radisson Blu Plaza - Mr. Shashank Goyel (Food & Beverage Manager).jpeg",
+        "hotel": "Radisson Blu Plaza",
+        "person": "Mr. Shashank Goyel",
+        "designation": "Food & Beverage Manager"
+      },
+      {
+        "src": "/delhi/04. Svelte Delhi - Ms. Manisha Bajpai (General Manager), Mr. Komil Vyas (Assistant Human Resources Manager).jpg",
+        "hotel": "Svelte Delhi",
+        "person": "Ms. Manisha Bajpai, Mr. Komil Vyas",
+        "designation": "General Manager, Assistant Human Resources Manager"
+      },
+      {
+        "src": "/delhi/05. The Tivoli New Delhi - Mr. Sanjay Kasal (Corporate General Manager), Mr. Neeraj Kumar (Assistant Human Resource Manager).jpeg",
+        "hotel": "The Tivoli New Delhi",
+        "person": "Mr. Sanjay Kasal, Mr. Neeraj Kumar",
+        "designation": "Corporate General Manager, Assistant Human Resource Manager"
+      }
     ]
   }
 ]

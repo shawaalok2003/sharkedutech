@@ -113,19 +113,87 @@
     transform: scale(1.05);
 }
 
-.imageInfo {
-    padding: 1.25rem;
+.photoBottomOverlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 2.5rem 1rem 0.65rem 1rem;
+    background: linear-gradient(to top, rgba(0, 15, 35, 0.9) 0%, rgba(0, 15, 35, 0.4) 60%, transparent 100%);
+    pointer-events: none;
+    z-index: 2;
+    transition: opacity 0.3s ease;
 }
 
-.imageName {
-    font-size: 0.95rem;
-    color: var(--foreground);
-    font-weight: 500;
-    line-height: 1.4;
+.photoHotelBadge {
+    color: #fed488;
+    font-size: 0.85rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
+}
+
+.imageCard:hover .photoBottomOverlay {
+    opacity: 0.2;
+}
+
+.imageInfo {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.hotelLine {
+    margin-bottom: 0.15rem;
+}
+
+.hotelTitle {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #002147;
+    margin: 0;
+    line-height: 1.35;
+}
+
+.personLine {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.4rem;
+}
+
+.personIcon {
+    font-size: 0.85rem;
+    line-height: 1.35;
+    opacity: 0.8;
+}
+
+.personTitle {
+    font-size: 0.925rem;
+    color: #0f172a;
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+.designationLine {
+    margin-top: 0.2rem;
+}
+
+.designationBadge {
+    display: inline-block;
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.3rem 0.65rem;
+    border-radius: 6px;
+    line-height: 1.35;
 }
 
 @media (max-width: 768px) {

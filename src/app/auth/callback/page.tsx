@@ -53,7 +53,7 @@ function CallbackContent() {
 
                     // Redirect based on role
                     const role = userData.role;
-                    if (role === 'ADMIN') {
+                    if (role === 'ADMIN' || role === 'SUPER_ADMIN') {
                         router.push("/admin");
                     } else if (role === 'EMPLOYER') {
                         router.push("/jobs/employer");
