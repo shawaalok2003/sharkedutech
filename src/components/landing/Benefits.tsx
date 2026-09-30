@@ -94,7 +94,13 @@ const benefitsData = {
 };
 
 export function Benefits() {
-    const [activeTab, setActiveTab] = useState<'students' | 'colleges' | 'employers'>('colleges');
+    const [activeTab, setActiveTab] = useState<'students' | 'employers' | 'colleges'>('students');
+
+    const tabLabels: Record<'students' | 'employers' | 'colleges', string> = {
+        students: 'For Job Seekers',
+        employers: 'For Hotel Employers',
+        colleges: 'For Institutes'
+    };
 
     return (
         <section className={styles.section}>
@@ -104,20 +110,20 @@ export function Benefits() {
                         Why Choose <span className={styles.highlight}>Shark Edutech?</span>
                     </h2>
                     <p className={styles.subtitle}>
-                        Empowering students, colleges, and employers with a seamless hospitality ecosystem.
+                        India's dedicated recruitment platform connecting hospitality talent with 400+ luxury hotel brands.
                     </p>
                 </div>
 
                 {/* 3-Tab Pill Switcher Container */}
                 <div className={styles.tabsContainer}>
                     <div className={styles.pillGroup}>
-                        {(['students', 'colleges', 'employers'] as const).map((tab) => (
+                        {(['students', 'employers', 'colleges'] as const).map((tab) => (
                             <button
                                 key={tab}
                                 className={`${styles.tab} ${activeTab === tab ? styles.activeTab : ''}`}
                                 onClick={() => setActiveTab(tab)}
                             >
-                                For {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                                {tabLabels[tab]}
                             </button>
                         ))}
                     </div>

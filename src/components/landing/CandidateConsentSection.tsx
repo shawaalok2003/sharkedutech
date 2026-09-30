@@ -223,15 +223,6 @@ export function CandidateConsentSection() {
                             >
                                 ✍️ Fill &amp; Submit Consent Online
                             </button>
-                            <a 
-                                href="/Candidate_Consent_Form.pdf" 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className={styles.btnSecondary}
-                                download="Candidate_Consent_Form.pdf"
-                            >
-                                📥 Download Official PDF Form
-                            </a>
                         </div>
                     </div>
 

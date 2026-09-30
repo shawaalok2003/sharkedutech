@@ -54,6 +54,7 @@ export default async function Home() {
   if (!topJobs || topJobs.length === 0) {
     topJobs = OPPORTUNITIES_DATA.map((item, idx) => ({
       id: `seed-job-${idx + 1}`,
+      createdAt: (item as any).createdAt || new Date(Date.now() - (idx * 86400000)).toISOString(),
       ...item
     }));
   }
@@ -61,12 +62,12 @@ export default async function Home() {
   return (
     <main style={{ overflowX: 'hidden' }}>
       <HeroSection />
+      <JobCarousel jobs={topJobs} />
       <LogoCarousel />
       <WhoWeAreSection />
       <CandidateConsentSection />
       <LiveBroadcastCarousel initialVideos={liveVideos} />
       <BrowseCategories />
-      <JobCarousel jobs={topJobs} />
       <TalentPoolSection />
       <CareerMilestoneSection />
       <DreamCareerTestimonials />

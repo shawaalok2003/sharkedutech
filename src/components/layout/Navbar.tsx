@@ -80,19 +80,23 @@ export function Navbar() {
                     <span className={`${styles.hamburgerLine} ${isMobileMenuOpen ? styles.hamburgerLineOpen : ''}`}></span>
                 </button>
 
-                {/* Desktop Navigation (Clean Text Links - No Icons) */}
+                {/* Desktop Navigation (Hospitality Jobs & Hotel Tie-Ups Priority) */}
                 <nav className={styles.navLinks}>
                     <Link href="/" className={`${styles.link} ${isActive('/')}`}>
                         <span>Home</span>
+                    </Link>
+                    <Link href="/jobs" className={`${styles.link} ${isActive('/jobs')}`}>
+                        <span>Hospitality Jobs</span>
+                        <span className={styles.hiringBadge}>Hiring</span>
+                    </Link>
+                    <Link href="/#partners" className={styles.link}>
+                        <span>Hotel Tie-Ups</span>
                     </Link>
                     <Link href="/about" className={`${styles.link} ${isActive('/about')}`}>
                         <span>About Us</span>
                     </Link>
                     <Link href="/admissions" className={`${styles.link} ${isActive('/admissions')}`}>
                         <span>Admissions</span>
-                    </Link>
-                    <Link href="/jobs" className={`${styles.link} ${isActive('/jobs')}`}>
-                        <span>Jobs</span>
                     </Link>
                     <Link href="/gallery" className={`${styles.link} ${isActive('/gallery')}`}>
                         <span>Gallery</span>
@@ -176,14 +180,19 @@ export function Navbar() {
                         <Link href="/" className={`${styles.mobileLink} ${isActive('/')}`}>
                             <span>Home</span>
                         </Link>
+                        <Link href="/jobs" className={`${styles.mobileLink} ${isActive('/jobs')}`}>
+                            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                Hospitality Jobs <span className={styles.hiringBadge}>Hiring</span>
+                            </span>
+                        </Link>
+                        <Link href="/#partners" className={styles.mobileLink} onClick={() => setIsMobileMenuOpen(false)}>
+                            <span>Hotel Tie-Ups</span>
+                        </Link>
                         <Link href="/about" className={`${styles.mobileLink} ${isActive('/about')}`}>
                             <span>About Us</span>
                         </Link>
                         <Link href="/admissions" className={`${styles.mobileLink} ${isActive('/admissions')}`}>
                             <span>Admissions</span>
-                        </Link>
-                        <Link href="/jobs" className={`${styles.mobileLink} ${isActive('/jobs')}`}>
-                            <span>Jobs</span>
                         </Link>
                         <Link href="/gallery" className={`${styles.mobileLink} ${isActive('/gallery')}`}>
                             <span>Gallery</span>

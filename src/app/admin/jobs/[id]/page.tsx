@@ -3,6 +3,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import JobImageUploader from "../new/JobImageUploader";
+import { formatJobDate } from "@/lib/dateUtils";
 
 async function updateJob(formData: FormData) {
     "use server";
@@ -73,7 +74,12 @@ export default async function EditJobPage(props: { params: Promise<{ id: string 
             <div style={{ marginBottom: "2rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <div>
                     <h1 style={{ fontSize: "1.875rem", fontWeight: 700, color: "var(--primary)" }}>Edit Job Posting</h1>
-                    <p style={{ color: "var(--muted-foreground)" }}>Update full details for "{job.title}".</p>
+                    <p style={{ color: "var(--muted-foreground)", display: "flex", alignItems: "center", gap: "0.6rem", flexWrap: "wrap", marginTop: "0.25rem" }}>
+                        <span>Update full details for "{job.title}".</span>
+                        <span style={{ fontSize: "0.85rem", background: "#eff6ff", border: "1px solid #bfdbfe", padding: "0.2rem 0.65rem", borderRadius: "999px", color: "#1d4ed8", fontWeight: 600 }}>
+                            📅 Posted: {formatJobDate(job.createdAt)}
+                        </span>
+                    </p>
                 </div>
                 <Link href="/admin/jobs" style={{ padding: "0.5rem 1rem", backgroundColor: "#e2e8f0", color: "#0f172a", borderRadius: "6px", textDecoration: "none", fontWeight: 500 }}>
                     Back to Jobs

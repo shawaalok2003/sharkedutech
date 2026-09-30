@@ -27,11 +27,26 @@ export const LogoCarousel = () => {
     return (
         <section className={styles.container} id="partners">
             <div className={styles.header}>
-                <div className={styles.tagline}>HOSPITALITY PARTNERS & RECRUITERS</div>
-                <h2 className={styles.title}>Our Industry Partners</h2>
+                <div className={styles.tagline}>⭐ DIRECT RECRUITMENT &amp; 5-STAR TIE-UPS</div>
+                <h2 className={styles.title}>Our 5-Star Hotel Tie-Ups &amp; Industry Partners</h2>
                 <p className={styles.subtitle}>
-                    Top hospitality brands hiring through Shark Edutech
+                    Direct recruitment partnerships with world-class luxury hotel chains and resorts across India &amp; overseas
                 </p>
+                <div className={styles.headerCtaRow}>
+                    <button 
+                        type="button" 
+                        onClick={() => setIsListModalOpen(true)}
+                        className={styles.primaryCtaBtn}
+                    >
+                        📋 Explore All Hotel Partners
+                    </button>
+                    <a 
+                        href="/jobs" 
+                        className={styles.secondaryCtaBtn}
+                    >
+                        💼 Browse Active Hotel Jobs &rarr;
+                    </a>
+                </div>
             </div>
             
             <div className={styles.slider}>

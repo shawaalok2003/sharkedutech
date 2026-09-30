@@ -1,28 +1,73 @@
 .hero {
     position: relative;
     overflow: hidden;
-    padding: 7rem 1.5rem;
-    min-height: 82vh;
+    padding: 7.5rem 1.5rem 5.5rem;
+    min-height: 86vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(180deg, rgba(11, 20, 45, 0.72) 0%, rgba(15, 23, 42, 0.86) 100%), 
-                url('https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=2000&q=85') center/cover no-repeat;
     color: white;
 }
 
+/* Background Carousel Slides */
+.slidesTrack {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.slideItem {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transform: scale(1.02);
+    transition: opacity 1.6s ease-in-out, transform 8s cubic-bezier(0.25, 1, 0.5, 1);
+    pointer-events: none;
+    will-change: opacity, transform;
+}
+
+.slideActive {
+    opacity: 1;
+    transform: scale(1.08);
+    pointer-events: auto;
+}
+
+.slideImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+/* Gradient Overlay with Luxury Dark Blue Tint */
 .overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(circle at center, rgba(30, 64, 175, 0.12) 0%, transparent 70%);
+    inset: 0;
+    background: linear-gradient(
+        180deg, 
+        rgba(8, 15, 35, 0.72) 0%, 
+        rgba(11, 20, 45, 0.80) 45%, 
+        rgba(15, 23, 42, 0.90) 100%
+    );
+    z-index: 2;
+    pointer-events: none;
+}
+
+.radialGlow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 40%, rgba(37, 99, 235, 0.18) 0%, transparent 65%);
+    z-index: 3;
     pointer-events: none;
 }
 
 .container {
-    max-width: 1000px;
+    max-width: 1060px;
     margin: 0 auto;
     width: 100%;
     position: relative;
@@ -37,6 +82,25 @@
     animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+/* Eyebrow Pill */
+.eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 1.15rem;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #ffd700;
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
 .title {
     font-family: inherit;
     font-size: 3.75rem;
@@ -45,17 +109,24 @@
     letter-spacing: -0.02em;
     color: #ffffff;
     margin-bottom: 1.25rem;
-    max-width: 920px;
-    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    max-width: 950px;
+    text-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+}
+
+.titleHighlight {
+    background: linear-gradient(135deg, #93c5fd 0%, #ffffff 50%, #bfdbfe 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .description {
     font-size: 1.15rem;
     line-height: 1.6;
-    color: rgba(241, 245, 249, 0.9);
-    max-width: 680px;
-    margin-bottom: 2.5rem;
+    color: rgba(241, 245, 249, 0.95);
+    max-width: 720px;
+    margin-bottom: 2.25rem;
     font-weight: 400;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
 }
 
 /* Pill Search Bar */
@@ -67,16 +138,16 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    max-width: 620px;
-    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.4);
-    margin-bottom: 2.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    max-width: 660px;
+    box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.55);
+    margin-bottom: 1.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .searchBox:focus-within {
     transform: translateY(-2px);
-    box-shadow: 0 25px 50px -10px rgba(0, 0, 0, 0.5), 0 0 0 3px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 25px 50px -10px rgba(0, 0, 0, 0.65), 0 0 0 3px rgba(59, 130, 246, 0.5);
 }
 
 .inputWrapper {
@@ -90,7 +161,7 @@
 .searchIcon {
     width: 20px;
     height: 20px;
-    color: #94a3b8;
+    color: #64748b;
     flex-shrink: 0;
 }
 
@@ -99,7 +170,7 @@
     border: none;
     outline: none;
     font-size: 1rem;
-    color: #1e293b;
+    color: #0f172a;
     width: 100%;
     font-weight: 500;
 }
@@ -109,10 +180,10 @@
 }
 
 .searchButton {
-    background: #0b1329;
+    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
     color: #ffffff;
     border: none;
-    padding: 0.85rem 1.5rem;
+    padding: 0.85rem 1.6rem;
     border-radius: 9999px;
     cursor: pointer;
     font-weight: 700;
@@ -120,17 +191,66 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    transition: all 0.2s ease;
+    transition: all 0.25s ease;
     white-space: nowrap;
+    box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
 }
 
 .searchButton:hover {
-    background: #1e293b;
+    background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
     transform: translateX(2px);
+    box-shadow: 0 6px 18px rgba(2, 132, 199, 0.5);
 }
 
 .arrowIcon {
     font-size: 1.1rem;
+    transition: transform 0.2s ease;
+}
+
+.searchButton:hover .arrowIcon {
+    transform: translateX(3px);
+}
+
+/* Trending Tags */
+.trendingRow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 2.25rem;
+    max-width: 820px;
+}
+
+.trendingLabel {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #93c5fd;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.trendingTag {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(8px);
+    color: #ffffff;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.trendingTag:hover {
+    background: #ffffff;
+    color: #0369a1;
+    border-color: #ffffff;
+    transform: translateY(-1px);
 }
 
 /* Stat Indicators Row */
@@ -143,26 +263,32 @@
 }
 
 .statPill {
-    background: rgba(15, 23, 42, 0.6);
+    background: rgba(15, 23, 42, 0.65);
     backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.18);
     border-radius: 9999px;
     padding: 0.5rem 1.25rem 0.5rem 0.6rem;
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease;
+}
+
+.statPill:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.35);
 }
 
 .statIconBox {
-    width: 36px;
-    height: 36px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.14);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #f59e0b;
+    color: #38bdf8;
     flex-shrink: 0;
 }
 
@@ -174,7 +300,7 @@
 }
 
 .statNumber {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     font-weight: 800;
     color: #ffffff;
 }
@@ -182,21 +308,100 @@
 .statLabel {
     font-size: 0.725rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.75);
+    color: rgba(255, 255, 255, 0.8);
     text-transform: uppercase;
-    letter-spacing: 0.03em;
+    letter-spacing: 0.04em;
+}
+
+/* Carousel Side Navigation Buttons */
+.navArrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 12;
+    transition: all 0.25s ease;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.navArrow:hover {
+    background: rgba(255, 255, 255, 0.95);
+    color: #0f172a;
+    border-color: #ffffff;
+    transform: translateY(-50%) scale(1.08);
+}
+
+.prevArrow {
+    left: 1.5rem;
+}
+
+.nextArrow {
+    right: 1.5rem;
+}
+
+/* Slide Indicator Dots */
+.indicators {
+    position: absolute;
+    bottom: 1.25rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    z-index: 12;
+}
+
+.dot {
+    width: 28px;
+    height: 5px;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.35);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+}
+
+.dotActive {
+    width: 48px;
+    background: #38bdf8;
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.8);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 @media (max-width: 900px) {
     .hero {
-        padding: 5rem 1rem;
-        min-height: 70vh;
+        padding: 6rem 1rem 4rem;
+        min-height: 75vh;
     }
     .title {
-        font-size: 2.65rem;
+        font-size: 2.75rem;
     }
     .description {
         font-size: 1.05rem;
+    }
+    .navArrow {
+        display: none;
     }
 }
 
@@ -205,7 +410,7 @@
         font-size: 2.15rem;
     }
     .searchBox {
-        border-radius: 16px;
+        border-radius: 18px;
         flex-direction: column;
         padding: 0.75rem;
         gap: 0.75rem;
@@ -218,6 +423,12 @@
         width: 100%;
         justify-content: center;
         border-radius: 12px;
+    }
+    .trendingRow {
+        gap: 0.4rem;
+    }
+    .trendingTag {
+        font-size: 0.75rem;
     }
     .statsRow {
         flex-direction: column;

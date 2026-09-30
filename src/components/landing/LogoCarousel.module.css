@@ -38,6 +38,58 @@
     line-height: 1.5;
 }
 
+.headerCtaRow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.primaryCtaBtn {
+    background: #001736;
+    color: #ffffff;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 14px rgba(0, 23, 54, 0.18);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.primaryCtaBtn:hover {
+    background: #2563eb;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+}
+
+.secondaryCtaBtn {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+    padding: 0.75rem 1.5rem;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.secondaryCtaBtn:hover {
+    background: #dbeafe;
+    color: #1e40af;
+    transform: translateY(-2px);
+}
+
 .highlightText {
     color: #2563eb;
     font-weight: 600;

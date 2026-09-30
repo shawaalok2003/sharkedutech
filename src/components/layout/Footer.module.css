@@ -133,28 +133,46 @@
     width: 40px;
     height: 40px;
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.12);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #cbd5e1;
+    color: #ffffff;
     text-decoration: none;
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.whatsapp {
+    background: #25D366;
+}
+
+.facebook {
+    background: #1877f2;
+}
+
+.linkedin {
+    background: #0a66c2;
+}
+
+.twitter {
+    background: #000000;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.instagram {
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
 }
 
 .socialIcon:hover {
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-    color: #ffffff;
-    border-color: #3b82f6;
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
+    transform: translateY(-3px) scale(1.08);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    filter: brightness(1.1);
 }
 
 .socialSvg {
     width: 18px;
     height: 18px;
-    fill: currentColor;
+    fill: #ffffff;
 }
 
 .bottom {

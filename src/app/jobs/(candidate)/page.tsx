@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import styles from "./LinkedInJobs.module.css";
+import { formatJobDate } from "@/lib/dateUtils";
 
 interface Job {
     id: string;
@@ -477,7 +478,9 @@ function JobsContent() {
 
                                             <div className={styles.cardMetaRow}>
                                                 <span className={styles.earlyApplicantBadge}>Be an early applicant</span>
-                                                <span className={styles.postedTime}>Recently posted</span>
+                                                <span className={styles.postedTime}>
+                                                    {formatJobDate(job.createdAt) ? `📅 ${formatJobDate(job.createdAt)}` : 'Recently posted'}
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
@@ -506,7 +509,10 @@ function JobsContent() {
                                 </div>
                                 <div className={styles.detailLocation}>
                                     <span>📍 {activeJob.location}</span>
-                                    <span>&bull; Reposted recently</span>
+                                    <span>&bull;</span>
+                                    <span style={{ fontWeight: 600, color: '#0f172a' }}>
+                                        📅 Posted: {formatJobDate(activeJob.createdAt) || 'Recently'}
+                                    </span>
                                 </div>
                             </div>
                         </div>

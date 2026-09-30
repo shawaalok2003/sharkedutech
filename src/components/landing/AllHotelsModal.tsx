@@ -97,6 +97,15 @@ export const AllHotelsModal: React.FC<AllHotelsModalProps> = ({ logos, onClose }
                                         📍 <strong>Locations:</strong> {partner.locations.slice(0, 4).join(", ")}
                                         {partner.locations.length > 4 ? " & more" : ""}
                                     </div>
+                                    <div className={styles.cardActions}>
+                                        <a 
+                                            href={`/jobs?search=${encodeURIComponent(partner.name)}`}
+                                            className={styles.viewJobsBtn}
+                                            onClick={onClose}
+                                        >
+                                            💼 View Openings &rarr;
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         ))}

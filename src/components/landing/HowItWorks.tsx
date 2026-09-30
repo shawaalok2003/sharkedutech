@@ -98,19 +98,19 @@ export function HowItWorks() {
                             onClick={() => { setTab('candidate'); setActiveStep(1); }}
                             className={`${styles.toggleBtn} ${tab === 'candidate' ? styles.toggleBtnActive : ''}`}
                         >
-                            For Candidate
-                        </button>
-                        <button
-                            onClick={() => { setTab('college'); setActiveStep(1); }}
-                            className={`${styles.toggleBtn} ${tab === 'college' ? styles.toggleBtnActive : ''}`}
-                        >
-                            For College
+                            For Job Seekers
                         </button>
                         <button
                             onClick={() => { setTab('employer'); setActiveStep(1); }}
                             className={`${styles.toggleBtn} ${tab === 'employer' ? styles.toggleBtnActive : ''}`}
                         >
-                            For Employer
+                            For Hotel Employers (Post Jobs)
+                        </button>
+                        <button
+                            onClick={() => { setTab('college'); setActiveStep(1); }}
+                            className={`${styles.toggleBtn} ${tab === 'college' ? styles.toggleBtnActive : ''}`}
+                        >
+                            For Institutes
                         </button>
                     </div>
                 </div>

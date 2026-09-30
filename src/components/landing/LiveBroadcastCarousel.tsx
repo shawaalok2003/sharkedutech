@@ -73,26 +73,19 @@ export function LiveBroadcastCarousel({ initialVideos = [] }: { initialVideos?: 
     }
 
     return (
-        <section className={styles.section} id="live-broadcasts">
+        <section className={styles.section} id="video-gallery">
             <div className={styles.container}>
                 <div className={styles.headerRow}>
                     <div className={styles.headerLeft}>
-                        {hasLiveNow ? (
+                        {hasLiveNow && (
                             <div className={styles.liveAlertBadge}>
                                 <span className={styles.pulseDot}></span>
                                 <span>{liveCount} Live Session{liveCount > 1 ? 's' : ''} Streaming Right Now</span>
                             </div>
-                        ) : (
-                            <div className={styles.badge}>
-                                <span>★ OFFICIAL LIVE BROADCASTS & MASTERCLASSES</span>
-                            </div>
                         )}
-                        <h2 className={styles.title}>
-                            Live Broadcasts & <span className={styles.highlight}>Industry Masterclasses</span>
+                        <h2 className={styles.title} style={{ margin: 0 }}>
+                            Video <span className={styles.highlight}>Gallery</span>
                         </h2>
-                        <p className={styles.subtitle}>
-                            Standard Recruitment, Placement Drives & 5-Star Hotel Masterclasses. Broadcast live or available on recorded replay.
-                        </p>
                     </div>
 
                     <div className={styles.navControls}>

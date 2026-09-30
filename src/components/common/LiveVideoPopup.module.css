@@ -1,0 +1,324 @@
+/* Live Video Floating Popup & Minimized Beacon */
+
+.popupContainer {
+    position: fixed;
+    bottom: 2rem;
+    left: 2rem;
+    width: 380px;
+    max-width: calc(100vw - 2.5rem);
+    background: linear-gradient(145deg, #070e1e 0%, #0f1c38 100%);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    border-radius: 18px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.75), 0 0 30px rgba(239, 68, 68, 0.22);
+    z-index: 1000;
+    overflow: hidden;
+    animation: popupSlideIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+.popupLiveBorder {
+    border-color: rgba(239, 68, 68, 0.6);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.75), 0 0 35px rgba(239, 68, 68, 0.35);
+}
+
+@keyframes popupSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Header */
+.popupHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.85rem 1rem;
+    background: rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.badgeRow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.liveBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.25rem 0.65rem;
+    background: #ef4444;
+    color: #ffffff;
+    font-size: 0.725rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-radius: 9999px;
+    box-shadow: 0 0 14px rgba(239, 68, 68, 0.7);
+}
+
+.broadcastBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.25rem 0.65rem;
+    background: #0284c7;
+    color: #ffffff;
+    font-size: 0.725rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-radius: 9999px;
+    box-shadow: 0 0 14px rgba(2, 132, 199, 0.6);
+}
+
+.pulseDot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 0 6px #ffffff;
+    animation: livePulse 1.4s infinite;
+}
+
+@keyframes livePulse {
+    0% { transform: scale(0.9); opacity: 1; }
+    50% { transform: scale(1.4); opacity: 0.4; }
+    100% { transform: scale(0.9); opacity: 1; }
+}
+
+.categoryTag {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #94a3b8;
+    background: rgba(255, 255, 255, 0.08);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+}
+
+.closeButton {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    cursor: pointer;
+    font-size: 1.15rem;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.closeButton:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+}
+
+/* Media Box */
+.mediaBox {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #000000;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.thumbnailImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.mediaBox:hover .thumbnailImage {
+    transform: scale(1.04);
+}
+
+.thumbnailOverlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 40%, rgba(0, 0, 0, 0.75) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.playIconWrapper {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: rgba(239, 68, 68, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    box-shadow: 0 0 24px rgba(239, 68, 68, 0.8);
+    transition: all 0.25s ease;
+}
+
+.mediaBox:hover .playIconWrapper {
+    transform: scale(1.12);
+    background: #dc2626;
+    box-shadow: 0 0 32px rgba(239, 68, 68, 1);
+}
+
+.videoIframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* Body Content */
+.popupBody {
+    padding: 1rem 1.1rem;
+}
+
+.videoTitle {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.35;
+    margin: 0 0 0.4rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.speakerInfo {
+    font-size: 0.8rem;
+    color: #38bdf8;
+    margin: 0 0 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+/* Actions */
+.actionRow {
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+}
+
+.watchBtn {
+    flex: 1;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    padding: 0.65rem 1rem;
+    font-size: 0.88rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 14px rgba(239, 68, 68, 0.45);
+}
+
+.watchBtn:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(239, 68, 68, 0.65);
+}
+
+.expandBtn {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 10px;
+    padding: 0.65rem 0.85rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.expandBtn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: #ffffff;
+}
+
+/* Minimized Floating Beacon (bottom-left) */
+.minimizedBeacon {
+    position: fixed;
+    bottom: 2rem;
+    left: 2rem;
+    z-index: 1000;
+    background: linear-gradient(145deg, #070e1e 0%, #0f1c38 100%);
+    border: 1px solid rgba(239, 68, 68, 0.55);
+    border-radius: 9999px;
+    padding: 0.45rem 1rem 0.45rem 0.65rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(239, 68, 68, 0.35);
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    animation: beaconPop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.minimizedBeacon:hover {
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: 0 14px 35px rgba(0, 0, 0, 0.6), 0 0 28px rgba(239, 68, 68, 0.5);
+    border-color: #ef4444;
+}
+
+@keyframes beaconPop {
+    from { opacity: 0; transform: scale(0.85) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.beaconDot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #ef4444;
+    box-shadow: 0 0 10px #ef4444;
+    animation: livePulse 1.4s infinite;
+}
+
+.beaconText {
+    font-size: 0.825rem;
+    font-weight: 700;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.beaconArrow {
+    color: #38bdf8;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 640px) {
+    .popupContainer {
+        bottom: 1rem;
+        left: 1rem;
+        right: 1rem;
+        width: auto;
+        max-width: none;
+    }
+
+    .minimizedBeacon {
+        bottom: 1rem;
+        left: 1rem;
+    }
+}

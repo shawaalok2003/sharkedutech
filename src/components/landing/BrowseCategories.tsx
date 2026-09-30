@@ -213,16 +213,6 @@ export function BrowseCategories() {
                 >
                     ↑
                 </button>
-                <a 
-                    href="https://wa.me/919147331167" 
-                    target="_blank" 
-                    rel="noreferrer" 
-                    className={styles.whatsappFab}
-                    title="Chat on WhatsApp"
-                    aria-label="Chat on WhatsApp"
-                >
-                    💬
-                </a>
             </div>
         </section>
     );

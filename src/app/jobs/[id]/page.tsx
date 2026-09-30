@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import { formatJobDate } from "@/lib/dateUtils";
 
 export default function SingleJobDetailPage() {
     const params = useParams();
@@ -92,8 +93,12 @@ export default function SingleJobDetailPage() {
                         <div style={{ fontSize: '1.05rem', fontWeight: 700, color: '#2563eb', marginBottom: '0.35rem' }}>
                             {compName} ☑️
                         </div>
-                        <div style={{ fontSize: '0.9rem', color: '#64748b' }}>
-                            📍 {job.location} &bull; Reposted recently
+                        <div style={{ fontSize: '0.9rem', color: '#64748b', display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
+                            <span>📍 {job.location}</span>
+                            <span>&bull;</span>
+                            <span style={{ fontWeight: 600, color: '#0f172a' }}>
+                                📅 Posted: {formatJobDate(job.createdAt) || 'Recently'}
+                            </span>
                         </div>
                     </div>
                 </div>

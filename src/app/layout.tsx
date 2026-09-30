@@ -13,6 +13,8 @@ export const metadata: Metadata = {
 };
 
 import { Navbar } from "@/components/layout/Navbar";
+import { StickySocials } from "@/components/layout/StickySocials";
+import { LiveVideoPopup } from "@/components/common/LiveVideoPopup";
 
 import Providers from "@/components/providers/SessionProvider";
 
@@ -29,6 +31,8 @@ export default function RootLayout({
         <Providers>
           <Toaster position="top-center" reverseOrder={false} />
           <Navbar />
+          <StickySocials />
+          <LiveVideoPopup />
           {children}
         </Providers>
       </body>

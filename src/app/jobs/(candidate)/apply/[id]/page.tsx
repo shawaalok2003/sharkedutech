@@ -6,6 +6,7 @@ import { useRouter, useParams } from "next/navigation";
 import { Space_Grotesk } from "next/font/google";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
+import { formatJobDate } from "@/lib/dateUtils";
 
 const spaceGrotesk = Space_Grotesk({
     subsets: ["latin"],
@@ -24,6 +25,7 @@ interface Job {
     requirements?: string;
     questions?: string;
     posterUrl?: string;
+    createdAt?: string;
     employer: { name: string };
 }
 
@@ -41,11 +43,6 @@ export default function JobApplyPage() {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        if (status === "unauthenticated") {
-            router.push(`/auth/signin?callbackUrl=/jobs/apply/${id}`);
-            return;
-        }
-
         async function fetchJob() {
             try {
                 const res = await fetch(`/api/jobs/${id}`);
@@ -64,17 +61,23 @@ export default function JobApplyPage() {
 
         if (id) fetchJob();
 
-        // Check if user already has a resume in their profile
-        fetch("/api/profile")
-            .then((res) => res.json())
-            .then((data) => {
-                if (data.resumeUrl) setResumeUrl(data.resumeUrl);
-            })
-            .catch(() => { });
-    }, [id, status, router]);
+        // Check if user already has a resume in their profile (only if authenticated)
+        if (status === "authenticated") {
+            fetch("/api/profile")
+                .then((res) => res.json())
+                .then((data) => {
+                    if (data.resumeUrl) setResumeUrl(data.resumeUrl);
+                })
+                .catch(() => { });
+        }
+    }, [id, status]);
 
     const handleApply = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (status === "unauthenticated") {
+            router.push(`/auth/signin?callbackUrl=/jobs/apply/${id}`);
+            return;
+        }
         if (!resumeUrl) {
             alert("Please upload your resume");
             return;
@@ -304,6 +307,14 @@ export default function JobApplyPage() {
                             <span style={{ color: "#0f172a", fontWeight: 700 }}>
                                 ₹{job.salaryMin ? (job.salaryMin / 100000).toFixed(1) : "NA"}L - {job.salaryMax ? (job.salaryMax / 100000).toFixed(1) : "NA"}L
                             </span>
+                            {job.createdAt && (
+                                <>
+                                    <span>•</span>
+                                    <span style={{ color: "#2563eb", fontWeight: 600 }}>
+                                        📅 Posted: {formatJobDate(job.createdAt)}
+                                    </span>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -412,9 +423,20 @@ export default function JobApplyPage() {
                             </label>
                         </div>
 
-                        <button type="submit" className="submit-btn" disabled={applying || !resumeUrl || !agreed}>
-                            {applying ? "Perfecting Application..." : "Submit Application"}
-                        </button>
+                        {status === "unauthenticated" ? (
+                            <button
+                                type="button"
+                                onClick={() => router.push(`/auth/signin?callbackUrl=/jobs/apply/${id}`)}
+                                className="submit-btn"
+                                style={{ background: "#2563eb", cursor: "pointer" }}
+                            >
+                                Sign In to Submit Application →
+                            </button>
+                        ) : (
+                            <button type="submit" className="submit-btn" disabled={applying || !resumeUrl || !agreed}>
+                                {applying ? "Perfecting Application..." : "Submit Application"}
+                            </button>
+                        )}
                         <p style={{ textAlign: "center", color: "#64748b", fontSize: "0.8rem", marginTop: "1.5rem" }}>
                             By submitting, you agree to our Terms of Service.
                         </p>
