@@ -299,7 +299,8 @@ export async function sendAdminInviteEmail(
             manage_jobs: "Job Listings & Applications",
             manage_colleges: "Colleges Directory & Partner Inquiries",
             manage_admissions: "Admissions Courses & Student Applications",
-            manage_users: "User Accounts & Role Management"
+            manage_users: "User Accounts & Role Management",
+            manage_videos: "Live Streams & Video Gallery"
         };
 
         const permBadges = permissions.map(p => 

@@ -1,18 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import OTPInput from "@/components/auth/OTPInput";
 import { signIn } from "next-auth/react";
 import { AuthLayout } from "@/components/layout/AuthLayout";
 
 type SignupStep = 'form' | 'verify-otp';
 
-export default function SignupPage() {
+function SignupForm() {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const roleParam = searchParams.get('role');
+    const isAdminSignup = roleParam === 'admin';
+    const effectiveRole = isAdminSignup ? 'ADMIN' : 'CANDIDATE';
+
     const [step, setStep] = useState<SignupStep>('form');
-    const [role, setRole] = useState<'CANDIDATE' | 'EMPLOYER' | 'ADMIN'>('CANDIDATE');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [otp, setOtp] = useState('');
@@ -68,7 +72,7 @@ export default function SignupPage() {
             const response = await fetch('/api/auth/otp/send', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: formData.email }),
+                body: JSON.stringify({ email: formData.email, role: effectiveRole }),
             });
 
             if (!response.ok) {
@@ -94,7 +98,7 @@ export default function SignupPage() {
                 const response = await fetch('/api/auth/otp/send', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: formData.email, role: 'CANDIDATE' }),
+                    body: JSON.stringify({ email: formData.email, role: effectiveRole }),
                 });
 
                 const result = await response.json();
@@ -135,17 +139,32 @@ export default function SignupPage() {
                     const res = await fetch('/api/auth/signup', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ ...formData, role }),
+                        body: JSON.stringify({ ...formData, role: effectiveRole }),
                     });
 
                     if (res.ok) {
-                        await signIn("credentials", {
+                        const signInRes = await signIn("credentials", {
                             email: formData.email,
                             password: formData.password,
                             redirect: false,
                         });
 
-                        router.push("/candidate/dashboard");
+                        if (signInRes?.error) {
+                            router.push(isAdminSignup ? "/auth/signin?type=admin" : "/auth/signin");
+                            return;
+                        }
+
+                        const sessionRes = await fetch('/api/auth/session');
+                        const sessionData = await sessionRes.json();
+                        const userRole = sessionData?.user?.role;
+
+                        if (userRole === 'ADMIN' || userRole === 'SUPER_ADMIN') {
+                            router.push("/admin");
+                        } else if (userRole === 'EMPLOYER') {
+                            router.push("/jobs/employer");
+                        } else {
+                            router.push("/candidate/dashboard");
+                        }
                         router.refresh();
                     } else {
                         const errorData = await res.json();
@@ -166,8 +185,8 @@ export default function SignupPage() {
 
     return (
         <AuthLayout
-            title={step === 'form' ? 'Candidate Registration' : 'Verify Email'}
-            subtitle={step === 'form' ? 'Create your account to apply for colleges and top hospitality roles' : `A verification code was sent to ${formData.email}`}
+            title={step === 'form' ? (isAdminSignup ? 'Administrator Registration' : 'Candidate Registration') : 'Verify Email'}
+            subtitle={step === 'form' ? (isAdminSignup ? 'Create or activate your administrative account to access system portals' : 'Create your account to apply for colleges and top hospitality roles') : `A verification code was sent to ${formData.email}`}
         >
             {error && (
                 <div style={{ padding: '0.85rem 1rem', borderRadius: '0.75rem', backgroundColor: '#FEF2F2', border: '1px solid #FCA5A5', color: '#DC2626', fontSize: '0.88rem', fontWeight: 500, marginBottom: '1.25rem' }}>
@@ -233,8 +252,14 @@ export default function SignupPage() {
                     </button>
 
                     <div style={{ marginTop: '1.5rem', paddingTop: '1.25rem', borderTop: '1px solid #f1f5f9', display: 'flex', flexDirection: 'column', gap: '0.65rem', fontSize: '0.88rem', color: '#64748b' }}>
-                        <p>Hiring for Employers? <Link href="/auth/signup/employer" style={{ color: '#2563eb', fontWeight: 700, textDecoration: 'none' }}>Employer Signup</Link></p>
-                        <p>Already have an account? <Link href="/auth/signin" style={{ color: '#001736', fontWeight: 700, textDecoration: 'none' }}>Sign In</Link></p>
+                        {isAdminSignup ? (
+                            <p>Already have an Admin account? <Link href="/auth/signin?type=admin" style={{ color: '#001736', fontWeight: 700, textDecoration: 'none' }}>Admin Sign In</Link></p>
+                        ) : (
+                            <>
+                                <p>Hiring for Employers? <Link href="/auth/signup/employer" style={{ color: '#2563eb', fontWeight: 700, textDecoration: 'none' }}>Employer Signup</Link></p>
+                                <p>Already have an account? <Link href="/auth/signin" style={{ color: '#001736', fontWeight: 700, textDecoration: 'none' }}>Sign In</Link></p>
+                            </>
+                        )}
                     </div>
                 </form>
             ) : (
@@ -290,5 +315,13 @@ export default function SignupPage() {
                 </form>
             )}
         </AuthLayout>
+    );
+}
+
+export default function SignupPage() {
+    return (
+        <Suspense fallback={<div style={{ textAlign: 'center', padding: '3rem', color: '#64748b' }}>Loading...</div>}>
+            <SignupForm />
+        </Suspense>
     );
 }

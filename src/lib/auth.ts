@@ -61,7 +61,7 @@ export const authOptions = {
                     if (dbUser) {
                         token.role = dbUser.email === 'admin@shark.com' ? 'SUPER_ADMIN' : dbUser.role;
                         token.adminPermissions = dbUser.email === 'admin@shark.com'
-                            ? 'manage_jobs,manage_colleges,manage_admissions,manage_users'
+                            ? 'manage_jobs,manage_colleges,manage_admissions,manage_users,manage_videos'
                             : (dbUser.adminPermissions || '');
                     }
                 } catch (e) {

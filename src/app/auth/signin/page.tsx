@@ -339,7 +339,19 @@ function SignInContent() {
                 </form>
             )}
 
-            {!isAdmin && (
+            {isAdmin ? (
+                <div style={{ marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid #f1f5f9', display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.88rem', color: '#64748b' }}>
+                    <p>
+                        Invited as an Administrator or need to sign up?{' '}
+                        <Link 
+                            href="/auth/signup?role=admin" 
+                            style={{ color: '#2563eb', fontWeight: 700, textDecoration: 'none' }}
+                        >
+                            Sign Up &amp; Activate Account
+                        </Link>
+                    </p>
+                </div>
+            ) : (
                 <div style={{ marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid #f1f5f9', display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.88rem', color: '#64748b' }}>
                     <p>
                         Don't have an account?{' '}

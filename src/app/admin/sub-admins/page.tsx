@@ -16,6 +16,7 @@ type SubAdmin = {
 };
 
 const ALL_PERMISSIONS = [
+    { key: 'manage_videos', label: '📺 Live Streams & Video Gallery', desc: 'Control live YouTube broadcasts, upload/edit videos, and manage the homepage video gallery' },
     { key: 'manage_jobs', label: 'Job Listings & Applications', desc: 'Manage jobs, view applicants, and approve employer postings' },
     { key: 'manage_colleges', label: 'Colleges Directory & Inquiries', desc: 'Manage college profiles, partner inquiries, and college admins' },
     { key: 'manage_admissions', label: 'Admissions Courses & Applications', desc: 'Manage admissions courses, student applications, and enrollment docs' },
@@ -231,9 +232,78 @@ export default function SubAdminsPage() {
                             </div>
 
                             <div style={{ marginBottom: '1.75rem' }}>
-                                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 800, color: '#001736', marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                                    Define Granular Admin Permissions:
-                                </label>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+                                    <label style={{ fontSize: '0.875rem', fontWeight: 800, color: '#001736', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                                        Define Granular Admin Permissions:
+                                    </label>
+                                </div>
+
+                                <div style={{ marginBottom: '1rem', display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
+                                    <button
+                                        type="button"
+                                        onClick={() => setSelectedPerms(['manage_videos'])}
+                                        style={{
+                                            padding: '0.35rem 0.75rem',
+                                            borderRadius: '999px',
+                                            fontSize: '0.78rem',
+                                            fontWeight: 700,
+                                            border: '1px solid #bfdbfe',
+                                            background: selectedPerms.length === 1 && selectedPerms.includes('manage_videos') ? '#2563eb' : '#eff6ff',
+                                            color: selectedPerms.length === 1 && selectedPerms.includes('manage_videos') ? '#ffffff' : '#1d4ed8',
+                                            cursor: 'pointer'
+                                        }}
+                                    >
+                                        📺 Video Admin Only
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setSelectedPerms(['manage_jobs'])}
+                                        style={{
+                                            padding: '0.35rem 0.75rem',
+                                            borderRadius: '999px',
+                                            fontSize: '0.78rem',
+                                            fontWeight: 700,
+                                            border: '1px solid #fed7aa',
+                                            background: selectedPerms.length === 1 && selectedPerms.includes('manage_jobs') ? '#ea580c' : '#fff7ed',
+                                            color: selectedPerms.length === 1 && selectedPerms.includes('manage_jobs') ? '#ffffff' : '#c2410c',
+                                            cursor: 'pointer'
+                                        }}
+                                    >
+                                        💼 Job Manager
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setSelectedPerms(['manage_colleges', 'manage_admissions'])}
+                                        style={{
+                                            padding: '0.35rem 0.75rem',
+                                            borderRadius: '999px',
+                                            fontSize: '0.78rem',
+                                            fontWeight: 700,
+                                            border: '1px solid #ddd6fe',
+                                            background: selectedPerms.length === 2 && selectedPerms.includes('manage_colleges') && selectedPerms.includes('manage_admissions') ? '#7c3aed' : '#f5f3ff',
+                                            color: selectedPerms.length === 2 && selectedPerms.includes('manage_colleges') && selectedPerms.includes('manage_admissions') ? '#ffffff' : '#6d28d9',
+                                            cursor: 'pointer'
+                                        }}
+                                    >
+                                        🎓 Admissions &amp; Colleges
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setSelectedPerms(ALL_PERMISSIONS.map(p => p.key))}
+                                        style={{
+                                            padding: '0.35rem 0.75rem',
+                                            borderRadius: '999px',
+                                            fontSize: '0.78rem',
+                                            fontWeight: 700,
+                                            border: '1px solid #bbf7d0',
+                                            background: selectedPerms.length === ALL_PERMISSIONS.length ? '#16a34a' : '#f0fdf4',
+                                            color: selectedPerms.length === ALL_PERMISSIONS.length ? '#ffffff' : '#15803d',
+                                            cursor: 'pointer'
+                                        }}
+                                    >
+                                        👑 All Permissions
+                                    </button>
+                                </div>
 
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
                                     {ALL_PERMISSIONS.map((perm) => (

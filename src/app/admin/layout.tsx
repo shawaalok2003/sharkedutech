@@ -14,7 +14,7 @@ const allAdminSidebarItems = [
     { label: "Job Applications", href: "/admin/applications", perm: "manage_jobs" },
     { label: "Application Approvals", href: "/admin/approvals", perm: "manage_jobs" },
     { label: "📄 Candidate Consent Forms", href: "/admin/consent-forms", perm: "manage_jobs" },
-    { label: "📺 Live Streams & Videos", href: "/admin/live-videos", perm: null },
+    { label: "📺 Live Streams & Videos", href: "/admin/live-videos", perm: "manage_videos" },
     { label: "Manage Colleges & Courses", href: "/admin/colleges", perm: "manage_colleges" },
     { label: "College Inquiries", href: "/admin/college-inquiries", perm: "manage_colleges" },
     { label: "Manage Admissions", href: "/admin/admissions", perm: "manage_admissions" },

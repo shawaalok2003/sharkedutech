@@ -71,7 +71,8 @@ export async function POST(request: Request) {
         let user = await prisma.user.findUnique({ where: { email } });
 
         if (user) {
-            // Update existing user to ADMIN role with assigned permissions
+            // If user already has an active account with password, preserve their active status
+            const hasExistingAccount = Boolean(user.password && user.isInviteAccepted);
             user = await prisma.user.update({
                 where: { email },
                 data: {
@@ -79,7 +80,7 @@ export async function POST(request: Request) {
                     adminPermissions: permString,
                     inviteToken,
                     inviteTokenExpires: tokenExpires,
-                    isInviteAccepted: false,
+                    isInviteAccepted: hasExistingAccount,
                     name: name || user.name
                 }
             });

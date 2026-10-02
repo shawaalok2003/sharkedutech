@@ -25,12 +25,15 @@ export async function POST(request: Request) {
         });
 
         if (existingUser && intendedRole && existingUser.role !== intendedRole) {
-            // Special Case: Allow Candidates to be checked against their role
-            // But if they are an EMPLOYER trying to login as CANDIDATE, block it.
-            return NextResponse.json(
-                { error: `This email is already registered as a ${existingUser.role}. Please use the correct login portal.` },
-                { status: 400 }
-            );
+            // Special Case: If user was invited/assigned as an ADMIN but hasn't activated/signed up yet,
+            // allow them to receive OTP to complete their registration.
+            const isPendingAdmin = existingUser.role === 'ADMIN' && !existingUser.isInviteAccepted;
+            if (!isPendingAdmin && intendedRole !== 'ADMIN') {
+                return NextResponse.json(
+                    { error: `This email is already registered as a ${existingUser.role}. Please use the correct login portal.` },
+                    { status: 400 }
+                );
+            }
         }
 
         // Generate OTP
