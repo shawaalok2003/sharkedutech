@@ -15,6 +15,7 @@ export const metadata: Metadata = {
 import { Navbar } from "@/components/layout/Navbar";
 import { StickySocials } from "@/components/layout/StickySocials";
 import { LiveVideoPopup } from "@/components/common/LiveVideoPopup";
+import { AIChatbot } from "@/components/common/AIChatbot";
 
 import Providers from "@/components/providers/SessionProvider";
 
@@ -33,6 +34,7 @@ export default function RootLayout({
           <Navbar />
           <StickySocials />
           <LiveVideoPopup />
+          <AIChatbot />
           {children}
         </Providers>
       </body>
