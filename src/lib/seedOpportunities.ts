@@ -606,7 +606,9 @@ export async function ensureOpportunitiesSeeded() {
       });
     }
 
+    let idx = 0;
     for (const opp of OPPORTUNITIES_DATA) {
+      idx++;
       const existing = await prisma.job.findFirst({
         where: { posterUrl: opp.posterUrl }
       });
@@ -624,7 +626,8 @@ export async function ensureOpportunitiesSeeded() {
         posterUrl: opp.posterUrl,
         isTopOpportunity: true,
         status: "Active",
-        employerId: employer.id
+        employerId: employer.id,
+        createdAt: new Date(Date.now() - (idx * 12 * 60 * 60 * 1000))
       };
 
       if (!existing) {

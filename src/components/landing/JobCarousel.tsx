@@ -69,11 +69,6 @@ export function JobCarousel({ jobs = [] }: { jobs?: any[] }) {
                                         <h3 className={styles.cardTitle}>{job.title}</h3>
                                         <div className={styles.cardMetaRow}>
                                             <p className={styles.companySubtitle}>{job.companyName || 'Luxury Hospitality Partner'}</p>
-                                            {dateFormatted && (
-                                                <span className={styles.cardDateText}>
-                                                    Posted: {dateFormatted}
-                                                </span>
-                                            )}
                                         </div>
                                         <p className={styles.cardSnippet}>
                                             {job.description ? (job.description.length > 80 ? job.description.substring(0, 80) + '...' : job.description) : 'Click to view full job requirements and apply.'}
