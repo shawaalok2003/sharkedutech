@@ -42,16 +42,25 @@ export function LiveBroadcastCarousel({ initialVideos = [] }: { initialVideos?: 
         }
     }, [initialVideos]);
 
-    // Close modal on Escape key
+    // Close modal on Escape key and lock background scrolling on all devices
     useEffect(() => {
+        if (activeModalVideo) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'Escape') {
                 setActiveModalVideo(null);
             }
         };
         window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, []);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+            document.body.style.overflow = '';
+        };
+    }, [activeModalVideo]);
 
     const scrollLeft = () => {
         if (carouselRef.current) {
