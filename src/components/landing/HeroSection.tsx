@@ -6,29 +6,67 @@ import styles from './HeroSection.module.css';
 
 const HERO_SLIDES = [
     {
-        url: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=2000&q=85",
-        alt: "Luxury 5-Star Hotel Resort & Pool Openings",
-        tag: "5-Star Resorts & Villas"
+        name: "JW Marriott Goa",
+        location: "Vagator, Goa",
+        category: "5-Star Luxury Resort",
+        url: "/hero/jw marriot goa.jpg",
+        alt: "JW Marriott Goa - 5-Star Luxury Resort"
     },
     {
-        url: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=2000&q=85",
-        alt: "Grand Luxury Hotel Lobby & Front Desk Careers",
-        tag: "Front Office & Concierge"
+        name: "JW Marriott Mumbai Sahar",
+        location: "Mumbai, Maharashtra",
+        category: "5-Star Luxury Hotel",
+        url: "/hero/jw marriot sahar.jpg",
+        alt: "JW Marriott Mumbai Sahar - 5-Star Luxury Hotel"
     },
     {
-        url: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=2000&q=85",
-        alt: "Fine Dining Restaurant & Master Chef Positions",
-        tag: "Culinary & F&B Service"
+        name: "Radisson Resort & Spa Kandla",
+        location: "Gandhidham, Gujarat",
+        category: "5-Star Luxury Resort",
+        url: "/hero/Radisson Resort & Spa Kandla.jpg",
+        alt: "Radisson Resort & Spa Kandla"
     },
     {
-        url: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=2000&q=85",
-        alt: "Elite Beachfront Hospitality Opportunities",
-        tag: "Luxury Beach Properties"
+        name: "Hyatt Ahmedabad",
+        location: "Vastrapur, Ahmedabad",
+        category: "5-Star Luxury Hotel",
+        url: "/hero/Hyatt Ahmedabad.avif",
+        alt: "Hyatt Ahmedabad"
     },
     {
-        url: "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=2000&q=85",
-        alt: "Executive Hospitality Management & Operations",
-        tag: "Management & Operations"
+        name: "Renaissance Hotel Ahmedabad",
+        location: "SG Highway, Ahmedabad",
+        category: "Marriott Luxury Brand",
+        url: "/hero/Renaissance Hotel Ahmedabad.jpg",
+        alt: "Renaissance Hotel Ahmedabad"
+    },
+    {
+        name: "Radisson Blu Hotel Indore",
+        location: "Indore, Madhya Pradesh",
+        category: "5-Star Premier Hotel",
+        url: "/hero/Radisson Blu Hotel Indore.webp",
+        alt: "Radisson Blu Hotel Indore"
+    },
+    {
+        name: "Sayaji Hotel Indore",
+        location: "Indore, Madhya Pradesh",
+        category: "5-Star Luxury Flagship",
+        url: "/hero/Sayaji Hotel Indore.webp",
+        alt: "Sayaji Hotel Indore"
+    },
+    {
+        name: "Gokulam Park Kochi",
+        location: "Kaloor, Kochi",
+        category: "Luxury 5-Star Hotel",
+        url: "/hero/Gokulam Park Kochi.webp",
+        alt: "Gokulam Park Kochi"
+    },
+    {
+        name: "Lemon Tree Premier Bangalore",
+        location: "Ulsoor, Bengaluru",
+        category: "Upscale 5-Star Hotel",
+        url: "/hero/Lemon Tree Premiew Bangalore.jpg",
+        alt: "Lemon Tree Premier Bangalore"
     }
 ];
 
@@ -254,6 +292,33 @@ export function HeroSection() {
                                 <span className={styles.statLabel}>Refund Guaranteed</span>
                             </div>
                         </div>
+                    </div>
+
+                    {/* Active Background Slide MOU Hotel Info & Scroll Down Button */}
+                    <div className={styles.mouHeroFooter}>
+                        <div 
+                            className={styles.activeHotelPill}
+                            title={`${HERO_SLIDES[currentSlide].name} (${HERO_SLIDES[currentSlide].location}) - Official MOU Partner`}
+                        >
+                            <span className={styles.activeHotelDot}></span>
+                            <span className={styles.activeHotelPrefix}>MOU Partner:</span>
+                            <span className={styles.activeHotelName}>{HERO_SLIDES[currentSlide].name}</span>
+                            <span className={styles.activeHotelDivider}>•</span>
+                            <span className={styles.activeHotelLocation}>📍 {HERO_SLIDES[currentSlide].location}</span>
+                        </div>
+
+                        <button
+                            type="button"
+                            className={styles.mouScrollButton}
+                            onClick={() => {
+                                const el = document.getElementById('partners');
+                                if (el) el.scrollIntoView({ behavior: 'smooth' });
+                            }}
+                            title="Click to scroll down to view our 400+ partner hotel logos"
+                        >
+                            <span>Scroll down to all 400+ hotel partners</span>
+                            <span className={styles.mouScrollArrow}>↓</span>
+                        </button>
                     </div>
                 </div>
             </div>
