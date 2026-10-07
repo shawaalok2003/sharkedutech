@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import styles from "./AIChatbot.module.css";
 
 type ChatMessage = {
@@ -30,6 +31,7 @@ const QUICK_CHIPS = [
 ];
 
 export function AIChatbot() {
+    const pathname = usePathname();
     const [isOpen, setIsOpen] = useState(false);
     const [showBubble, setShowBubble] = useState(true);
     const [messages, setMessages] = useState<ChatMessage[]>(INITIAL_MESSAGES);
@@ -38,6 +40,11 @@ export function AIChatbot() {
 
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
+
+    // Hide chatbot on admin dashboard pages
+    if (pathname?.startsWith('/admin')) {
+        return null;
+    }
 
     // Auto-scroll to bottom when messages update
     useEffect(() => {
@@ -130,9 +137,9 @@ export function AIChatbot() {
             const isListItem = trimmed.startsWith("- ") || trimmed.startsWith("• ");
             const content = isListItem ? trimmed.replace(/^[-•]\s*/, "") : trimmed;
 
-            // Parse [text](url) and **bold**
+            // Parse [text](url), **[text](url)**, [**text**](url), **bold**, and *italic*
             const parts: (string | React.ReactNode)[] = [];
-            const regex = /\[(.*?)\]\((.*?)\)|\*\*(.*?)\*\*/g;
+            const regex = /\*\*\[(.*?)\]\((.*?)\)\*\*|\[\*\*(.*?)\*\*\]\((.*?)\)|\[(.*?)\]\((.*?)\)|\*\*(.*?)\*\*|\*(.*?)\*/g;
             let lastIndex = 0;
             let match;
 
@@ -141,12 +148,45 @@ export function AIChatbot() {
                     parts.push(content.substring(lastIndex, match.index));
                 }
 
+                // **[text](url)**
                 if (match[1] && match[2]) {
-                    // Link
                     const linkText = match[1];
                     const linkHref = match[2];
                     const isInternal = linkHref.startsWith("/");
-
+                    parts.push(
+                        isInternal ? (
+                            <Link key={match.index} href={linkHref} onClick={() => { if (window.innerWidth < 640) setIsOpen(false); }}>
+                                <strong>{linkText}</strong>
+                            </Link>
+                        ) : (
+                            <a key={match.index} href={linkHref} target="_blank" rel="noopener noreferrer">
+                                <strong>{linkText}</strong>
+                            </a>
+                        )
+                    );
+                }
+                // [**text**](url)
+                else if (match[3] && match[4]) {
+                    const linkText = match[3];
+                    const linkHref = match[4];
+                    const isInternal = linkHref.startsWith("/");
+                    parts.push(
+                        isInternal ? (
+                            <Link key={match.index} href={linkHref} onClick={() => { if (window.innerWidth < 640) setIsOpen(false); }}>
+                                <strong>{linkText}</strong>
+                            </Link>
+                        ) : (
+                            <a key={match.index} href={linkHref} target="_blank" rel="noopener noreferrer">
+                                <strong>{linkText}</strong>
+                            </a>
+                        )
+                    );
+                }
+                // [text](url)
+                else if (match[5] && match[6]) {
+                    const linkText = match[5];
+                    const linkHref = match[6];
+                    const isInternal = linkHref.startsWith("/");
                     parts.push(
                         isInternal ? (
                             <Link key={match.index} href={linkHref} onClick={() => { if (window.innerWidth < 640) setIsOpen(false); }}>
@@ -158,9 +198,14 @@ export function AIChatbot() {
                             </a>
                         )
                     );
-                } else if (match[3]) {
-                    // Bold
-                    parts.push(<strong key={match.index}>{match[3]}</strong>);
+                }
+                // **bold**
+                else if (match[7]) {
+                    parts.push(<strong key={match.index}>{match[7]}</strong>);
+                }
+                // *italic*
+                else if (match[8]) {
+                    parts.push(<em key={match.index}>{match[8]}</em>);
                 }
 
                 lastIndex = regex.lastIndex;

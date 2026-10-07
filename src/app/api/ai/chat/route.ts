@@ -88,10 +88,40 @@ User Question: "${message}"`
         // 3. Built-in High-Accuracy Hospitality RAG & NLP Matching Engine
         let reply = "";
 
+        // Check for application process / how to apply
+        if (query.includes('how to apply') || query.includes('apply process') || query.includes('steps to apply') || query.includes('procedure') || query.includes('how can i apply')) {
+            reply = `### 📝 How to Apply for 5-Star Hotel Jobs at Shark Edutech\n\n` +
+                `Applying is fast, transparent, and direct without any third-party agency barriers:\n\n` +
+                `1. **Explore Active Openings**: Visit the [Hospitality Jobs Portal](/jobs) to browse verified vacancies by city, hotel brand, or department.\n` +
+                `2. **Review Job Details**: Click on any opening to view the job description, required experience, perks, and salary range (e.g. ₹20,000 - ₹55,000+/mo).\n` +
+                `3. **Submit Your Application**: Click the **Apply Now** button directly on the job page. Fill in your name, contact details, city, and upload your resume/CV.\n` +
+                `4. **Candidate Consent Form**: Review and accept the [Candidate Consent Form](/#consent-form) to activate your placement protection.\n` +
+                `5. **HR Screening & Interview**: Our hospitality recruitment specialists screen your profile and schedule your direct corporate hotel interview within **48 to 72 hours**.\n\n` +
+                `👉 **[Click Here to Explore All Hot Jobs & Apply Now](/jobs)**\n` +
+                `💬 *Need instant assistance? Chat with us on [WhatsApp Support](https://wa.me/919147331167)!*`;
+        }
+        // Check for salary / package inquiries
+        else if (query.includes('salary') || query.includes('pay') || query.includes('package') || query.includes('stipend') || query.includes('how much')) {
+            reply = `### 💰 Hospitality Industry Salaries & Compensation Overview\n\n` +
+                `Salaries at our 400+ luxury hotel partners are structured based on department, property tier, and experience:\n\n` +
+                `- 🛎️ **Front Office Associates & Guest Relations**: ₹20,000 - ₹38,000 / month\n` +
+                `- 👨‍🍳 **Culinary & Kitchen (Commis III / II / I)**: ₹18,000 - ₹42,000 / month\n` +
+                `- 🍽️ **Food & Beverage (Captain, Hostess, Bartender)**: ₹22,000 - ₹45,000 / month\n` +
+                `- 🧹 **Housekeeping Supervisors & Associates**: ₹18,000 - ₹35,000 / month\n` +
+                `- 👔 **Duty Managers & Department Supervisors**: ₹45,000 - ₹85,000+ / month\n` +
+                `- 🎓 **On-Job Training (OJT) Students / Interns**: ₹8,000 - ₹15,000 / month stipend + duty meals & accommodation\n\n` +
+                `**Additional 5-Star Hotel Perks:**\n` +
+                `✨ Service Charge / Tips distribution (₹3,000 - ₹12,000 extra/mo)\n` +
+                `✨ Free Duty Meals & Uniform Laundry\n` +
+                `✨ Staff Accommodation (at resort locations like Goa, Udaipur)\n` +
+                `✨ Group Medical Insurance & Provident Fund (PF)\n\n` +
+                `👉 **[Browse Current Job Openings with Exact Salaries](/jobs)**`;
+        }
         // Check for specific job search query (e.g., jobs in Goa, Front Office, Chef, Marriott)
-        if (query.includes('job') || query.includes('vacancy') || query.includes('hiring') || query.includes('opening') || query.includes('salary') || query.includes('career') || query.includes('recruitment')) {
+        else if (query.includes('job') || query.includes('vacancy') || query.includes('hiring') || query.includes('opening') || query.includes('career') || query.includes('recruitment')) {
             const matchingJobs = latestJobs.filter(j => 
                 query.includes('goa') ? j.location.toLowerCase().includes('goa') :
+                query.includes('mumbai') ? j.location.toLowerCase().includes('mumbai') :
                 query.includes('chef') || query.includes('culinary') || query.includes('cook') ? j.category.toLowerCase().includes('culinary') || j.title.toLowerCase().includes('chef') || j.category.toLowerCase().includes('f&b') :
                 query.includes('front office') || query.includes('reception') ? j.category.toLowerCase().includes('front office') || j.title.toLowerCase().includes('front') :
                 query.includes('housekeeping') ? j.category.toLowerCase().includes('housekeeping') :
@@ -111,45 +141,81 @@ User Question: "${message}"`
                 `\n\n👉 **[Browse All 50+ Hospitality Jobs Here](/jobs)**\n` +
                 `*No login is required to explore job details and submit an application!*`;
         }
+        // Courses & Admissions inquiries
         else if (query.includes('course') || query.includes('admission') || query.includes('college') || query.includes('diploma') || query.includes('degree') || query.includes('study') || query.includes('bhm') || query.includes('fees') || query.includes('eligibility')) {
-            reply = `### 🎓 Hospitality Education & Admissions\n\n` +
-                `Shark Edutech partners with accredited hotel management institutes and universities to provide industry-ready degrees and diploma programs:\n\n` +
-                `**Popular Programs Offered:**\n` +
-                `- 📘 **B.Sc. in Hospitality & Hotel Administration (BHM)** — 3 Years (Eligibility: 10+2)\n` +
-                `- 📕 **Diploma in Food & Beverage Service & Production** — 1-2 Years (Eligibility: 10th / 12th)\n` +
-                `- 📗 **Culinary Arts & Bakery Management** — 1 Year Intensive Kitchen Training\n` +
-                `- 📙 **Front Office & Guest Relations Executive Diploma** — 6 Months to 1 Year\n` +
-                `- 📓 **MBA in International Hospitality & Tourism Management** — 2 Years (Post Graduation)\n\n` +
-                `**Admissions Benefits:**\n` +
-                `✅ Guaranteed 100% On-Job Training (OJT) in 5-star hotels\n` +
-                `✅ Direct placement interviews upon course completion\n` +
-                `✅ Seat reservations and scholarship guidance\n\n` +
+            reply = `### 🎓 Hospitality Education & College Admissions Portal\n\n` +
+                `**Shark Edutech** partners with accredited hotel management institutes and universities across India to offer industry-ready degree and diploma programs:\n\n` +
+                `**Popular Academic Programs:**\n` +
+                `- 📘 **B.Sc. in Hospitality & Hotel Administration (BHM)** — 3 Years\n` +
+                `  • *Eligibility*: 10+2 Any Stream (Arts, Science, Commerce)\n` +
+                `  • *Curriculum*: Front Office, Food Production, F&B Service, Housekeeping, Hotel Accounts\n\n` +
+                `- 📕 **Diploma in Food Production (Professional Culinary & Bakery)** — 1 to 1.5 Years\n` +
+                `  • *Eligibility*: 10th or 12th Pass\n` +
+                `  • *Focus*: Continental, Indian, Oriental, Pastry & Kitchen Management\n\n` +
+                `- 📗 **Diploma in Food & Beverage Service & Bartending** — 1 Year\n` +
+                `  • *Eligibility*: 10th or 12th Pass\n` +
+                `  • *Focus*: Restaurant Operations, Beverage Science, Guest Etiquette, Banquet Management\n\n` +
+                `- 📙 **Diploma in Front Office & Guest Relations** — 6 Months to 1 Year\n` +
+                `  • *Eligibility*: 10+2 Pass • Opera PMS & Concierge Operations\n\n` +
+                `- 📓 **MBA in International Hospitality & Tourism Management** — 2 Years\n` +
+                `  • *Eligibility*: Graduate Any Stream • Leadership & Luxury Property Management\n\n` +
+                `**Key Admission Advantages:**\n` +
+                `✅ Guaranteed 100% On-Job Training (OJT) in 5-star properties with monthly stipend\n` +
+                `✅ Campus interview placement directly upon program completion\n` +
+                `✅ Transparent fees structure and education loan assistance\n\n` +
                 `👉 **[Explore College Profiles & Admissions Portal](/admissions)**`;
         }
-        else if (query.includes('tie up') || query.includes('tie-up') || query.includes('tieup') || query.includes('partner') || query.includes('marriott') || query.includes('taj') || query.includes('hyatt') || query.includes('hilton') || query.includes('oberoi') || query.includes('radisson') || query.includes('itc') || query.includes('leela') || query.includes('hotel')) {
-            reply = `### 🏨 400+ Luxury 5-Star Hotel Tie-Ups\n\n` +
-                `**Shark Edutech** is officially partnered with over **400+ leading hospitality chains and 5-star properties** nationwide, including:\n\n` +
-                `- 🌟 **Marriott International** (JW Marriott, Courtyard, Sheraton, Westin)\n` +
-                `- 🌟 **Taj Hotels & Resorts** (IHCL Luxury Properties)\n` +
-                `- 🌟 **Hyatt Hotels & Resorts** (Grand Hyatt, Hyatt Regency)\n` +
-                `- 🌟 **Hilton Worldwide & DoubleTree**\n` +
-                `- 🌟 **The Oberoi & Trident Hotels**\n` +
-                `- 🌟 **ITC Hotels & Luxury Collection**\n` +
-                `- 🌟 **Radisson Hotel Group**\n` +
-                `- 🌟 **The Leela Palaces, Hotels & Resorts**\n` +
-                `- 🌟 **Pride Hotels & Angsana Resorts**\n\n` +
-                `Our candidates receive direct interview shortlisting, On-Job Training (OJT), and accelerated placement support.\n\n` +
-                `👉 **[Click Here to Explore All Hotel Partners](/#partners)**`;
+        // Hotel tie-ups and MOUs
+        else if (query.includes('tie up') || query.includes('tie-up') || query.includes('tieup') || query.includes('partner') || query.includes('mou') || query.includes('marriott') || query.includes('taj') || query.includes('hyatt') || query.includes('hilton') || query.includes('oberoi') || query.includes('radisson') || query.includes('itc') || query.includes('leela') || query.includes('sayaji') || query.includes('hotel')) {
+            reply = `### 🏨 400+ Luxury 5-Star Hotel Tie-Ups & Official MOUs\n\n` +
+                `**Shark Edutech** holds verified direct recruitment tie-ups and signed MOUs with India's most prestigious hospitality chains, including:\n\n` +
+                `- 🌟 **Marriott International**: JW Marriott Goa, JW Marriott Mumbai Sahar, Renaissance Ahmedabad, Westin Pune, Fairfield by Marriott\n` +
+                `- 🌟 **Radisson Hotel Group**: Radisson Resort & Spa Kandla, Radisson Blu Hotel Indore\n` +
+                `- 🌟 **Hyatt Hotels & Resorts**: Hyatt Ahmedabad, Grand Hyatt Mumbai, Hyatt Regency\n` +
+                `- 🌟 **Taj Hotels & Resorts (IHCL)**: Taj Mahal Palace, Taj Bengal, Vivanta Properties\n` +
+                `- 🌟 **ITC Hotels & Luxury Collection**: ITC Narmada Ahmedabad, ITC Maratha, ITC Grand Chola\n` +
+                `- 🌟 **Sayaji Hotels**: Sayaji Hotel Indore, Sayaji Pune\n` +
+                `- 🌟 **Gokulam Group**: Gokulam Park Kochi\n` +
+                `- 🌟 **Lemon Tree Hotels**: Lemon Tree Premier Bangalore, Lemon Tree Goa\n` +
+                `- 🌟 **Hilton Worldwide**: Hilton Chennai, DoubleTree\n` +
+                `- 🌟 **The Oberoi Group & Trident Hotels**\n` +
+                `- 🌟 **The Leela Palaces, Hotels & Resorts**\n\n` +
+                `Candidates enrolled with Shark Edutech receive fast-tracked corporate HR interviews without intermediary fees.\n\n` +
+                `👉 **[Click Here to Explore All 400+ Partner Logos](/#partners)**`;
         }
-        else if (query.includes('guarantee') || query.includes('refund') || query.includes('policy') || query.includes('money back') || query.includes('safe') || query.includes('fraud') || query.includes('consent')) {
-            reply = `### 🛡️ 100% Written Refund Policy & 3-Month Placement Guarantee\n\n` +
-                `At **Shark International Edutech Pvt. Ltd.**, your career investment is 100% safe and legally backed by our Candidate Protection SOP:\n\n` +
-                `1. **3-Month Placement Commitment**: If our team does not successfully secure a hospitality placement for a registered candidate within **three (3) months** of completed registration, the full registration amount is **100% refunded without deduction**.\n` +
-                `2. **Direct Official Receipt**: Every registered student receives an official branded company receipt.\n` +
-                `3. **Online Consent Form**: Candidates can easily review and sign the digital placement agreement online.\n\n` +
-                `👉 **[Fill & Submit Consent Online](/#consent-form)**\n` +
-                `👉 **[Review Full Refund Policy](/refund-policy)**`;
+        // Guarantee & Refund policy
+        else if (query.includes('guarantee') || query.includes('refund') || query.includes('policy') || query.includes('money back') || query.includes('safe') || query.includes('fraud') || query.includes('fake') || query.includes('consent')) {
+            reply = `### 🛡️ 100% Written Refund Guarantee & Placement Commitment\n\n` +
+                `At **Shark International Edutech Pvt. Ltd.**, student trust and legal integrity are our #1 priority:\n\n` +
+                `1. **3-Month Placement Commitment**: If our placement cell does not secure a verified 5-star hotel job for a registered candidate within **three (3) months** of registration completion, the candidate receives a **100% full refund with zero deductions**.\n` +
+                `2. **Legal Candidate Consent Form**: Every registered candidate signs a formal agreement outlining placement terms, expectations, and money-back guarantees.\n` +
+                `3. **Official Branded Receipt**: Every payment is backed by an authentic corporate tax invoice and receipt.\n` +
+                `4. **Zero Hidden Charges**: No undisclosed fees at any stage of the recruitment process.\n\n` +
+                `👉 **[Fill & Submit Consent Agreement Online](/#consent-form)**\n` +
+                `👉 **[Download Candidate Consent Form PDF](/Candidate_Consent_Form.pdf)**\n` +
+                `👉 **[Read Full Written Refund Policy](/refund-policy)**`;
         }
+        // Employers & Recruiters
+        else if (query.includes('employer') || query.includes('recruiter') || query.includes('hire') || query.includes('post job') || query.includes('hotel hiring')) {
+            reply = `### 🏢 Employer & Hotel Recruiter Solutions\n\n` +
+                `Are you a General Manager, HR Director, or Hotel Owner looking to build a world-class hospitality team?\n\n` +
+                `- **Pre-Screened Candidates**: Access 15,000+ candidates trained in 5-star hospitality standards.\n` +
+                `- **Zero Recruitment Hassle**: Post unlimited openings, review candidate video profiles, and conduct virtual interviews.\n` +
+                `- **Bulk Placement Tie-Ups**: On-board fresh batches of BHM & culinary graduates directly from our campus partner network.\n\n` +
+                `👉 **[Register as Hotel Employer](/auth/signup/employer)**\n` +
+                `👉 **[Employer Portal Sign In](/auth/signin?type=employer)**`;
+        }
+        // College listing
+        else if (query.includes('list college') || query.includes('institute tie up') || query.includes('list your college') || query.includes('partner college')) {
+            reply = `### 🏫 List Your Hotel Management Institute\n\n` +
+                `Universities and colleges offering Hospitality, Culinary Arts, and Tourism courses can partner with Shark Edutech to:\n\n` +
+                `- Attract high-intent student admission inquiries from across India\n` +
+                `- Secure direct placement tie-ups with 400+ luxury hotel chains for your students\n` +
+                `- Host interactive masterclasses with top industry chefs and general managers\n\n` +
+                `👉 **[List Your College on Shark Edutech](/list-your-college)**\n` +
+                `👉 **[College Admin Login](/admissions/auth/signin)**`;
+        }
+        // Video Gallery & Live Masterclasses
         else if (query.includes('video') || query.includes('live') || query.includes('stream') || query.includes('webinar') || query.includes('gallery')) {
             const liveMsg = liveNowCount > 0 ? `🔴 **There is currently a LIVE broadcast in progress!**` : `Catch up on recorded masterclasses and upcoming live sessions.`;
             reply = `### 📺 Masterclasses, Live Streams & Video Gallery\n\n` +
@@ -158,38 +224,41 @@ User Question: "${message}"`
                 `👉 **[Visit the Video Gallery](/gallery)**\n` +
                 `👉 **[Explore Featured Videos on Homepage](/#video-gallery)**`;
         }
-        else if (query.includes('contact') || query.includes('whatsapp') || query.includes('phone') || query.includes('email') || query.includes('office') || query.includes('address') || query.includes('kolkata')) {
-            reply = `### 📞 Contact Shark Edutech\n\n` +
-                `We're here to assist you with jobs, admissions, and employer partnerships:\n\n` +
+        // Contact details
+        else if (query.includes('contact') || query.includes('whatsapp') || query.includes('phone') || query.includes('email') || query.includes('office') || query.includes('address') || query.includes('kolkata') || query.includes('support')) {
+            reply = `### 📞 Contact Shark Edutech Support Team\n\n` +
+                `We're here to assist you with job placements, college admissions, and hotel partnerships:\n\n` +
                 `- 🏢 **Company**: Shark International Edutech Pvt. Ltd.\n` +
                 `- 📍 **Registered Office**: Kolkata - 700157, West Bengal, India\n` +
-                `- 💬 **WhatsApp Chat**: [Click to Chat on WhatsApp](https://wa.me/919830000000)\n` +
-                `- ✉️ **Official Email**: [sharkedutechinternational@gmail.com](mailto:sharkedutechinternational@gmail.com)\n` +
-                `- 🌐 **Website**: [sharkedutech.com](https://sharkedutech.com)\n\n` +
+                `- 💬 **WhatsApp Chat**: [Click to Chat on WhatsApp (+91 91473 31167)](https://wa.me/919147331167)\n` +
+                `- ✉️ **Official Support Email**: [sharkedutechinternational@gmail.com](mailto:sharkedutechinternational@gmail.com)\n` +
+                `- 🌐 **Official Website**: [sharkedutech.com](https://sharkedutech.com)\n\n` +
                 `👉 **[Visit our Contact Page](/contact)** to submit an inquiry!`;
         }
+        // Account access & login
         else if (query.includes('login') || query.includes('sign in') || query.includes('register') || query.includes('signup') || query.includes('account') || query.includes('portal')) {
             reply = `### 🔐 Account Portals & Access\n\n` +
                 `Select the portal that fits your role:\n\n` +
-                `- 🎓 **Students & Candidates**:\n` +
-                `  • [Candidate Login](/auth/signin) • [Candidate Register](/auth/signup)\n\n` +
-                `- 💼 **Hotel Employers**:\n` +
-                `  • [Employer Login](/auth/signin?type=employer) • [Post Jobs & Register](/auth/signup/employer)\n\n` +
-                `- 🏫 **Partner Colleges**:\n` +
-                `  • [College Admin Login](/admissions/auth/signin) • [List Your College](/list-your-college)\n\n` +
-                `- 🛡️ **Super Admin & Sub-Admins**:\n` +
-                `  • [Admin Portal](/auth/signin?type=admin) • [Role-Based Access](/admin/sub-admins)`;
+                `- 🎓 **Students & Job Candidates**:\n` +
+                `  • [Candidate Sign In](/auth/signin) • [Candidate Register](/auth/signup)\n\n` +
+                `- 💼 **Hotel Employers & Recruiters**:\n` +
+                `  • [Employer Sign In](/auth/signin?type=employer) • [Post Jobs & Register](/auth/signup/employer)\n\n` +
+                `- 🏫 **Partner Colleges & Institutes**:\n` +
+                `  • [College Admin Sign In](/admissions/auth/signin) • [List Your College](/list-your-college)\n\n` +
+                `- 🛡️ **Administrative Team**:\n` +
+                `  • [Admin Sign In](/auth/signin?type=admin) • [Role-Based Access](/admin/sub-admins)`;
         }
+        // About Shark Edutech
         else if (query.includes('who') || query.includes('about') || query.includes('shark') || query.includes('what is')) {
             reply = `### 🦈 About Shark Edutech\n\n` +
-                `**Shark International Edutech Pvt. Ltd.** is India's premier integrated **Hospitality Education & Direct Placement Platform**.\n\n` +
-                `**What Sets Us Apart:**\n` +
-                `1. **Exclusive Hospitality Focus**: Dedicated solely to luxury hotels, resorts, airlines, and fine dining.\n` +
-                `2. **400+ Hotel Partners**: Direct recruiter network with Taj, Marriott, Hyatt, ITC, Hilton, and Radisson.\n` +
-                `3. **100% Refund Guarantee**: Placement secured within 3 months or a full 100% refund.\n` +
-                `4. **Dual Career Path**: Start fresh with hotel management admissions or get hired immediately via active openings.\n\n` +
-                `👉 **[Learn More on our About Us Page](/about)**\n` +
-                `👉 **[Explore 50+ Job Openings](/jobs)**`;
+                `**Shark International Edutech Pvt. Ltd.** is India's dedicated hospitality recruitment and career acceleration platform built exclusively for hotels, resorts, and hospitality professionals.\n\n` +
+                `**Core Pillars:**\n` +
+                `1. **Dedicated Hospitality Focus**: 100% focused on 5-star hotels, luxury resorts, fine dining, and hospitality education.\n` +
+                `2. **400+ Hotel Network**: Direct tie-ups with Marriott, Taj, Hyatt, ITC, Radisson, Hilton, and Sayaji.\n` +
+                `3. **100% Refund Guarantee**: Placement delivered within 3 months or a full 100% written money-back guarantee.\n` +
+                `4. **Comprehensive Ecosystem**: Discover verified job openings, explore hotel management admissions, or attend live masterclasses.\n\n` +
+                `👉 **[Read More on our About Us Page](/about)**\n` +
+                `👉 **[Explore 50+ Active Openings](/jobs)**`;
         }
         else {
             // General friendly overview with guidance chips
@@ -199,7 +268,8 @@ User Question: "${message}"`
                 `- 🎓 **Colleges & Admissions**: [Explore Hotel Management Courses & Partner Colleges](/admissions).\n` +
                 `- 🏨 **5-Star Hotel Tie-Ups**: [View 400+ Partner Brands](/#partners) like Marriott, Taj, and Hyatt.\n` +
                 `- 🛡️ **Refund Guarantee**: Learn about our [3-Month 100% Placement Policy](/refund-policy).\n` +
-                `- 📞 **Get in Touch**: [Contact Support & WhatsApp](/contact).\n\n` +
+                `- 📝 **How to Apply**: Simple 3-step application without third-party fees.\n` +
+                `- 📞 **Get in Touch**: [Contact Support & WhatsApp (+91 91473 31167)](https://wa.me/919147331167).\n\n` +
                 `*Feel free to ask me any specific question, e.g. "What jobs are in Goa?", "How does the refund work?", or "Tell me about culinary courses!"*`;
         }
 

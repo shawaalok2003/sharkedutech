@@ -180,7 +180,7 @@
 /* Floating Action Buttons */
 .fabGroup {
     position: fixed;
-    bottom: 2rem;
+    bottom: 5.5rem;
     right: 2rem;
     display: flex;
     flex-direction: column;
