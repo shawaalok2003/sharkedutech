@@ -26,8 +26,8 @@ export function WhoWeAreSection() {
                     {/* Image Column */}
                     <div className={styles.imageFrame}>
                         <img 
-                            src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&w=1000&q=80" 
-                            alt="Hospitality Professionals Team - Chefs, Front Desk & Management" 
+                            src="/hero/jw marriot sahar.jpg" 
+                            alt="JW Marriott Mumbai Sahar - 5-Star Hotel Partner" 
                             className={styles.image}
                         />
                     </div>

@@ -9,8 +9,8 @@ export function CareerMilestoneSection() {
                     {/* Image Column */}
                     <div className={styles.imageFrame}>
                         <img 
-                            src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1000&q=80" 
-                            alt="Luxury 5-Star Hotel Front Office Team Greeting Guest" 
+                            src="/hero/jw marriot goa.jpg" 
+                            alt="JW Marriott Goa - 5-Star Luxury Resort Partner" 
                             className={styles.image}
                         />
                     </div>
