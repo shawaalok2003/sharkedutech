@@ -96,7 +96,8 @@ Instructions:
                         const response = await fetch(geminiUrl, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ contents })
+                            body: JSON.stringify({ contents }),
+                            signal: AbortSignal.timeout(5000)
                         });
 
                         if (response.ok) {
