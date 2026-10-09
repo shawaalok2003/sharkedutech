@@ -60,7 +60,8 @@ Core Platform Knowledge:
 - College Admissions & Courses (/admissions): B.Sc. in Hospitality & Hotel Administration (BHM, 3 yrs, 10+2 eligibility), Diploma in Food Production & Culinary Arts (1.5 yrs, 10th/12th), Diploma in F&B Service & Bartending (1 yr), Front Office Diploma, MBA in Hospitality (2 yrs).
 - 100% On-Job Training (OJT): Guaranteed 6-12 months training in 5-star properties with monthly stipend.
 - 400+ Hotel Partners & MOUs (/#partners): JW Marriott Goa, JW Marriott Mumbai Sahar, Renaissance Ahmedabad, Radisson Blu Indore, Radisson Resort & Spa Kandla, Hyatt Ahmedabad, Taj Hotels (IHCL), ITC Hotels, Sayaji, Gokulam, Lemon Tree, Hilton Chennai.
-- 100% Written Refund Guarantee (/refund-policy): 3-month placement commitment. If not placed within 3 months of registration, full 100% money-back guarantee without deduction. Signed legal Candidate Consent Agreement (/#consent-form).
+- Candidate Job Placement Guarantee (/#consent-form): 3-month placement commitment for registered job candidates. If not placed in a verified hotel within 3 months of registration completion, full 100% money-back guarantee without deduction as per the Candidate Consent Agreement.
+- College Admissions & Counseling Refund Policy (/refund-policy): Application fees are non-refundable; college seat deposits follow individual institution policies; counseling service fees are 100% refundable if cancelled within 24 hours of payment.
 - Hotel Employers: Can register at /auth/signup/employer to post vacancies and hire pre-screened talent.
 - Colleges: Can list their campus at /list-your-college.
 - Masterclasses & Videos: Free live streams and recorded sessions at /gallery.
@@ -214,15 +215,17 @@ Instructions:
         }
         // Guarantee & Refund policy
         else if (query.includes('guarantee') || query.includes('refund') || query.includes('policy') || query.includes('money back') || query.includes('safe') || query.includes('fraud') || query.includes('fake') || query.includes('consent')) {
-            reply = `### 🛡️ 100% Written Refund Guarantee & Placement Commitment\n\n` +
-                `At **Shark International Edutech Pvt. Ltd.**, student trust and legal integrity are our #1 priority:\n\n` +
-                `1. **3-Month Placement Commitment**: If our placement cell does not secure a verified 5-star hotel job for a registered candidate within **three (3) months** of registration completion, the candidate receives a **100% full refund with zero deductions**.\n` +
-                `2. **Legal Candidate Consent Form**: Every registered candidate signs a formal agreement outlining placement terms, expectations, and money-back guarantees.\n` +
-                `3. **Official Branded Receipt**: Every payment is backed by an authentic corporate tax invoice and receipt.\n` +
-                `4. **Zero Hidden Charges**: No undisclosed fees at any stage of the recruitment process.\n\n` +
-                `👉 **[Fill & Submit Consent Agreement Online](/#consent-form)**\n` +
-                `👉 **[Download Candidate Consent Form PDF](/Candidate_Consent_Form.pdf)**\n` +
-                `👉 **[Read Full Written Refund Policy](/refund-policy)**`;
+            reply = `### 🛡️ Refund Policy & Placement Guarantee Details\n\n` +
+                `At **Shark International Edutech Pvt. Ltd.**, we maintain transparent and legally documented policies for both job seekers and academic applicants:\n\n` +
+                `#### 1. 💼 Candidate Job Placement Guarantee (Candidate Consent Agreement)\n` +
+                `- **3-Month Placement Commitment**: If our placement cell does not secure a verified 5-star hotel job for a registered candidate within **three (3) months** of registration completion, the candidate receives a **100% full refund with zero deductions**.\n` +
+                `- **Legal Candidate Consent Agreement**: Every registered candidate reviews and signs a legal agreement outlining placement terms and money-back protection.\n` +
+                `- 👉 **[Submit Online Consent Agreement](/#consent-form)** | **[Download Consent Form PDF](/Candidate_Consent_Form.pdf)**\n\n` +
+                `#### 2. 🎓 College Admissions & Counseling Refund Terms\n` +
+                `- **Application Processing Fees**: Non-refundable (covers administrative review).\n` +
+                `- **College Seat Deposits**: Governed by the respective partner institution's withdrawal rules.\n` +
+                `- **Counseling Services**: 100% refundable if cancelled within 24 hours of payment; 50% if cancelled before the first session.\n` +
+                `- 👉 **[Read Detailed Admissions Refund Policy](/refund-policy)**`;
         }
         // Employers & Recruiters
         else if (query.includes('employer') || query.includes('recruiter') || query.includes('hire') || query.includes('post job') || query.includes('hotel hiring')) {
