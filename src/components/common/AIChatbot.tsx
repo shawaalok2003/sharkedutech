@@ -17,7 +17,7 @@ const INITIAL_MESSAGES: ChatMessage[] = [
     {
         id: "msg-init-1",
         sender: "bot",
-        text: `### Hello! Welcome to Shark AI Assistant 👋\n\nI am your 24/7 **Hospitality Career & Admissions Advisor**, powered by **Gemini AI**.\n\nAsk me anything about:\n- 💼 **50+ Verified 5-Star Hotel Jobs** (Front Office, Chefs, F&B, Housekeeping)\n- 🎓 **Hotel Management Degrees & Admissions** (/admissions)\n- 🏨 **400+ Luxury Hotel MOUs** (Taj, Marriott, Hyatt, Radisson, ITC)\n- 🛡️ **100% Written Refund Policy** & 3-Month Placement Guarantee\n- ✍️ **Candidate Consent Form & Registration**\n- 📞 Official Contact & Kolkata Office Support\n\nHow can I help guide your hospitality journey today?`,
+        text: `### Hello! Welcome to Shark AI Assistant 👋\n\nI am your 24/7 **Hospitality Career & Admissions Advisor**.\n\nAsk me anything about:\n- 💼 **50+ Verified 5-Star Hotel Jobs** (Front Office, Chefs, F&B, Housekeeping)\n- 🎓 **Hotel Management Degrees & Admissions** (/admissions)\n- 🏨 **400+ Luxury Hotel MOUs** (Taj, Marriott, Hyatt, Radisson, ITC)\n- 🛡️ **100% Written Refund Policy** & 3-Month Placement Guarantee\n- ✍️ **Candidate Consent Form & Registration**\n- 📞 Official Contact & Kolkata Office Support\n\nHow can I help guide your hospitality journey today?`,
         time: "Just now"
     }
 ];
@@ -336,7 +336,6 @@ export function AIChatbot() {
                         <div>
                             <div className={styles.headerTitleRow}>
                                 <h3 className={styles.headerTitle}>Shark AI Advisor</h3>
-                                <span className={styles.geminiBadge}>✦ Gemini AI</span>
                             </div>
                             <div className={styles.headerStatus}>
                                 24/7 Verified Hospitality &amp; Admissions Guide
