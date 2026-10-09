@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import styles from "./AIChatbot.module.css";
 
@@ -16,18 +17,19 @@ const INITIAL_MESSAGES: ChatMessage[] = [
     {
         id: "msg-init-1",
         sender: "bot",
-        text: `### Hello! Welcome to Shark Edutech AI 👋\n\nI am your 24/7 **Hospitality & Career Advisor**. Ask me anything about:\n- 💼 **50+ Verified Hotel Jobs** (Front Office, Chef, F&B, Housekeeping)\n- 🎓 **Hotel Management Courses & College Admissions**\n- 🏨 **400+ Luxury Hotel Tie-Ups** (Taj, Marriott, Hyatt, ITC)\n- 🛡️ **100% Written Refund Policy** & Placement Guarantee\n- 📞 Contact and registration support\n\nHow can I help you today?`,
+        text: `### Hello! Welcome to Shark AI Assistant 👋\n\nI am your 24/7 **Hospitality Career & Admissions Advisor**, powered by **Gemini AI**.\n\nAsk me anything about:\n- 💼 **50+ Verified 5-Star Hotel Jobs** (Front Office, Chefs, F&B, Housekeeping)\n- 🎓 **Hotel Management Degrees & Admissions** (/admissions)\n- 🏨 **400+ Luxury Hotel MOUs** (Taj, Marriott, Hyatt, Radisson, ITC)\n- 🛡️ **100% Written Refund Policy** & 3-Month Placement Guarantee\n- ✍️ **Candidate Consent Form & Registration**\n- 📞 Official Contact & Kolkata Office Support\n\nHow can I help guide your hospitality journey today?`,
         time: "Just now"
     }
 ];
 
 const QUICK_CHIPS = [
     { label: "💼 Explore Hot Jobs", query: "Show me the latest hospitality jobs and salary ranges" },
-    { label: "🎓 Hotel Courses", query: "What hotel management courses and admissions are available?" },
+    { label: "🎓 Hotel Courses & BHM", query: "What hotel management courses and admissions are available?" },
     { label: "🏨 5-Star Hotel Tie-Ups", query: "Which luxury hotels are tied up with Shark Edutech?" },
-    { label: "🛡️ Refund Policy", query: "How does the 100% placement refund guarantee work?" },
-    { label: "✍️ Candidate Consent", query: "Tell me about the Candidate Consent Form and how to apply" },
-    { label: "📞 Contact & Office", query: "Where is Shark Edutech located and how can I contact support?" }
+    { label: "🛡️ 100% Refund Policy", query: "How does the 100% placement refund guarantee work?" },
+    { label: "✍️ Candidate Consent Form", query: "Tell me about the Candidate Consent Form and how to apply" },
+    { label: "💰 Salary & Stipends", query: "What are the typical salaries and perks in 5-star hotel jobs?" },
+    { label: "📞 Contact Support", query: "Where is Shark Edutech located and how can I contact support?" }
 ];
 
 export function AIChatbot() {
@@ -53,12 +55,23 @@ export function AIChatbot() {
         }
     }, [messages, isLoading, isOpen]);
 
-    // Focus input on window open
+    // Focus input on sidebar open
     useEffect(() => {
         if (isOpen) {
             setShowBubble(false);
-            setTimeout(() => inputRef.current?.focus(), 150);
+            setTimeout(() => inputRef.current?.focus(), 250);
         }
+    }, [isOpen]);
+
+    // Handle Escape key to close sidebar
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Escape" && isOpen) {
+                setIsOpen(false);
+            }
+        };
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
     }, [isOpen]);
 
     const handleSendMessage = async (textToSend?: string) => {
@@ -105,7 +118,7 @@ export function AIChatbot() {
             const errorMsg: ChatMessage = {
                 id: `bot-err-${Date.now()}`,
                 sender: "bot",
-                text: "I couldn't connect right now. You can browse all active jobs directly at [/jobs](/jobs) or reach out on WhatsApp!",
+                text: "I couldn't connect right now. You can browse all active jobs directly at [/jobs](/jobs) or reach out on [WhatsApp (+91 91473 31167)](https://wa.me/919147331167)!",
                 time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
             };
             setMessages(prev => [...prev, errorMsg]);
@@ -127,7 +140,7 @@ export function AIChatbot() {
             const trimmed = line.trim();
 
             if (!trimmed) {
-                return <div key={idx} style={{ height: "0.4rem" }} />;
+                return <div key={idx} style={{ height: "0.35rem" }} />;
             }
 
             if (trimmed.startsWith("### ")) {
@@ -155,7 +168,7 @@ export function AIChatbot() {
                     const isInternal = linkHref.startsWith("/");
                     parts.push(
                         isInternal ? (
-                            <Link key={match.index} href={linkHref} onClick={() => { if (window.innerWidth < 640) setIsOpen(false); }}>
+                            <Link key={match.index} href={linkHref} onClick={() => { if (window.innerWidth < 768) setIsOpen(false); }}>
                                 <strong>{linkText}</strong>
                             </Link>
                         ) : (
@@ -172,7 +185,7 @@ export function AIChatbot() {
                     const isInternal = linkHref.startsWith("/");
                     parts.push(
                         isInternal ? (
-                            <Link key={match.index} href={linkHref} onClick={() => { if (window.innerWidth < 640) setIsOpen(false); }}>
+                            <Link key={match.index} href={linkHref} onClick={() => { if (window.innerWidth < 768) setIsOpen(false); }}>
                                 <strong>{linkText}</strong>
                             </Link>
                         ) : (
@@ -189,7 +202,7 @@ export function AIChatbot() {
                     const isInternal = linkHref.startsWith("/");
                     parts.push(
                         isInternal ? (
-                            <Link key={match.index} href={linkHref} onClick={() => { if (window.innerWidth < 640) setIsOpen(false); }}>
+                            <Link key={match.index} href={linkHref} onClick={() => { if (window.innerWidth < 768) setIsOpen(false); }}>
                                 {linkText}
                             </Link>
                         ) : (
@@ -217,7 +230,7 @@ export function AIChatbot() {
 
             if (isListItem) {
                 return (
-                    <li key={idx} style={{ marginLeft: "1rem", marginBottom: "0.25rem" }}>
+                    <li key={idx} style={{ marginLeft: "1.1rem", marginBottom: "0.25rem" }}>
                         {parts}
                     </li>
                 );
@@ -233,7 +246,19 @@ export function AIChatbot() {
             <div className={styles.floatingLauncher}>
                 {showBubble && !isOpen && (
                     <div className={styles.welcomeBubble} onClick={() => setIsOpen(true)}>
-                        <span>💬 Ask Shark AI (Jobs &amp; Courses)</span>
+                        <div className={styles.bubbleAvatarWrapper}>
+                            <Image
+                                src="/images/ai-avatar.jpg"
+                                alt="Shark AI"
+                                width={32}
+                                height={32}
+                                className={styles.bubbleMiniAvatar}
+                            />
+                        </div>
+                        <div className={styles.bubbleTextGroup}>
+                            <span className={styles.bubbleTitle}>Shark AI Assistant</span>
+                            <span className={styles.bubbleSubtitle}>Ask about Jobs &amp; Courses</span>
+                        </div>
                         <button
                             type="button"
                             className={styles.welcomeBubbleClose}
@@ -250,132 +275,195 @@ export function AIChatbot() {
 
                 <button
                     type="button"
-                    className={styles.launcherButton}
+                    className={`${styles.launcherButton} ${isOpen ? styles.launcherActive : ''}`}
                     onClick={() => setIsOpen(!isOpen)}
-                    aria-label="Toggle Shark AI Chatbot"
+                    aria-label="Toggle Shark AI Chatbot Sidebar"
                     title="Ask Shark AI Assistant"
                 >
                     <div className={styles.launcherPulse} />
                     <span className={styles.launcherBadge} />
+                    
                     {isOpen ? (
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
                             <line x1="6" y1="6" x2="18" y2="18"></line>
                         </svg>
                     ) : (
-                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                            <circle cx="9" cy="10" r="1" fill="currentColor"></circle>
-                            <circle cx="12" cy="10" r="1" fill="currentColor"></circle>
-                            <circle cx="15" cy="10" r="1" fill="currentColor"></circle>
-                        </svg>
+                        <div className={styles.launcherAvatarContainer}>
+                            <Image
+                                src="/images/ai-avatar.jpg"
+                                alt="Shark AI"
+                                width={54}
+                                height={54}
+                                className={styles.launcherAvatarImg}
+                                priority
+                            />
+                            <span className={styles.aiSparkleBadge}>AI</span>
+                        </div>
                     )}
                 </button>
             </div>
 
-            {/* Chatbot Window */}
+            {/* Backdrop Blur Overlay */}
             {isOpen && (
-                <div className={styles.chatWindow}>
-                    {/* Header */}
-                    <div className={styles.chatHeader}>
-                        <div className={styles.headerInfo}>
-                            <div className={styles.botAvatar}>🦈</div>
-                            <div>
+                <div
+                    className={styles.sidebarOverlay}
+                    onClick={() => setIsOpen(false)}
+                    aria-hidden="true"
+                />
+            )}
+
+            {/* Chatbot Sidebar Drawer */}
+            <aside
+                className={`${styles.chatSidebar} ${isOpen ? styles.chatSidebarOpen : ""}`}
+                role="dialog"
+                aria-modal="true"
+                aria-label="Shark AI Assistant Sidebar"
+            >
+                {/* Header */}
+                <div className={styles.chatHeader}>
+                    <div className={styles.headerInfo}>
+                        <div className={styles.headerAvatarWrapper}>
+                            <Image
+                                src="/images/ai-avatar.jpg"
+                                alt="Shark AI Avatar"
+                                width={44}
+                                height={44}
+                                className={styles.headerAvatarImg}
+                            />
+                            <span className={styles.headerOnlineDot} />
+                        </div>
+                        <div>
+                            <div className={styles.headerTitleRow}>
                                 <h3 className={styles.headerTitle}>Shark AI Advisor</h3>
-                                <div className={styles.headerStatus}>
-                                    <span className={styles.statusDot}></span>
-                                    Online • 24/7 Hospitality Guide
-                                </div>
+                                <span className={styles.geminiBadge}>✦ Gemini AI</span>
                             </div>
-                        </div>
-
-                        <div className={styles.headerControls}>
-                            <button
-                                type="button"
-                                className={styles.headerBtn}
-                                onClick={handleResetChat}
-                                title="Reset Conversation"
-                            >
-                                🔄
-                            </button>
-                            <button
-                                type="button"
-                                className={styles.headerBtn}
-                                onClick={() => setIsOpen(false)}
-                                title="Close Chat"
-                            >
-                                ✕
-                            </button>
+                            <div className={styles.headerStatus}>
+                                24/7 Verified Hospitality &amp; Admissions Guide
+                            </div>
                         </div>
                     </div>
 
-                    {/* Quick Suggestion Chips */}
-                    <div className={styles.chipsContainer}>
-                        {QUICK_CHIPS.map((chip, i) => (
-                            <button
-                                key={i}
-                                type="button"
-                                className={styles.chipButton}
-                                onClick={() => handleSendMessage(chip.query)}
-                                disabled={isLoading}
-                            >
-                                {chip.label}
-                            </button>
-                        ))}
+                    <div className={styles.headerControls}>
+                        <button
+                            type="button"
+                            className={styles.headerBtn}
+                            onClick={handleResetChat}
+                            title="Reset Conversation"
+                            aria-label="Reset Conversation"
+                        >
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                                <path d="M3 3v5h5" />
+                            </svg>
+                        </button>
+                        <button
+                            type="button"
+                            className={`${styles.headerBtn} ${styles.headerCloseBtn}`}
+                            onClick={() => setIsOpen(false)}
+                            title="Close Sidebar"
+                            aria-label="Close Sidebar"
+                        >
+                            ✕
+                        </button>
                     </div>
+                </div>
 
-                    {/* Messages Area */}
-                    <div className={styles.messagesContainer}>
-                        {messages.map((msg) => (
-                            <div
-                                key={msg.id}
-                                className={`${styles.messageRow} ${msg.sender === "user" ? styles.userRow : styles.botRow}`}
-                            >
-                                <div
-                                    className={`${styles.messageBubble} ${
-                                        msg.sender === "user" ? styles.userBubble : styles.botBubble
-                                    }`}
-                                >
-                                    {msg.sender === "user" ? msg.text : renderFormattedText(msg.text)}
+                {/* Quick Suggestion Chips */}
+                <div className={styles.chipsContainer}>
+                    {QUICK_CHIPS.map((chip, i) => (
+                        <button
+                            key={i}
+                            type="button"
+                            className={styles.chipButton}
+                            onClick={() => handleSendMessage(chip.query)}
+                            disabled={isLoading}
+                        >
+                            {chip.label}
+                        </button>
+                    ))}
+                </div>
+
+                {/* Messages Area */}
+                <div className={styles.messagesContainer}>
+                    {messages.map((msg) => (
+                        <div
+                            key={msg.id}
+                            className={`${styles.messageRow} ${msg.sender === "user" ? styles.userRow : styles.botRow}`}
+                        >
+                            {msg.sender === "bot" && (
+                                <div className={styles.botRowWrapper}>
+                                    <div className={styles.botAvatarMiniContainer}>
+                                        <Image
+                                            src="/images/ai-avatar.jpg"
+                                            alt="Shark AI"
+                                            width={28}
+                                            height={28}
+                                            className={styles.botAvatarMini}
+                                        />
+                                    </div>
+                                    <div className={styles.botBubbleGroup}>
+                                        <div className={styles.botBubble}>
+                                            {renderFormattedText(msg.text)}
+                                        </div>
+                                        <span className={styles.messageTime}>{msg.time}</span>
+                                    </div>
                                 </div>
-                                <span
-                                    className={`${styles.messageTime} ${
-                                        msg.sender === "user" ? styles.userTime : ""
-                                    }`}
-                                >
-                                    {msg.time}
-                                </span>
-                            </div>
-                        ))}
+                            )}
 
-                        {/* Typing Animation */}
-                        {isLoading && (
-                            <div className={`${styles.messageRow} ${styles.botRow}`}>
+                            {msg.sender === "user" && (
+                                <div className={styles.userRowWrapper}>
+                                    <div className={styles.userBubble}>
+                                        {msg.text}
+                                    </div>
+                                    <span className={`${styles.messageTime} ${styles.userTime}`}>
+                                        {msg.time}
+                                    </span>
+                                </div>
+                            )}
+                        </div>
+                    ))}
+
+                    {/* Typing Animation */}
+                    {isLoading && (
+                        <div className={`${styles.messageRow} ${styles.botRow}`}>
+                            <div className={styles.botRowWrapper}>
+                                <div className={styles.botAvatarMiniContainer}>
+                                    <Image
+                                        src="/images/ai-avatar.jpg"
+                                        alt="Shark AI"
+                                        width={28}
+                                        height={28}
+                                        className={styles.botAvatarMini}
+                                    />
+                                </div>
                                 <div className={styles.typingBubble}>
                                     <span className={styles.typingDot}></span>
                                     <span className={styles.typingDot}></span>
                                     <span className={styles.typingDot}></span>
                                 </div>
                             </div>
-                        )}
+                        </div>
+                    )}
 
-                        <div ref={messagesEndRef} />
-                    </div>
+                    <div ref={messagesEndRef} />
+                </div>
 
-                    {/* Input Bar */}
-                    <form
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            handleSendMessage();
-                        }}
-                        className={styles.inputForm}
-                    >
+                {/* Input Bar Form */}
+                <form
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        handleSendMessage();
+                    }}
+                    className={styles.inputForm}
+                >
+                    <div className={styles.inputWrapper}>
                         <input
                             ref={inputRef}
                             type="text"
                             value={inputValue}
                             onChange={(e) => setInputValue(e.target.value)}
-                            placeholder="Ask about jobs, courses, tie-ups, refund..."
+                            placeholder="Ask about 5-star jobs, courses, tie-ups, refund..."
                             className={styles.chatInput}
                             disabled={isLoading}
                         />
@@ -390,9 +478,12 @@ export function AIChatbot() {
                                 <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
                             </svg>
                         </button>
-                    </form>
-                </div>
-            )}
+                    </div>
+                    <div className={styles.inputDisclaimer}>
+                        Shark AI answers all questions about hospitality careers, verified jobs &amp; admissions.
+                    </div>
+                </form>
+            </aside>
         </>
     );
 }

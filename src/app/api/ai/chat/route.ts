@@ -43,45 +43,69 @@ export async function POST(request: Request) {
             prisma.liveVideo.count({ where: { isLiveNow: true } }).catch(() => 0)
         ]);
 
-        // 2. Check if external LLM API key is provided (OpenAI or Gemini)
-        const geminiKey = process.env.GEMINI_API_KEY;
-        const openAiKey = process.env.OPENAI_API_KEY;
+        // 2. Call Google Gemini API if GEMINI_API_KEY / GOOGLE_API_KEY is configured
+        const geminiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY;
 
         if (geminiKey) {
             try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [
-                            {
-                                role: 'user',
-                                parts: [
-                                    {
-                                        text: `You are the official Shark Edutech AI Assistant for Shark International Edutech Pvt. Ltd. (Kolkata - 700157).
-Live Database Status:
-- Total Active Hospitality Jobs: ${totalJobs}
-- Latest Openings: ${JSON.stringify(latestJobs)}
-- Top Courses: ${JSON.stringify(sampleCourses)}
-- Partner Hotels: Over 400+ luxury hotels (Marriott, Taj, Hyatt, Hilton, Radisson, Oberoi, ITC, The Leela).
-- Policy: 100% written refund guarantee if placement is not secured within 3 months.
-- Platform links: /jobs (Browse Jobs), /admissions (Explore Colleges & Courses), /gallery (Video Gallery), /#partners (Hotel Tie-Ups), /auth/signin (Login), /auth/signup (Register).
-Answer the user's question clearly, warmly, and professionally using markdown with clickable links.
-User Question: "${message}"`
-                                    }
-                                ]
-                            }
-                        ]
-                    })
+                const systemPrompt = `You are "Shark AI", the official 24/7 AI Hospitality & Career Advisor for Shark International Edutech Pvt. Ltd. (Kolkata - 700157, West Bengal, India).
+Your role is to guide students, job seekers, hotel recruiters, and college partners with warm, encouraging, authoritative, and 100% accurate information.
+
+Core Platform Knowledge:
+- Active 5-Star Hotel Jobs: Currently ${totalJobs}+ active verified openings in luxury hotels (Front Office, F&B Hostess, Commis Chefs, Housekeeping Supervisors, Duty Managers, Bartenders).
+- Latest Job Openings: ${JSON.stringify(latestJobs)}
+- Top Locations: Goa, Mumbai, Delhi NCR, Bangalore, Pune, Ahmedabad, Indore, Kochi, Chennai, Jaipur.
+- Salary Packages: ₹18,000 to ₹1,20,000/month depending on role, plus 5-star hotel service charge tips (₹3k-₹12k/mo), duty meals, and accommodation.
+- How to Apply: Visit /jobs, click Apply Now, submit resume. Direct corporate hotel interviews scheduled within 48-72 hours. No third-party agency fees.
+- College Admissions & Courses (/admissions): B.Sc. in Hospitality & Hotel Administration (BHM, 3 yrs, 10+2 eligibility), Diploma in Food Production & Culinary Arts (1.5 yrs, 10th/12th), Diploma in F&B Service & Bartending (1 yr), Front Office Diploma, MBA in Hospitality (2 yrs).
+- 100% On-Job Training (OJT): Guaranteed 6-12 months training in 5-star properties with monthly stipend.
+- 400+ Hotel Partners & MOUs (/#partners): JW Marriott Goa, JW Marriott Mumbai Sahar, Renaissance Ahmedabad, Radisson Blu Indore, Radisson Resort & Spa Kandla, Hyatt Ahmedabad, Taj Hotels (IHCL), ITC Hotels, Sayaji, Gokulam, Lemon Tree, Hilton Chennai.
+- 100% Written Refund Guarantee (/refund-policy): 3-month placement commitment. If not placed within 3 months of registration, full 100% money-back guarantee without deduction. Signed legal Candidate Consent Agreement (/#consent-form).
+- Hotel Employers: Can register at /auth/signup/employer to post vacancies and hire pre-screened talent.
+- Colleges: Can list their campus at /list-your-college.
+- Masterclasses & Videos: Free live streams and recorded sessions at /gallery.
+- Official Contact: Head Office in Kolkata - 700157. WhatsApp: +91 91473 31167 (https://wa.me/919147331167), Email: sharkedutechinternational@gmail.com.
+
+Instructions:
+1. Always format responses in clean GitHub markdown with bold headers, bullet points, and clickable markdown links (e.g. [Explore Jobs](/jobs), [Admissions](/admissions), [Hotel Tie-Ups](/#partners), [Contact Us](/contact)).
+2. Be polite, concise, and enthusiastic about hospitality careers!`;
+
+                // Build conversation contents including history
+                const contents = [];
+
+                if (Array.isArray(history)) {
+                    for (const h of history.slice(-4)) {
+                        contents.push({
+                            role: h.sender === 'user' ? 'user' : 'model',
+                            parts: [{ text: h.text }]
+                        });
+                    }
+                }
+
+                contents.push({
+                    role: 'user',
+                    parts: [{ text: `${systemPrompt}\n\nUser Question: ${message}` }]
                 });
 
-                const data = await response.json();
-                const aiReply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-                if (aiReply) {
-                    return NextResponse.json({ reply: aiReply });
+                // Try gemini-1.5-flash endpoint
+                const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`;
+                const response = await fetch(geminiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const aiReply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (aiReply) {
+                        return NextResponse.json({ reply: aiReply });
+                    }
+                } else {
+                    console.warn(`Gemini API returned status ${response.status}, falling back to built-in hospitality engine.`);
                 }
             } catch (err) {
-                console.error("Gemini API call failed, falling back to local engine:", err);
+                console.error("Gemini API call error, falling back to built-in engine:", err);
             }
         }
 
