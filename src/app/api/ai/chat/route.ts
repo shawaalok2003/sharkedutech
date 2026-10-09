@@ -51,6 +51,16 @@ export async function POST(request: Request) {
                 const systemPrompt = `You are "Shark AI", the official 24/7 AI Hospitality & Career Advisor for Shark International Edutech Pvt. Ltd. (Kolkata - 700157, West Bengal, India).
 Your role is to guide students, job seekers, hotel recruiters, and college partners with warm, encouraging, authoritative, and 100% accurate information.
 
+CRITICAL LANGUAGE & PERSONALIZATION INSTRUCTIONS (MANDATORY):
+1. ALWAYS DETECT AND MIRROR THE USER'S LANGUAGE:
+   - If user asks in Bengali (Bangla script বাংলা or phonetic Latin like 'shark ki kore', 'ami job chai', 'free te ekta job dik aj', 'koto taka lagbe'), you MUST respond in warm, natural, fluent Bengali (বাংলা or phonetic Bengali)!
+   - If user asks in Hindi or Hinglish (e.g. 'mujhe job chahiye', 'hotel me vacancy hai kya', 'kaise apply karein'), you MUST respond in natural Hindi or Hinglish!
+   - If user asks in English, respond in English.
+2. NEVER GIVE GENERIC CANNED RESPONSES:
+   - Always answer the user's specific question directly with detailed, personalized, and encouraging advice.
+   - If someone asks "shark ki kore": Explain in Bengali that Shark Edutech is a leading hospitality recruitment and training institute in Kolkata providing verified 5-star hotel jobs (Taj, Marriott, Hyatt) with direct interviews and admissions.
+   - If someone asks for free jobs ("free te job chai"): Emphasize in Bengali that exploring jobs and applying on Shark Edutech (/jobs) is 100% COMPLETELY FREE with ZERO agency or middleman charges, and explain how to apply today for interviews scheduled in 48-72 hours!
+
 Core Platform Knowledge:
 - Active 5-Star Hotel Jobs: Currently ${totalJobs}+ active verified openings in luxury hotels (Front Office, F&B Hostess, Commis Chefs, Housekeeping Supervisors, Duty Managers, Bartenders).
 - Latest Job Openings: ${JSON.stringify(latestJobs)}
@@ -67,37 +77,64 @@ Core Platform Knowledge:
 - Masterclasses & Videos: Free live streams and recorded sessions at /gallery.
 - Official Contact: Head Office in Kolkata - 700157. WhatsApp: +91 91473 31167 (https://wa.me/919147331167), Email: sharkedutechinternational@gmail.com.
 
-Instructions:
-1. Always format responses in clean GitHub markdown with bold headers, bullet points, and clickable markdown links (e.g. [Explore Jobs](/jobs), [Admissions](/admissions), [Hotel Tie-Ups](/#partners), [Contact Us](/contact)).
-2. Be polite, concise, and enthusiastic about hospitality careers!`;
+Formatting: Clean GitHub markdown with bold headers, bullet points, and clickable markdown links (e.g. [Explore Jobs](/jobs), [Admissions](/admissions)).`;
 
-                // Build conversation contents including history
+                // Build conversation contents including history with valid alternating roles
                 const contents = [];
 
-                if (Array.isArray(history)) {
-                    for (const h of history.slice(-4)) {
-                        contents.push({
-                            role: h.sender === 'user' ? 'user' : 'model',
-                            parts: [{ text: h.text }]
-                        });
+                if (Array.isArray(history) && history.length > 0) {
+                    let lastRole = '';
+                    for (const h of history.slice(-6)) {
+                        if (!h.text) continue;
+                        const role = h.sender === 'user' ? 'user' : 'model';
+                        // Gemini requires the conversation to start with user
+                        if (contents.length === 0 && role === 'model') {
+                            continue;
+                        }
+                        if (role !== lastRole) {
+                            contents.push({
+                                role,
+                                parts: [{ text: h.text }]
+                            });
+                            lastRole = role;
+                        }
                     }
+                }
+
+                // Ensure strict alternation before pushing the new user turn
+                if (contents.length > 0 && contents[contents.length - 1].role === 'user') {
+                    contents.pop();
                 }
 
                 contents.push({
                     role: 'user',
-                    parts: [{ text: `${systemPrompt}\n\nUser Question: ${message}` }]
+                    parts: [{ text: message }]
                 });
 
-                // Call Google Gemini API (gemini-3.5-flash with fallback to gemini-3.7-flash and gemini-flash-latest)
-                const candidateModels = ['gemini-3.5-flash', 'gemini-3.7-flash', 'gemini-flash-latest'];
+                // Call Google Gemini API (gemini-3.5-flash-lite and gemini-3.1-flash-lite have abundant quota)
+                const candidateModels = [
+                    'gemini-3.5-flash-lite',
+                    'gemini-3.1-flash-lite',
+                    'gemini-flash-lite-latest',
+                    'gemini-3.7-flash',
+                    'gemini-3.8-flash',
+                    'gemini-3.5-flash',
+                    'gemini-flash-latest'
+                ];
+
                 for (const model of candidateModels) {
                     try {
                         const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiKey}`;
                         const response = await fetch(geminiUrl, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ contents }),
-                            signal: AbortSignal.timeout(5000)
+                            body: JSON.stringify({
+                                system_instruction: {
+                                    parts: [{ text: systemPrompt }]
+                                },
+                                contents
+                            }),
+                            signal: AbortSignal.timeout(6500)
                         });
 
                         if (response.ok) {
@@ -119,8 +156,78 @@ Instructions:
         // 3. Built-in High-Accuracy Hospitality RAG & NLP Matching Engine
         let reply = "";
 
+        const isBengali = /[\u0980-\u09FF]/.test(message) ||
+            query.includes('ki kore') || query.includes('shark ki kore') || query.includes('bengali') ||
+            query.includes('bangla') || query.includes('free te') || query.includes('chakri') ||
+            query.includes('kothay') || query.includes('koto') || query.includes('kivabe') ||
+            query.includes('ami') || query.includes('taka') || query.includes('aj') ||
+            query.includes('ekta') || query.includes('chaye') || query.includes('chai') ||
+            query.includes('lagbe') || query.includes('korbo');
+
+        const isHindi = /[\u0900-\u097F]/.test(message) ||
+            query.includes('hindi') || query.includes('kya karta hai') || query.includes('kaise') ||
+            query.includes('chahiye') || query.includes('naukri') || query.includes('mujhe') ||
+            query.includes('kya') || query.includes('hoga') || query.includes('paise') ||
+            query.includes('batao') || query.includes('lagte') || query.includes('karen');
+
+        // Check for Bengali language queries in fallback
+        if (isBengali) {
+            if (query.includes('bengali') || query.includes('bangla') || query.includes('can u answer in bengali')) {
+                reply = `### 🦈 হ্যাঁ, আমি বাংলায় কথা বলতে পারি!\n\n` +
+                    `নমস্কার! আমি **Shark AI**, Shark International Edutech Pvt. Ltd. (কলকাতা - ৭০০১৫৭)-এর অফিশিয়াল ২৪/৭ হসপিটালিটি ক্যারিয়ার অ্যাডভাইজার।\n\n` +
+                    `আমি আপনাকে কীভাবে সাহায্য করতে পারি বলুন:\n` +
+                    `- 💼 **৫-স্টার হোটেল জবস**: তাজ, ম্যারিয়ট, হায়াত ইত্যাদি হোটেলে চাকরির খোঁজ করতে ও আবেদন করতে।\n` +
+                    `- 🎓 **হোটেল ম্যানেজমেন্ট কোর্স**: BHM, শেফ ট্রেনিং এবং ১০০% অন-জব ট্রেনিং (OJT)।\n` +
+                    `- 🛡️ **৩-মাসের ১০০% রিফান্ড গ্যারান্টি**: নিশ্চিত চাকরি অথবা ফুল মানি-ব্যাক।\n\n` +
+                    `👉 **[চাকরির তালিকা দেখুন](/jobs)** | **[ভর্তি ও কোর্স](/admissions)** | **[WhatsApp চ্যাট](https://wa.me/919147331167)**\n\n` +
+                    `আপনি কি কোনো নির্দিষ্ট পদে (Front Office, Chef, F&B, Housekeeping) চাকরি খুঁজছেন? আমাকে জানান!`;
+            } else if (query.includes('free') || query.includes('chakri') || query.includes('job') || query.includes('aj') || query.includes('ekta') || query.includes('chai')) {
+                reply = `### 🦈 Shark Edutech-এ ১০০% বিনামূল্যে চাকরির সুযোগ\n\n` +
+                    `নমস্কার! **Shark International Edutech**-এ ৫-স্টার হোটেলের চাকরির খোঁজ নেওয়া ও আবেদন করা **সম্পূর্ণ বিনামূল্যে (১০০% FREE)** — এখানে কোনো এজেন্ট বা থার্ড-পার্টি চার্জ নেই!\n\n` +
+                    `**কীভাবে আজই চাকরি পাবেন:**\n` +
+                    `১. আমাদের **[হসপিটালিটি জবস পোর্টাল](/jobs)**-এ যান এবং সক্রিয় ভ্যাকেন্সিগুলো দেখুন (Front Office, Chef, F&B, Housekeeping)।\n` +
+                    `২. সরাসরি **Apply Now** বাটনে ক্লিক করে আপনার সিভি জমা দিন।\n` +
+                    `৩. আবেদনের পর মাত্র **৪৮ থেকে ৭২ ঘণ্টার মধ্যে** সরাসরি হোটেল ইন্টারভিউ শিডিউল করা হয়!\n` +
+                    `৪. তাজ, ম্যারিয়ট, হায়াত, আইটিসি সহ ৪০০+ লাক্সারি হোটেলের সাথে সরাসরি টাই-আপ রয়েছে।\n` +
+                    `৫. রেজিস্টার্ড প্রার্থীদের জন্য রয়েছে ৩ মাসের মধ্যে নিশ্চিত প্লেসমেন্ট গ্যারান্টি ([Consent Form](/#consent-form))।\n\n` +
+                    `👉 **[এখনই সমস্ত চাকরির তালিকা দেখুন ও আবেদন করুন](/jobs)**\n` +
+                    `💬 কোনো প্রশ্ন থাকলে সরাসরি **[WhatsApp (+91 91473 31167)](https://wa.me/919147331167)**-এ যোগাযোগ করুন।`;
+            } else {
+                reply = `### 🦈 Shark Edutech মূলত কী করে?\n\n` +
+                    `নমস্কার! **Shark International Edutech Pvt. Ltd.** হলো কলকাতার অন্যতম শীর্ষস্থানীয় হসপিটালিটি ক্যারিয়ার ও অ্যাডমিশন প্ল্যাটফর্ম।\n\n` +
+                    `**আমাদের প্রধান কাজ:**\n` +
+                    `- 💼 **৫-স্টার হোটেল জবস**: তাজ, ম্যারিয়ট, হায়াত, আইটিসি সহ ৪০০+ লাক্সারি হোটেলের সাথে সরাসরি টাই-আপ ও শূন্য খরচে প্লেসমেন্ট।\n` +
+                    `- 🎓 **হোটেল ম্যানেজমেন্ট অ্যাডমিশন**: BHM, শেফ ট্রেনিং ও কালিনারি ডিপ্লোমা কোর্স এবং অন-জব ট্রেনিং (OJT) মাসিক স্টাইপেন্ড সহ।\n` +
+                    `- 🛡️ **৩-মাসের ১০০% রিফান্ড গ্যারান্টি**: রেজিস্টার্ড প্রার্থীদের ৩ মাসের মধ্যে প্লেসমেন্ট না হলে সম্পূর্ণ মানি-ব্যাক।\n` +
+                    `- ⚡ **দ্রুত ইন্টারভিউ**: আবেদনের ৪৮ থেকে ৭২ ঘণ্টার মধ্যে সরাসরি ইন্টারভিউ শিডিউল।\n\n` +
+                    `👉 **[চাকরির তালিকা দেখুন](/jobs)** | **[কোর্স ও অ্যাডমিশন](/admissions)** | **[WhatsApp](https://wa.me/919147331167)**`;
+            }
+        }
+        // Check for Hindi / Hinglish language queries in fallback
+        else if (isHindi) {
+            if (query.includes('hindi') || query.includes('kya karta hai') || query.includes('about')) {
+                reply = `### 🦈 Shark Edutech क्या करता है?\n\n` +
+                    `नमस्ते! **Shark International Edutech Pvt. Ltd.** (कोलकाता - 700157) भारत का प्रमुख हॉस्पिटैलिटी करियर और रिक्रूटमेंट प्लेटफॉर्म है।\n\n` +
+                    `**हमारी मुख्य सेवाएं:**\n` +
+                    `- 💼 **5-स्टार होटल जॉब्स**: ताज, मैरियट, हयात, आईटीसी सहित 400+ लक्ज़री होटलों में डायरेक्ट रिक्रूटमेंट। आवेदन बिल्कुल **100% फ्री** है।\n` +
+                    `- 🎓 **होटल मैनेजमेंट कोर्सेज**: BHM, शेफ और कुलिनरी डिप्लोमा, जिसमें 100% ऑन-जॉब ट्रेनिंग (OJT) और मासिक स्टाइपेंड मिलता है।\n` +
+                    `- 🛡️ **3-महीने की 100% मनी-बैक गारंटी**: रजिस्टर्ड कैंडिडेट्स को 3 महीने में प्लेसमेंट न मिलने पर पूरा पैसा वापस।\n` +
+                    `- ⚡ **फास्ट इंटरव्यू**: आवेदन के 48 से 72 घंटे के भीतर डायरेक्ट कॉर्पोरेट होटल इंटरव्यू।\n\n` +
+                    `👉 **[जॉब्स देखें और अप्लाई करें](/jobs)** | **[एडमिशन पोर्टल](/admissions)** | **[WhatsApp (+91 91473 31167)](https://wa.me/919147331167)**`;
+            } else {
+                reply = `### 🦈 Shark Edutech में 100% फ्री जॉब प्लेसमेंट\n\n` +
+                    `नमस्ते! **Shark International Edutech** पर 5-स्टार होटल और रिसॉर्ट्स में जॉब सर्च और आवेदन करना **बिल्कुल मुफ्त (100% FREE)** है — कोई थर्ड-पार्टी या एजेंसी फीस नहीं है!\n\n` +
+                    `**आवेदन प्रक्रिया:**\n` +
+                    `1. हमारे **[Jobs Portal](/jobs)** पर जाएं और अपनी पसंद का रोल (Front Office, Chef, F&B Service, Housekeeping) चुनें।\n` +
+                    `2. **Apply Now** पर क्लिक करके अपना रिज्यूमे जमा करें।\n` +
+                    `3. आवेदन के **48 से 72 घंटे के भीतर** डायरेक्ट होटल इंटरव्यू शेड्यूल किया जाता है!\n` +
+                    `4. ताज, मैरियट, हयात सहित 400+ टॉप ब्रांड्स के साथ डायरेक्ट पार्टनरशिप है।\n\n` +
+                    `👉 **[सभी एक्टिव जॉब्स देखें और अप्लाई करें](/jobs)**\n` +
+                    `💬 तुरंत सहायता के लिए हमारे **[WhatsApp (+91 91473 31167)](https://wa.me/919147331167)** पर संपर्क करें।`;
+            }
+        }
         // Check for application process / how to apply
-        if (query.includes('how to apply') || query.includes('apply process') || query.includes('steps to apply') || query.includes('procedure') || query.includes('how can i apply')) {
+        else if (query.includes('how to apply') || query.includes('apply process') || query.includes('steps to apply') || query.includes('procedure') || query.includes('how can i apply')) {
             reply = `### 📝 How to Apply for 5-Star Hotel Jobs at Shark Edutech\n\n` +
                 `Applying is fast, transparent, and direct without any third-party agency barriers:\n\n` +
                 `1. **Explore Active Openings**: Visit the [Hospitality Jobs Portal](/jobs) to browse verified vacancies by city, hotel brand, or department.\n` +
