@@ -17,7 +17,7 @@ const INITIAL_MESSAGES: ChatMessage[] = [
     {
         id: "msg-init-1",
         sender: "bot",
-        text: `### Hello! Welcome to Shark AI Assistant 👋\n\nI am your 24/7 **Hospitality Career & Admissions Advisor**.\n\nAsk me anything about:\n- 💼 **50+ Verified 5-Star Hotel Jobs** (Front Office, Chefs, F&B, Housekeeping)\n- 🎓 **Hotel Management Degrees & Admissions** (/admissions)\n- 🏨 **400+ Luxury Hotel MOUs** (Taj, Marriott, Hyatt, Radisson, ITC)\n- 🛡️ **100% Written Refund Policy** & 3-Month Placement Guarantee\n- ✍️ **Candidate Consent Form & Registration**\n- 📞 Official Contact & Kolkata Office Support\n\nHow can I help guide your hospitality journey today?`,
+        text: `### Hey there! Welcome to Shark AI Advisor 👋\n\nI am your 24/7 **Hospitality Career & Admissions Concierge**.\n\nAsk me anything about:\n- 💼 **50+ Verified 5-Star Hotel Jobs** (Front Office, Chefs, F&B, Housekeeping)\n- 🎓 **Hotel Management Degrees & Admissions** (/admissions)\n- 🏨 **400+ Luxury Hotel MOUs** (Taj, Marriott, Hyatt, Radisson, ITC)\n- 🛡️ **100% Written Refund Policy** & 3-Month Placement Guarantee\n- ✍️ **Candidate Consent Form & Registration**\n- 📞 Official Contact & Kolkata Office Support\n\nHow can I help guide your hospitality journey today?`,
         time: "Just now"
     }
 ];
@@ -32,6 +32,9 @@ const QUICK_CHIPS = [
     { label: "📞 Contact Support", query: "Where is Shark Edutech located and how can I contact support?" }
 ];
 
+const STORAGE_KEY = "shark_ai_chat_messages";
+const BUBBLE_STORAGE_KEY = "shark_ai_bubble_dismissed";
+
 export function AIChatbot() {
     const pathname = usePathname();
     const [isOpen, setIsOpen] = useState(false);
@@ -39,9 +42,41 @@ export function AIChatbot() {
     const [messages, setMessages] = useState<ChatMessage[]>(INITIAL_MESSAGES);
     const [inputValue, setInputValue] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [isHydrated, setIsHydrated] = useState(false);
 
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
+
+    // 1. Session Storage Restoration on Mount
+    useEffect(() => {
+        setIsHydrated(true);
+        try {
+            const savedMessages = sessionStorage.getItem(STORAGE_KEY);
+            if (savedMessages) {
+                const parsed = JSON.parse(savedMessages);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    setMessages(parsed);
+                }
+            }
+
+            const bubbleDismissed = sessionStorage.getItem(BUBBLE_STORAGE_KEY);
+            if (bubbleDismissed === "true") {
+                setShowBubble(false);
+            }
+        } catch (err) {
+            console.error("Session restoration error:", err);
+        }
+    }, []);
+
+    // 2. Session Storage Persistence when Messages Change
+    useEffect(() => {
+        if (!isHydrated) return;
+        try {
+            sessionStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+        } catch (err) {
+            console.error("Session save error:", err);
+        }
+    }, [messages, isHydrated]);
 
     // Hide chatbot on admin dashboard pages
     if (pathname?.startsWith('/admin')) {
@@ -130,6 +165,17 @@ export function AIChatbot() {
     const handleResetChat = () => {
         setMessages(INITIAL_MESSAGES);
         setInputValue("");
+        try {
+            sessionStorage.removeItem(STORAGE_KEY);
+        } catch (err) {}
+    };
+
+    const handleDismissBubble = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setShowBubble(false);
+        try {
+            sessionStorage.setItem(BUBBLE_STORAGE_KEY, "true");
+        } catch (err) {}
     };
 
     // Simple markdown-to-JSX parser for links, bolding, and lists
@@ -250,22 +296,22 @@ export function AIChatbot() {
                             <Image
                                 src="/images/ai-avatar.jpg"
                                 alt="Shark AI"
-                                width={32}
-                                height={32}
+                                width={36}
+                                height={36}
                                 className={styles.bubbleMiniAvatar}
                             />
                         </div>
                         <div className={styles.bubbleTextGroup}>
-                            <span className={styles.bubbleTitle}>Shark AI Assistant</span>
-                            <span className={styles.bubbleSubtitle}>Ask about Jobs &amp; Courses</span>
+                            <div className={styles.bubbleHeaderRow}>
+                                <span className={styles.bubbleHeyPill}>HEY! 👋</span>
+                                <span className={styles.bubbleTitle}>Shark AI Advisor</span>
+                            </div>
+                            <span className={styles.bubbleSubtitle}>Need help with 5-star jobs or courses?</span>
                         </div>
                         <button
                             type="button"
                             className={styles.welcomeBubbleClose}
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setShowBubble(false);
-                            }}
+                            onClick={handleDismissBubble}
                             title="Dismiss"
                         >
                             &times;
@@ -402,9 +448,72 @@ export function AIChatbot() {
                                         />
                                     </div>
                                     <div className={styles.botBubbleGroup}>
-                                        <div className={styles.botBubble}>
-                                            {renderFormattedText(msg.text)}
-                                        </div>
+                                        {msg.id === "msg-init-1" ? (
+                                            /* Enhanced Welcome "Hey There!" Card */
+                                            <div className={styles.welcomeHeroCard}>
+                                                <div className={styles.welcomeHeroHeader}>
+                                                    <span className={styles.heyGlowBadge}>HEY THERE! 👋</span>
+                                                    <h4 className={styles.welcomeHeroTitle}>Welcome to Shark AI Advisor</h4>
+                                                    <p className={styles.welcomeHeroSub}>
+                                                        Your 24/7 personal guide for 5-star hotel placements, university degrees, and career acceleration.
+                                                    </p>
+                                                </div>
+
+                                                <div className={styles.welcomeFeaturesGrid}>
+                                                    <div
+                                                        className={styles.welcomeFeatureItem}
+                                                        onClick={() => handleSendMessage("Show me the latest hospitality jobs and salary ranges")}
+                                                    >
+                                                        <span className={styles.featureIcon}>💼</span>
+                                                        <div className={styles.featureTextGroup}>
+                                                            <strong>50+ Verified Jobs</strong>
+                                                            <small>Front Office, Chefs, F&B, Housekeeping</small>
+                                                        </div>
+                                                    </div>
+
+                                                    <div
+                                                        className={styles.welcomeFeatureItem}
+                                                        onClick={() => handleSendMessage("What hotel management courses and admissions are available?")}
+                                                    >
+                                                        <span className={styles.featureIcon}>🎓</span>
+                                                        <div className={styles.featureTextGroup}>
+                                                            <strong>Hotel Degrees &amp; BHM</strong>
+                                                            <small>Admissions &amp; 100% OJT Monthly Stipend</small>
+                                                        </div>
+                                                    </div>
+
+                                                    <div
+                                                        className={styles.welcomeFeatureItem}
+                                                        onClick={() => handleSendMessage("Which luxury hotels are tied up with Shark Edutech?")}
+                                                    >
+                                                        <span className={styles.featureIcon}>🏨</span>
+                                                        <div className={styles.featureTextGroup}>
+                                                            <strong>400+ Hotel MOUs</strong>
+                                                            <small>Taj, Marriott, Hyatt, Radisson, ITC</small>
+                                                        </div>
+                                                    </div>
+
+                                                    <div
+                                                        className={styles.welcomeFeatureItem}
+                                                        onClick={() => handleSendMessage("How does the 100% placement refund guarantee work?")}
+                                                    >
+                                                        <span className={styles.featureIcon}>🛡️</span>
+                                                        <div className={styles.featureTextGroup}>
+                                                            <strong>Placement Guarantee</strong>
+                                                            <small>3-Month 100% Refund Commitment</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className={styles.welcomePromptHint}>
+                                                    💬 <em>Tap any box above or ask your question below to begin!</em>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className={styles.botBubble}>
+                                                {renderFormattedText(msg.text)}
+                                            </div>
+                                        )}
                                         <span className={styles.messageTime}>{msg.time}</span>
                                     </div>
                                 </div>
