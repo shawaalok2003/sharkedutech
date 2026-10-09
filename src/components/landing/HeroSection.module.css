@@ -42,18 +42,18 @@
     height: 100%;
     object-fit: cover;
     object-position: center;
-    filter: contrast(0.85) brightness(0.88);
+    filter: brightness(0.92) contrast(0.90);
 }
 
-/* Gradient Overlay with Luxury Dark Blue Tint */
+/* Neutral Low-Contrast Dark Gradient Overlay - Removed Heavy Blue Tint */
 .overlay {
     position: absolute;
     inset: 0;
     background: linear-gradient(
         180deg, 
-        rgba(8, 15, 35, 0.72) 0%, 
-        rgba(11, 20, 45, 0.80) 45%, 
-        rgba(15, 23, 42, 0.90) 100%
+        rgba(10, 12, 16, 0.56) 0%, 
+        rgba(14, 16, 20, 0.66) 45%, 
+        rgba(10, 12, 16, 0.80) 100%
     );
     z-index: 2;
     pointer-events: none;
@@ -62,7 +62,7 @@
 .radialGlow {
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at 50% 40%, rgba(37, 99, 235, 0.18) 0%, transparent 65%);
+    background: radial-gradient(circle at 50% 40%, rgba(255, 255, 255, 0.02) 0%, transparent 65%);
     z-index: 3;
     pointer-events: none;
 }
