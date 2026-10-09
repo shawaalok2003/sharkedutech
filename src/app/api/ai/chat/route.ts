@@ -87,22 +87,27 @@ Instructions:
                     parts: [{ text: `${systemPrompt}\n\nUser Question: ${message}` }]
                 });
 
-                // Try gemini-1.5-flash endpoint
-                const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`;
-                const response = await fetch(geminiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents })
-                });
+                // Call Google Gemini API (gemini-3.5-flash with fallback to gemini-3.7-flash and gemini-flash-latest)
+                const candidateModels = ['gemini-3.5-flash', 'gemini-3.7-flash', 'gemini-flash-latest'];
+                for (const model of candidateModels) {
+                    try {
+                        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiKey}`;
+                        const response = await fetch(geminiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ contents })
+                        });
 
-                if (response.ok) {
-                    const data = await response.json();
-                    const aiReply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-                    if (aiReply) {
-                        return NextResponse.json({ reply: aiReply });
+                        if (response.ok) {
+                            const data = await response.json();
+                            const aiReply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+                            if (aiReply) {
+                                return NextResponse.json({ reply: aiReply });
+                            }
+                        }
+                    } catch (modelErr) {
+                        console.warn(`Model ${model} request failed:`, modelErr);
                     }
-                } else {
-                    console.warn(`Gemini API returned status ${response.status}, falling back to built-in hospitality engine.`);
                 }
             } catch (err) {
                 console.error("Gemini API call error, falling back to built-in engine:", err);
