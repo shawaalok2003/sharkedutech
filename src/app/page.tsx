@@ -1,5 +1,4 @@
 import { HeroSection } from "@/components/landing/HeroSection";
-import { LogoCarousel } from "@/components/landing/LogoCarousel";
 import { WhoWeAreSection } from "@/components/landing/WhoWeAreSection";
 import { BrowseCategories } from "@/components/landing/BrowseCategories";
 import { JobCarousel } from "@/components/landing/JobCarousel";
@@ -63,7 +62,6 @@ export default async function Home() {
     <main style={{ overflowX: 'hidden' }}>
       <HeroSection />
       <JobCarousel jobs={topJobs} />
-      <LogoCarousel />
       <WhoWeAreSection />
       <CandidateConsentSection />
       <LiveBroadcastCarousel initialVideos={liveVideos} />

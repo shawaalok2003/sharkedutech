@@ -47,8 +47,26 @@ fs.mkdirSync(DEPLOY_DIR, { recursive: true });
 
 // ── Step 4: Copy standalone files, node_modules → _vendor ─────────────────
 console.log('Step 4: Copying standalone files...');
+const SKIP_STANDALONE_ITEMS = new Set([
+  'cpanel_deploy',
+  'cpanel_deploy_light',
+  'cpanel_cloudlinux',
+  'deploy_cpanel.zip',
+  'deploy_cpanel_light.zip',
+  'deploy_cloudlinux.zip',
+  'deploy_small.zip',
+  'project.tar.gz',
+  'project.zip',
+  'sharkedutech.zip',
+  'vps_light.zip',
+]);
+
 const standaloneItems = fs.readdirSync(STANDALONE);
 for (const item of standaloneItems) {
+  if (SKIP_STANDALONE_ITEMS.has(item)) {
+    console.log(`  ⏭️  Skipped redundant artifact: ${item}`);
+    continue;
+  }
   const src = path.join(STANDALONE, item);
   if (item === 'node_modules') {
     const dst = path.join(DEPLOY_DIR, '_vendor');
@@ -229,15 +247,17 @@ try {
 }
 
 try {
-  const ps = `$src='${DEPLOY_DIR.replace(/'/g,"''")}'; $dst='${ZIP_OUT.replace(/'/g,"''")}'; Compress-Archive -Path "$src\\*" -DestinationPath $dst -Force`;
-  execSync(`powershell -Command "${ps}"`, { stdio: 'inherit' });
-  console.log('  ✅ Zip created via PowerShell.');
-} catch (psErr) {
-  console.log('  ⚠️  PowerShell failed, trying tar...');
+  execSync(`tar -a -c -f "${ZIP_OUT}" -C "${DEPLOY_DIR}" .`, { stdio: 'inherit' });
+  if (!fs.existsSync(ZIP_OUT)) throw new Error('tar did not produce zip');
+  console.log('  ✅ Zip created via tar.');
+} catch (tarErr) {
+  console.log('  ⚠️  tar failed, trying PowerShell Compress-Archive...');
   try {
-    execSync(`tar -a -c -f "${ZIP_OUT}" -C "${DEPLOY_DIR}" .`, { stdio: 'inherit' });
-    console.log('  ✅ Zip created via tar.');
-  } catch (tarErr) {
+    const ps = `$src='${DEPLOY_DIR.replace(/'/g,"''")}'; $dst='${ZIP_OUT.replace(/'/g,"''")}'; Compress-Archive -Path "$src\\*" -DestinationPath $dst -Force`;
+    execSync(`powershell -Command "${ps}"`, { stdio: 'inherit' });
+    if (!fs.existsSync(ZIP_OUT)) throw new Error('Compress-Archive did not produce zip');
+    console.log('  ✅ Zip created via PowerShell.');
+  } catch (psErr) {
     console.error('  ❌ All zipping methods failed.'); process.exit(1);
   }
 }

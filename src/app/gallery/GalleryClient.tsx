@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Footer } from '@/components/layout/Footer';
 import styles from './Gallery.module.css';
+
+const MD_CREDIT_TEXT = "Mr. Maminul Akanda, Founder & CEO of Shark";
 
 interface GalleryItem {
     src: string;
@@ -147,20 +148,14 @@ export default function GalleryClient({ galleryData }: { galleryData: GalleryGro
                                             style={{ cursor: 'pointer' }}
                                         >
                                             <div className={styles.imageWrapper}>
-                                                <Image 
-                                                    src={encodedSrc} 
+                                                <img
+                                                    src={encodedSrc}
                                                     alt={item.hotel || 'Hotel Partner'}
-                                                    fill
-                                                    unoptimized
                                                     className={styles.image}
-                                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                                    loading="lazy"
                                                 />
-                                                {/* High-visibility overlay on the photo */}
                                                 <div className={styles.photoBottomOverlay}>
                                                     <span className={styles.photoHotelBadge}>{item.hotel}</span>
-                                                </div>
-                                                <div className={styles.hoverOverlay}>
-                                                    <span>View Photo</span>
                                                 </div>
                                             </div>
                                             <CardContent className={styles.imageInfo}>
@@ -178,6 +173,9 @@ export default function GalleryClient({ galleryData }: { galleryData: GalleryGro
                                                         <span className={styles.designationBadge}>{item.designation}</span>
                                                     </div>
                                                 )}
+                                                <div className={styles.mdLine}>
+                                                    <span className={styles.mdBadge}>🦈 {MD_CREDIT_TEXT}</span>
+                                                </div>
                                             </CardContent>
                                         </Card>
                                     );
@@ -312,10 +310,13 @@ export default function GalleryClient({ galleryData }: { galleryData: GalleryGro
                             </p>
                         )}
                         {activeImage.designation && (
-                            <p style={{ display: 'inline-block', background: 'rgba(37, 99, 235, 0.3)', border: '1px solid rgba(96, 165, 250, 0.6)', color: '#93c5fd', fontSize: '0.95rem', fontWeight: 600, padding: '0.35rem 0.85rem', borderRadius: '999px', margin: '0 0 0.6rem 0' }}>
+                            <p style={{ display: 'inline-block', background: 'rgba(37, 99, 235, 0.3)', border: '1px solid rgba(96, 165, 250, 0.6)', color: '#93c5fd', fontSize: '0.95rem', fontWeight: 600, padding: '0.35rem 0.85rem', borderRadius: '999px', margin: '0 0 0.5rem 0' }}>
                                 {activeImage.designation}
                             </p>
                         )}
+                        <p style={{ fontSize: '0.95rem', color: '#fde68a', fontWeight: 700, margin: '0 0 0.5rem 0' }}>
+                            🦈 {MD_CREDIT_TEXT}
+                        </p>
                         <p style={{ fontSize: '0.825rem', color: '#cbd5e1', margin: 0, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 500 }}>
                             📍 {activeImage.city} &bull; Shark Edutech Industry Collaboration
                         </p>

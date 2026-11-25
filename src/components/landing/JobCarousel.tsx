@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './JobCarousel.module.css';
 import { formatJobDate } from '@/lib/dateUtils';
@@ -8,6 +8,33 @@ import { formatJobDate } from '@/lib/dateUtils';
 export function JobCarousel({ jobs = [] }: { jobs?: any[] }) {
     const router = useRouter();
     const carouselRef = useRef<HTMLDivElement>(null);
+    const isPausedRef = useRef(false);
+
+    // Filter to ensure ONLY poster opportunity jobs are displayed
+    const posterJobs = jobs.filter(j => j && j.posterUrl);
+    const bannerJobs = posterJobs.length > 1 ? [...posterJobs, ...posterJobs] : posterJobs;
+
+    useEffect(() => {
+        const container = carouselRef.current;
+        if (!container || posterJobs.length <= 1) return;
+
+        let animId: number;
+        const speed = 0.75; // smooth continuous banner speed (px per frame)
+
+        const tick = () => {
+            if (!isPausedRef.current && container) {
+                const halfWidth = container.scrollWidth / 2;
+                container.scrollLeft += speed;
+                if (halfWidth > 0 && container.scrollLeft >= halfWidth) {
+                    container.scrollLeft -= halfWidth;
+                }
+            }
+            animId = requestAnimationFrame(tick);
+        };
+
+        animId = requestAnimationFrame(tick);
+        return () => cancelAnimationFrame(animId);
+    }, [posterJobs.length]);
 
     const scrollLeft = () => {
         if (carouselRef.current) {
@@ -21,9 +48,6 @@ export function JobCarousel({ jobs = [] }: { jobs?: any[] }) {
         }
     };
 
-    // Filter to ensure ONLY poster opportunity jobs are displayed
-    const posterJobs = jobs.filter(j => j && j.posterUrl);
-
     return (
         <section className={styles.carouselSection} id="current-openings">
             <div className={styles.container}>
@@ -35,22 +59,29 @@ export function JobCarousel({ jobs = [] }: { jobs?: any[] }) {
                     </div>
                 </div>
 
-                <div className={styles.carousel} ref={carouselRef}>
-                    {posterJobs.map((job) => {
+                <div
+                    className={styles.carousel}
+                    ref={carouselRef}
+                    onMouseEnter={() => { isPausedRef.current = true; }}
+                    onMouseLeave={() => { isPausedRef.current = false; }}
+                    onTouchStart={() => { isPausedRef.current = true; }}
+                    onTouchEnd={() => { isPausedRef.current = false; }}
+                >
+                    {bannerJobs.map((job, idx) => {
                         const dateFormatted = formatJobDate(job.createdAt);
                         return (
-                            <div 
-                                key={job.id} 
+                            <div
+                                key={`${job.id}-${idx}`}
                                 className={styles.opportunityCard}
                                 onClick={() => router.push(`/jobs/${job.id}`)}
                             >
                                 <div className={styles.imageContainer}>
-                                    <img 
-                                        src={job.posterUrl} 
-                                        alt={job.title} 
+                                    <img
+                                        src={job.posterUrl}
+                                        alt={job.title}
                                         className={styles.posterImage}
                                     />
-                                    
+
                                     <div className={styles.gradientOverlay}></div>
 
                                     <div className={styles.badgeTop}>

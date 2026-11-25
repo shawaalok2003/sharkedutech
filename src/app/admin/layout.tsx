@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import "./admin.css";
 
 const allAdminSidebarItems = [
     { label: "Overview", href: "/admin", perm: null },
@@ -48,7 +49,9 @@ export default function AdminLayout({
         }
     }, [session, role, user]);
 
-    const activePermStr = user?.adminPermissions || clientPermissions || "";
+    const activePermStr = typeof user?.adminPermissions === "string"
+        ? user.adminPermissions
+        : (clientPermissions || "");
     const userPerms: string[] = activePermStr ? activePermStr.split(',') : [];
 
     // Only explicitly invited sub-admins with partial permissions are restricted
@@ -67,52 +70,7 @@ export default function AdminLayout({
     const hasPermission = !currentItem || !currentItem.perm || isSuper || !isRestrictedSubAdmin || userPerms.includes(currentItem.perm);
 
     return (
-        <>
-            <style jsx global>{`
-                html, body {
-                    margin: 0;
-                    padding: 0;
-                    overflow-x: hidden;
-                    background-color: #f8fafc;
-                }
-
-                .admin-layout {
-                    min-height: 100vh;
-                    background-color: #f8fafc;
-                    position: relative;
-                    width: 100%;
-                }
-                
-                .admin-main {
-                    margin-left: 260px;
-                    padding: 1.75rem 2rem;
-                    min-height: 100vh;
-                    box-sizing: border-box;
-                    width: calc(100% - 260px);
-                    max-width: calc(100% - 260px);
-                    transition: margin-left 0.3s ease;
-                }
-                
-                @media (max-width: 1024px) {
-                    .admin-main {
-                        margin-left: 230px;
-                        width: calc(100% - 230px);
-                        max-width: calc(100% - 230px);
-                        padding: 1.25rem 1.5rem;
-                    }
-                }
-                
-                @media (max-width: 768px) {
-                    .admin-main {
-                        margin-left: 0;
-                        width: 100%;
-                        max-width: 100%;
-                        padding: 1rem;
-                        padding-bottom: 5rem;
-                    }
-                }
-            `}</style>
-            <div className="admin-layout">
+        <div className="admin-layout">
                 <Sidebar items={filteredSidebarItems} title={isSuper ? "Super Admin" : "Admin Portal"} />
                 <main className="admin-main">
                     {!hasPermission ? (
@@ -133,6 +91,5 @@ export default function AdminLayout({
                     )}
                 </main>
             </div>
-        </>
     );
 }

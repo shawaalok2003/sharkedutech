@@ -74,7 +74,7 @@ export function Footer() {
                         <h4 className={styles.heading}>Hospitality Portal</h4>
                         <div className={styles.links}>
                             <Link href="/jobs" className={styles.link}>Hospitality Job Portal</Link>
-                            <Link href="/#partners" className={styles.link}>5-Star Hotel Tie-Ups</Link>
+                            <Link href="/partners" className={styles.link}>5-Star Hotel Tie-Ups</Link>
                             <Link href="/jobs/employer/post" className={styles.link}>Post a Job (Employers)</Link>
                             <Link href="/admissions" className={styles.link}>Admissions Portal</Link>
                             <Link href="/colleges" className={styles.link}>Colleges Directory</Link>

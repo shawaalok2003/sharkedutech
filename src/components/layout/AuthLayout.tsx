@@ -37,9 +37,9 @@ const carouselSlides = [
         sub: "Accelerate Your Hospitality Career Worldwide"
     },
     {
-        url: encodeURI("/Ahmedabad/03. ITC Gardenia - Mr. Akshay Kavra (General Manager), Mr. Dhananjay Kulkarni (Head Human Resources).jpeg"),
+        url: encodeURI("/Ahmedabad/03. ITC Narmada - Mr. Akshay Kavra (General Manager), Mr. Dhananjay Kulkarni (Head Human Resources).jpeg"),
         badge: "👑 Executive Partnerships",
-        title: "ITC Gardenia & Luxury Resorts",
+        title: "ITC Narmada & Luxury Resorts",
         sub: "Connecting Talent with Top Industry Leaders"
     }
 ];

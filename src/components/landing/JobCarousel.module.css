@@ -62,7 +62,7 @@
     padding: 1rem 0.5rem 2.5rem 0.5rem;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    scroll-behavior: smooth;
+    scroll-behavior: auto;
 }
 
 .carousel::-webkit-scrollbar {

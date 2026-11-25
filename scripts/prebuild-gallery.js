@@ -13,8 +13,8 @@ const metadataMap = {
         person: "Mr. Gurneet Singh, Mr. Vishal Kumar Yadav, Mr. R Jagannathan",
         designation: "Director Food & Director, Executive Chef, HRD"
     },
-    "03. ITC Gardenia": {
-        hotel: "ITC Gardenia",
+    "03. ITC Narmada": {
+        hotel: "ITC Narmada",
         person: "Mr. Akshay Kavra, Mr. Dhananjay Kulkarni",
         designation: "General Manager, Head Human Resources"
     },

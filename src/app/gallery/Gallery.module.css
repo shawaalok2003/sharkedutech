@@ -77,35 +77,15 @@
     position: relative;
     aspect-ratio: 4/3;
     width: 100%;
-}
-
-.hoverOverlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 23, 54, 0.4);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.hoverOverlay span {
-    color: #ffffff;
-    font-size: 0.9rem;
-    font-weight: 700;
-    padding: 0.5rem 1rem;
-    background: rgba(0, 23, 54, 0.8);
-    border-radius: 9999px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.imageCard:hover .hoverOverlay {
-    opacity: 1;
+    overflow: hidden;
+    background: #e2e8f0;
 }
 
 .image {
+    width: 100%;
+    height: 100%;
     object-fit: cover;
+    display: block;
     transition: transform var(--transition-slow);
 }
 
@@ -192,6 +172,24 @@
     font-size: 0.8rem;
     font-weight: 600;
     padding: 0.3rem 0.65rem;
+    border-radius: 6px;
+    line-height: 1.35;
+}
+
+.mdLine {
+    margin-top: 0.35rem;
+    padding-top: 0.45rem;
+    border-top: 1px dashed #e2e8f0;
+}
+
+.mdBadge {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #002147;
+    background: #fef3c7;
+    border: 1px solid #fde68a;
+    padding: 0.25rem 0.6rem;
     border-radius: 6px;
     line-height: 1.35;
 }

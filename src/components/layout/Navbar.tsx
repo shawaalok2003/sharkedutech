@@ -89,7 +89,7 @@ export function Navbar() {
                         <span>Hospitality Jobs</span>
                         <span className={styles.hiringBadge}>Hiring</span>
                     </Link>
-                    <Link href="/#partners" className={styles.link}>
+                    <Link href="/partners" className={`${styles.link} ${isActive('/partners')}`}>
                         <span>Hotel Tie-Ups</span>
                     </Link>
                     <Link href="/about" className={`${styles.link} ${isActive('/about')}`}>
@@ -157,7 +157,7 @@ export function Navbar() {
                             </div>
 
                             <Link href="/auth/signin">
-                                <Button variant="ghost" size="sm">Login</Button>
+                                <Button variant="ghost" size="sm">Candidate Login</Button>
                             </Link>
                             
                             <Link href="/auth/signup">
@@ -185,7 +185,7 @@ export function Navbar() {
                                 Hospitality Jobs <span className={styles.hiringBadge}>Hiring</span>
                             </span>
                         </Link>
-                        <Link href="/#partners" className={styles.mobileLink} onClick={() => setIsMobileMenuOpen(false)}>
+                        <Link href="/partners" className={`${styles.mobileLink} ${isActive('/partners')}`} onClick={() => setIsMobileMenuOpen(false)}>
                             <span>Hotel Tie-Ups</span>
                         </Link>
                         <Link href="/about" className={`${styles.mobileLink} ${isActive('/about')}`}>
@@ -225,7 +225,7 @@ export function Navbar() {
                             ) : (
                                 <>
                                     <Link href="/auth/signin">
-                                        <Button variant="outline" size="md" style={{ width: '100%' }}>Login</Button>
+                                        <Button variant="outline" size="md" style={{ width: '100%' }}>Candidate Login</Button>
                                     </Link>
                                     <Link href="/auth/signup">
                                         <Button size="md" variant="primary" style={{ width: '100%' }}>Register</Button>

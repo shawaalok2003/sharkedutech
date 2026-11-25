@@ -4,7 +4,7 @@
     "images": [
       "/Ahmedabad/01. Four Point Sheraton - Ms. Mehgarani Padhi (Human Resource Associate).jpg",
       "/Ahmedabad/02. Hyatt Regency - Mr. Gurneet Singh (Director Food & Director), Mr. Vishal Kumar Yadav (Executive Chef), Mr. R Jagannathan.jpg",
-      "/Ahmedabad/03. ITC Gardenia - Mr. Akshay Kavra (General Manager), Mr. Dhananjay Kulkarni (Head Human Resources).jpeg",
+      "/Ahmedabad/03. ITC Narmada - Mr. Akshay Kavra (General Manager), Mr. Dhananjay Kulkarni (Head Human Resources).jpeg",
       "/Ahmedabad/04. Renaissance Hotel Ahmedabad - Mr. Rohit Bajpai (Multi Property General Manager).jpeg",
       "/Ahmedabad/05. Radisson Resort & Spa Kandla - Mr. Naveen Dogra.jpg"
     ],
@@ -22,8 +22,8 @@
         "designation": "Director Food & Director, Executive Chef, HRD"
       },
       {
-        "src": "/Ahmedabad/03. ITC Gardenia - Mr. Akshay Kavra (General Manager), Mr. Dhananjay Kulkarni (Head Human Resources).jpeg",
-        "hotel": "ITC Gardenia",
+        "src": "/Ahmedabad/03. ITC Narmada - Mr. Akshay Kavra (General Manager), Mr. Dhananjay Kulkarni (Head Human Resources).jpeg",
+        "hotel": "ITC Narmada",
         "person": "Mr. Akshay Kavra, Mr. Dhananjay Kulkarni",
         "designation": "General Manager, Head Human Resources"
       },

@@ -12,7 +12,9 @@ export default async function AdminDashboard() {
     const user = (session as any)?.user;
     const role = user?.role;
     const isSuper = role === "SUPER_ADMIN";
-    const userPerms: string[] = user?.adminPermissions ? user.adminPermissions.split(',') : [];
+    const userPerms: string[] = typeof user?.adminPermissions === 'string'
+        ? user.adminPermissions.split(',')
+        : [];
 
     const hasJobs = isSuper || userPerms.includes('manage_jobs');
     const hasColleges = isSuper || userPerms.includes('manage_colleges');
