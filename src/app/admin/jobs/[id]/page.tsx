@@ -4,6 +4,21 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import JobImageUploader from "../new/JobImageUploader";
 import { formatJobDate } from "@/lib/dateUtils";
+import { DeleteJobButton } from "@/components/admin/DeleteJobButton";
+
+async function deleteJobFromEdit(formData: FormData) {
+    "use server";
+    const id = formData.get("id") as string;
+    if (!id) return;
+    await prisma.$transaction([
+        prisma.application.deleteMany({ where: { jobId: id } }),
+        prisma.job.delete({ where: { id } })
+    ]);
+    revalidatePath("/admin/jobs");
+    revalidatePath("/jobs");
+    revalidatePath("/");
+    redirect("/admin/jobs");
+}
 
 async function updateJob(formData: FormData) {
     "use server";
@@ -81,9 +96,19 @@ export default async function EditJobPage(props: { params: Promise<{ id: string 
                         </span>
                     </p>
                 </div>
-                <Link href="/admin/jobs" style={{ padding: "0.5rem 1rem", backgroundColor: "#e2e8f0", color: "#0f172a", borderRadius: "6px", textDecoration: "none", fontWeight: 500 }}>
-                    Back to Jobs
-                </Link>
+                <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
+                    <form action={deleteJobFromEdit} style={{ margin: 0 }}>
+                        <input type="hidden" name="id" value={job.id} />
+                        <DeleteJobButton
+                            jobTitle={job.title}
+                            label="Delete Job"
+                            style={{ padding: "0.5rem 1rem", fontSize: "0.9rem" }}
+                        />
+                    </form>
+                    <Link href="/admin/jobs" style={{ padding: "0.5rem 1rem", backgroundColor: "#e2e8f0", color: "#0f172a", borderRadius: "6px", textDecoration: "none", fontWeight: 500 }}>
+                        Back to Jobs
+                    </Link>
+                </div>
             </div>
 
             <div style={{ backgroundColor: "white", padding: "2rem", borderRadius: "8px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)" }}>

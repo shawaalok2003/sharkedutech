@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { formatJobDate } from "@/lib/dateUtils";
+import { DeleteJobButton } from "@/components/admin/DeleteJobButton";
 
 export const dynamic = "force-dynamic";
 
@@ -69,7 +70,7 @@ export default async function JobsAdminPage() {
                 </div>
 
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: "1.25rem" }}>
-                    {jobs.slice(0, 6).map((job) => {
+                    {jobs.slice(0, 30).map((job) => {
                         const dateFormatted = formatJobDate(job.createdAt);
                         return (
                             <div key={job.id} style={{
@@ -84,7 +85,7 @@ export default async function JobsAdminPage() {
                                 {job.posterUrl ? (
                                     <div style={{ width: "100%", height: "150px", background: "#001736", position: "relative", overflow: "hidden" }}>
                                         <img 
-                                            src={job.posterUrl} 
+                                            src={encodeURI(job.posterUrl)} 
                                             alt={job.title}
                                             style={{ width: "100%", height: "100%", objectFit: "cover" }} 
                                         />
@@ -146,13 +147,17 @@ export default async function JobsAdminPage() {
                                         <span style={{ fontSize: "0.82rem", color: "#64748b" }}>
                                             <strong>{job.applications.length}</strong> applications
                                         </span>
-                                        <div style={{ display: "flex", gap: "0.5rem" }}>
+                                        <div style={{ display: "flex", gap: "0.4rem", alignItems: "center" }}>
                                             <a href={`/jobs/${job.id}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.78rem", color: "#2563eb", background: "#f8fafc", padding: "0.35rem 0.65rem", borderRadius: "6px", textDecoration: "none", fontWeight: 600, border: "1px solid #e2e8f0" }}>
-                                                View Portal ↗
+                                                View ↗
                                             </a>
                                             <a href={`/admin/jobs/${job.id}`} style={{ fontSize: "0.78rem", color: "#ffffff", background: "#0f172a", padding: "0.35rem 0.65rem", borderRadius: "6px", textDecoration: "none", fontWeight: 600 }}>
                                                 Edit
                                             </a>
+                                            <form action={deleteJob} style={{ margin: 0 }}>
+                                                <input type="hidden" name="jobId" value={job.id} />
+                                                <DeleteJobButton jobTitle={job.title} />
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
@@ -276,12 +281,7 @@ export default async function JobsAdminPage() {
                                         </a>
                                         <form action={deleteJob}>
                                             <input type="hidden" name="jobId" value={job.id} />
-                                            <button
-                                                type="submit"
-                                                style={{ padding: "0.4rem 0.8rem", backgroundColor: "#ef4444", color: "white", borderRadius: "4px", border: "none", cursor: "pointer", fontSize: "0.875rem" }}
-                                            >
-                                                Delete
-                                            </button>
+                                            <DeleteJobButton jobTitle={job.title} style={{ padding: "0.4rem 0.8rem", borderRadius: "4px", fontSize: "0.875rem", fontWeight: 500 }} />
                                         </form>
                                     </div>
                                 </td>

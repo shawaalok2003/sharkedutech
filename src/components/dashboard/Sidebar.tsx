@@ -121,13 +121,13 @@ export function Sidebar({ items, title = "Sharkedutech" }: SidebarProps) {
                     </div>
                     <div className={styles.footerActions}>
                         <Link href="/" className={styles.siteLink}>
-                            🌐 Main Site
+                            Main Site
                         </Link>
                         <button 
                             onClick={() => signOut({ callbackUrl: '/' })}
                             className={styles.logoutBtn}
                         >
-                            Logout 🚪
+                            Logout
                         </button>
                     </div>
                 </div>

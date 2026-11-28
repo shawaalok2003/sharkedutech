@@ -30,7 +30,7 @@ export default async function Home() {
           posterUrl: { not: null }
         },
         include: { employer: true },
-        take: 50,
+        take: 100,
         orderBy: { createdAt: 'desc' }
       }),
       prisma.liveVideo.findMany({

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
@@ -103,13 +104,18 @@ export async function DELETE(
             return NextResponse.json({ error: 'Job not found' }, { status: 404 });
         }
 
-        if (role !== 'ADMIN' && existingJob.employerId !== userId) {
+        if (role !== 'ADMIN' && role !== 'SUPER_ADMIN' && existingJob.employerId !== userId) {
             return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
         }
 
-        await prisma.job.delete({
-            where: { id }
-        });
+        await prisma.$transaction([
+            prisma.application.deleteMany({ where: { jobId: id } }),
+            prisma.job.delete({ where: { id } })
+        ]);
+
+        revalidatePath('/admin/jobs');
+        revalidatePath('/jobs');
+        revalidatePath('/');
 
         return NextResponse.json({ success: true });
     } catch (error: any) {

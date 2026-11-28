@@ -9,6 +9,28 @@ export default function ActiveJobsPage() {
     const router = useRouter();
     const [jobs, setJobs] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [deletingId, setDeletingId] = useState<string | null>(null);
+
+    const handleDeleteJob = async (jobId: string, title: string) => {
+        if (!window.confirm(`Are you sure you want to delete "${title}"? This cannot be undone.`)) {
+            return;
+        }
+        try {
+            setDeletingId(jobId);
+            const res = await fetch(`/api/jobs/${jobId}`, { method: 'DELETE' });
+            if (res.ok) {
+                setJobs(prev => prev.filter(j => j.id !== jobId));
+            } else {
+                const err = await res.json().catch(() => ({}));
+                alert(err.error || 'Failed to delete job');
+            }
+        } catch (error) {
+            console.error("Delete job error:", error);
+            alert('Error deleting job');
+        } finally {
+            setDeletingId(null);
+        }
+    };
 
     useEffect(() => {
         async function fetchJobs() {
@@ -273,6 +295,15 @@ export default function ActiveJobsPage() {
                                     <div className="job-actions">
                                         <Button variant="outline" size="sm" onClick={() => router.push(`/jobs/employer/edit/${job.id}`)}>Edit</Button>
                                         <Button variant="outline" size="sm" onClick={() => router.push(`/jobs/employer/candidates?jobId=${job.id}`)}>View Candidates</Button>
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            disabled={deletingId === job.id}
+                                            onClick={() => handleDeleteJob(job.id, job.title)}
+                                            style={{ color: '#dc2626', borderColor: '#fecaca', backgroundColor: '#fef2f2' }}
+                                        >
+                                            {deletingId === job.id ? 'Deleting...' : 'Delete'}
+                                        </Button>
                                     </div>
                                 </div>
                             </div>

@@ -77,7 +77,7 @@ export function JobCarousel({ jobs = [] }: { jobs?: any[] }) {
                             >
                                 <div className={styles.imageContainer}>
                                     <img
-                                        src={job.posterUrl}
+                                        src={encodeURI(job.posterUrl)}
                                         alt={job.title}
                                         className={styles.posterImage}
                                     />
